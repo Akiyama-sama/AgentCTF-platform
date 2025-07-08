@@ -8,6 +8,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noUncheckedIndexedAccess": true
   }
 }

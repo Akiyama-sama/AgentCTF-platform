@@ -1,0 +1,1902 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HackerLab API",
+    "description": "智能攻防靶场管理API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Root",
+        "description": "根路径",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "健康检查",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios": {
+      "get": {
+        "summary": "Get Scenarios",
+        "description": "获取所有场景列表",
+        "operationId": "get_scenarios_scenarios_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_list_ScenarioResponse__"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Scenario",
+        "description": "创建新场景",
+        "operationId": "create_scenario_scenarios_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_scenario_scenarios_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_CreateScenarioWithFilesResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios/{scenario_id}": {
+      "get": {
+        "summary": "Get Scenario",
+        "description": "获取指定场景详情",
+        "operationId": "get_scenario_scenarios__scenario_id__get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_ScenarioResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Scenario",
+        "description": "删除场景",
+        "operationId": "delete_scenario_scenarios__scenario_id__delete",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Scenario",
+        "description": "完整更新场景信息",
+        "operationId": "update_scenario_scenarios__scenario_id__put",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScenarioRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_ScenarioResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Scenario State",
+        "description": "更新场景状态（RESTful方式）",
+        "operationId": "update_scenario_state_scenarios__scenario_id__patch",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScenarioStateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios/{scenario_id}/info": {
+      "patch": {
+        "summary": "Partial Update Scenario",
+        "description": "部分更新场景信息",
+        "operationId": "partial_update_scenario_scenarios__scenario_id__info_patch",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateScenarioRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_ScenarioResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios/{scenario_id}/state": {
+      "put": {
+        "summary": "Set Scenario State",
+        "description": "设置场景状态（独立状态资源）",
+        "operationId": "set_scenario_state_scenarios__scenario_id__state_put",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetScenarioStateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios/{scenario_id}/status": {
+      "get": {
+        "summary": "Get Scenario Status",
+        "description": "获取场景状态",
+        "operationId": "get_scenario_status_scenarios__scenario_id__status_get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_ComposeStatusResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios/{scenario_id}/containers": {
+      "get": {
+        "summary": "Get Scenario Containers",
+        "description": "获取场景中的所有容器",
+        "operationId": "get_scenario_containers_scenarios__scenario_id__containers_get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_list_ContainerStatusResponse__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream/server": {
+      "get": {
+        "summary": "Stream Server Logs",
+        "description": "流式获取服务器日志",
+        "operationId": "stream_server_logs_logs_stream_server_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream/scenario/{scenario_id}/build": {
+      "get": {
+        "summary": "Stream Scenario Build Logs",
+        "description": "流式获取场景构建日志",
+        "operationId": "stream_scenario_build_logs_logs_stream_scenario__scenario_id__build_get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream/scenario/{scenario_id}/containers": {
+      "get": {
+        "summary": "Stream Scenario Container Logs",
+        "description": "流式获取场景容器日志",
+        "operationId": "stream_scenario_container_logs_logs_stream_scenario__scenario_id__containers_get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream/scenario/{scenario_id}": {
+      "get": {
+        "summary": "Stream Scenario Logs",
+        "description": "流式获取场景日志",
+        "operationId": "stream_scenario_logs_logs_stream_scenario__scenario_id__get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream/scenario/{scenario_id}/container/{container_name}": {
+      "get": {
+        "summary": "Stream Container Logs",
+        "description": "流式获取指定容器的日志",
+        "operationId": "stream_container_logs_logs_stream_scenario__scenario_id__container__container_name__get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          },
+          {
+            "name": "container_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Container Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises": {
+      "get": {
+        "summary": "Get Exercises",
+        "description": "获取所有练习列表",
+        "operationId": "get_exercises_exercises_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_list_ExerciseResponse__"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Exercise",
+        "description": "创建新练习",
+        "operationId": "create_exercise_exercises_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_exercise_exercises_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_CreateExerciseWithFilesResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{exercise_id}": {
+      "get": {
+        "summary": "Get Exercise",
+        "description": "获取指定练习详情",
+        "operationId": "get_exercise_exercises__exercise_id__get",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_ExerciseResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Exercise",
+        "description": "删除练习",
+        "operationId": "delete_exercise_exercises__exercise_id__delete",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Exercise",
+        "description": "完整更新练习信息",
+        "operationId": "update_exercise_exercises__exercise_id__put",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateExerciseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_ExerciseResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Exercise State",
+        "description": "更新练习状态",
+        "operationId": "update_exercise_state_exercises__exercise_id__patch",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateExerciseStateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{exercise_id}/info": {
+      "patch": {
+        "summary": "Partial Update Exercise",
+        "description": "部分更新练习信息",
+        "operationId": "partial_update_exercise_exercises__exercise_id__info_patch",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateExerciseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_ExerciseResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{exercise_id}/status": {
+      "get": {
+        "summary": "Get Exercise Status",
+        "description": "获取练习状态",
+        "operationId": "get_exercise_status_exercises__exercise_id__status_get",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_ComposeStatusResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{exercise_id}/containers": {
+      "get": {
+        "summary": "Get Exercise Containers",
+        "description": "获取练习容器信息",
+        "operationId": "get_exercise_containers_exercises__exercise_id__containers_get",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_list_ContainerStatusResponse__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream/exercise/{exercise_id}/build": {
+      "get": {
+        "summary": "Stream Exercise Build Logs",
+        "description": "流式获取练习构建日志",
+        "operationId": "stream_exercise_build_logs_logs_stream_exercise__exercise_id__build_get",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream/exercise/{exercise_id}/container": {
+      "get": {
+        "summary": "Stream Exercise Container Logs",
+        "description": "流式获取练习容器日志",
+        "operationId": "stream_exercise_container_logs_logs_stream_exercise__exercise_id__container_get",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream/exercise/{exercise_id}": {
+      "get": {
+        "summary": "Stream Exercise Logs",
+        "description": "流式获取练习日志",
+        "operationId": "stream_exercise_logs_logs_stream_exercise__exercise_id__get",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiResponse": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse",
+        "description": "统一API响应格式"
+      },
+      "ApiResponse_ComposeStatusResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ComposeStatusResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[ComposeStatusResponse]"
+      },
+      "ApiResponse_CreateExerciseWithFilesResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateExerciseWithFilesResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[CreateExerciseWithFilesResponse]"
+      },
+      "ApiResponse_CreateScenarioWithFilesResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateScenarioWithFilesResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[CreateScenarioWithFilesResponse]"
+      },
+      "ApiResponse_ExerciseResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExerciseResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[ExerciseResponse]"
+      },
+      "ApiResponse_ScenarioResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScenarioResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[ScenarioResponse]"
+      },
+      "ApiResponse_list_ContainerStatusResponse__": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ContainerStatusResponse"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[list[ContainerStatusResponse]]"
+      },
+      "ApiResponse_list_ExerciseResponse__": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ExerciseResponse"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[list[ExerciseResponse]]"
+      },
+      "ApiResponse_list_ScenarioResponse__": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ScenarioResponse"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[list[ScenarioResponse]]"
+      },
+      "Body_create_exercise_exercises_post": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "练习名称"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "练习描述"
+          },
+          "target_file": {
+            "type": "string",
+            "format": "binary",
+            "title": "Target File",
+            "description": "靶机压缩包"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "target_file"
+        ],
+        "title": "Body_create_exercise_exercises_post"
+      },
+      "Body_create_scenario_scenarios_post": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "场景名称"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "场景描述"
+          },
+          "attacker_file": {
+            "type": "string",
+            "format": "binary",
+            "title": "Attacker File",
+            "description": "攻击端压缩包"
+          },
+          "defender_file": {
+            "type": "string",
+            "format": "binary",
+            "title": "Defender File",
+            "description": "防守端压缩包"
+          },
+          "target_file": {
+            "type": "string",
+            "format": "binary",
+            "title": "Target File",
+            "description": "靶机压缩包"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "attacker_file",
+          "defender_file",
+          "target_file"
+        ],
+        "title": "Body_create_scenario_scenarios_post"
+      },
+      "ComposeStatusResponse": {
+        "properties": {
+          "attacker_status": {
+            "type": "string",
+            "title": "Attacker Status"
+          },
+          "defender_status": {
+            "type": "string",
+            "title": "Defender Status"
+          },
+          "target_status": {
+            "type": "string",
+            "title": "Target Status"
+          },
+          "overall_status": {
+            "type": "string",
+            "title": "Overall Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "attacker_status",
+          "defender_status",
+          "target_status",
+          "overall_status"
+        ],
+        "title": "ComposeStatusResponse",
+        "description": "Compose状态响应模型"
+      },
+      "ContainerStatusResponse": {
+        "properties": {
+          "container_id": {
+            "type": "string",
+            "title": "Container Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image"
+          }
+        },
+        "type": "object",
+        "required": [
+          "container_id",
+          "name",
+          "status",
+          "state",
+          "image"
+        ],
+        "title": "ContainerStatusResponse",
+        "description": "容器状态响应模型"
+      },
+      "CreateExerciseWithFilesResponse": {
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "title": "Uuid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          },
+          "uploaded_files": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Uploaded Files",
+            "default": {
+              "target_file": "靶机压缩包文件名"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "uuid",
+          "name",
+          "description",
+          "state",
+          "file_path"
+        ],
+        "title": "CreateExerciseWithFilesResponse",
+        "description": "创建练习（文件上传）响应模型"
+      },
+      "CreateScenarioWithFilesResponse": {
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "title": "Uuid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          },
+          "uploaded_files": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Uploaded Files",
+            "default": {
+              "attacker_file": "攻击端压缩包文件名",
+              "defender_file": "防守端压缩包文件名",
+              "target_file": "靶机压缩包文件名"
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "uuid",
+          "name",
+          "description",
+          "state",
+          "file_path"
+        ],
+        "title": "CreateScenarioWithFilesResponse",
+        "description": "创建场景（文件上传）响应模型"
+      },
+      "ExerciseResponse": {
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "title": "Uuid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          }
+        },
+        "type": "object",
+        "required": [
+          "uuid",
+          "name",
+          "description",
+          "state",
+          "file_path"
+        ],
+        "title": "ExerciseResponse",
+        "description": "练习响应模型"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PartialUpdateExerciseRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "练习名称"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "练习描述"
+          }
+        },
+        "type": "object",
+        "title": "PartialUpdateExerciseRequest",
+        "description": "部分更新练习请求模型"
+      },
+      "PartialUpdateScenarioRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "场景名称"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "场景描述"
+          }
+        },
+        "type": "object",
+        "title": "PartialUpdateScenarioRequest",
+        "description": "部分更新场景请求模型"
+      },
+      "ScenarioResponse": {
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "title": "Uuid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          }
+        },
+        "type": "object",
+        "required": [
+          "uuid",
+          "name",
+          "description",
+          "state",
+          "file_path"
+        ],
+        "title": "ScenarioResponse",
+        "description": "场景响应模型"
+      },
+      "SetScenarioStateRequest": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "running",
+              "stopped",
+              "building"
+            ],
+            "title": "State",
+            "description": "目标状态"
+          }
+        },
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "title": "SetScenarioStateRequest",
+        "description": "设置场景状态请求模型"
+      },
+      "UpdateExerciseRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "练习名称"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "练习描述"
+          }
+        },
+        "type": "object",
+        "title": "UpdateExerciseRequest",
+        "description": "更新练习信息请求模型"
+      },
+      "UpdateExerciseStateRequest": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "stop",
+              "build"
+            ],
+            "title": "Action",
+            "description": "要执行的操作"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "title": "UpdateExerciseStateRequest",
+        "description": "更新练习状态请求模型"
+      },
+      "UpdateScenarioRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "场景名称"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "场景描述"
+          }
+        },
+        "type": "object",
+        "title": "UpdateScenarioRequest",
+        "description": "更新场景信息请求模型"
+      },
+      "UpdateScenarioStateRequest": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "stop",
+              "build"
+            ],
+            "title": "Action",
+            "description": "要执行的操作"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "title": "UpdateScenarioStateRequest",
+        "description": "更新场景状态请求模型"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

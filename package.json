@@ -1,5 +1,5 @@
 {
-  "name": "shadcn-admin",
+  "name": "agent-ctf-platform",
   "private": false,
   "version": "1.4.1",
   "type": "module",
@@ -10,7 +10,12 @@
     "preview": "vite preview",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
-    "knip": "knip"
+    "knip": "knip",
+    "generate:backend": "orval --config ./orval.config.cjs --project backend",
+    "generate:docker": "orval --config ./orval.config.cjs --project dockerManager",
+    "generate docker-manager": "npx openapi-typescript ./openapi/docker-manager.json -o ./src/types/docker-manager.ts",
+    "generate backend": "npx openapi-typescript ./openapi/backend.json -o ./src/types/backend.ts",
+    "generate": "orval --config ./orval.config.cjs"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.32.1",
@@ -76,6 +81,8 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
     "knip": "^5.61.2",
+    "openapi-typescript": "^7.8.0",
+    "orval": "^7.9.0",
     "prettier": "^3.6.0",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "typescript": "~5.8.3",

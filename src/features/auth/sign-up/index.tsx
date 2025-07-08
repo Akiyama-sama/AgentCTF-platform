@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -16,41 +15,23 @@ export default function SignUp() {
       <Card className='gap-4'>
         <CardHeader>
           <CardTitle className='text-lg tracking-tight'>
-            Create an account
+            创建一个账户
           </CardTitle>
           <CardDescription>
-            Enter your email and password to create an account. <br />
-            Already have an account?{' '}
+            输入你的邮箱和密码创建一个账户。 <br />
+            已经有账户?{' '}
             <Link
               to='/sign-in'
               className='hover:text-primary underline underline-offset-4'
             >
-              Sign In
+              登录
             </Link>
           </CardDescription>
         </CardHeader>
         <CardContent>
           <SignUpForm />
         </CardContent>
-        <CardFooter>
-          <p className='text-muted-foreground px-8 text-center text-sm'>
-            By creating an account, you agree to our{' '}
-            <a
-              href='/terms'
-              className='hover:text-primary underline underline-offset-4'
-            >
-              Terms of Service
-            </a>{' '}
-            and{' '}
-            <a
-              href='/privacy'
-              className='hover:text-primary underline underline-offset-4'
-            >
-              Privacy Policy
-            </a>
-            .
-          </p>
-        </CardFooter>
+
       </Card>
     </AuthLayout>
   )
