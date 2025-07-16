@@ -60,6 +60,11 @@ export const sidebarData: SidebarData = {
           url:'/lab'
         },
         {
+          title: 'Agent攻防场景',
+          url: '/scenarios',
+          icon: IconChecklist,
+        },
+        {
           title: 'Tasks',
           url: '/tasks',
           icon: IconChecklist,

@@ -396,7 +396,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse_ComposeStatusResponse_"
+                  "$ref": "#/components/schemas/ApiResponse_ScenarioStatusResponse_"
                 }
               }
             }
@@ -643,7 +643,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse_list_ExerciseResponse__"
+                  "$ref": "#/components/schemas/ApiResponse_ExercisesListResponse_"
                 }
               }
             }
@@ -1254,6 +1254,35 @@
         "type": "object",
         "title": "ApiResponse[ExerciseResponse]"
       },
+      "ApiResponse_ExercisesListResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExercisesListResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[ExercisesListResponse]"
+      },
       "ApiResponse_ScenarioResponse_": {
         "properties": {
           "code": {
@@ -1282,6 +1311,35 @@
         },
         "type": "object",
         "title": "ApiResponse[ScenarioResponse]"
+      },
+      "ApiResponse_ScenarioStatusResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScenarioStatusResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[ScenarioStatusResponse]"
       },
       "ApiResponse_list_ContainerStatusResponse__": {
         "properties": {
@@ -1315,39 +1373,6 @@
         },
         "type": "object",
         "title": "ApiResponse[list[ContainerStatusResponse]]"
-      },
-      "ApiResponse_list_ExerciseResponse__": {
-        "properties": {
-          "code": {
-            "type": "integer",
-            "title": "Code",
-            "description": "状态码",
-            "default": 200
-          },
-          "message": {
-            "type": "string",
-            "title": "Message",
-            "description": "响应消息",
-            "default": "success"
-          },
-          "data": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/ExerciseResponse"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Data",
-            "description": "响应数据"
-          }
-        },
-        "type": "object",
-        "title": "ApiResponse[list[ExerciseResponse]]"
       },
       "ApiResponse_list_ScenarioResponse__": {
         "properties": {
@@ -1450,23 +1475,33 @@
         ],
         "title": "Body_create_scenario_scenarios_post"
       },
+      "ComposeStatus": {
+        "type": "string",
+        "enum": [
+          "stopped",
+          "starting",
+          "running",
+          "stopping",
+          "error",
+          "not_found",
+          "unknown"
+        ],
+        "title": "ComposeStatus",
+        "description": "Compose服务状态枚举"
+      },
       "ComposeStatusResponse": {
         "properties": {
           "attacker_status": {
-            "type": "string",
-            "title": "Attacker Status"
+            "$ref": "#/components/schemas/ComposeStatus"
           },
           "defender_status": {
-            "type": "string",
-            "title": "Defender Status"
+            "$ref": "#/components/schemas/ComposeStatus"
           },
           "target_status": {
-            "type": "string",
-            "title": "Target Status"
+            "$ref": "#/components/schemas/ComposeStatus"
           },
           "overall_status": {
-            "type": "string",
-            "title": "Overall Status"
+            "$ref": "#/components/schemas/ComposeStatus"
           }
         },
         "type": "object",
@@ -1479,6 +1514,37 @@
         "title": "ComposeStatusResponse",
         "description": "Compose状态响应模型"
       },
+      "ContainerState": {
+        "type": "string",
+        "enum": [
+          "created",
+          "running",
+          "paused",
+          "restarting",
+          "removing",
+          "exited",
+          "dead",
+          "unknown",
+          "not_found"
+        ],
+        "title": "ContainerState",
+        "description": "容器内部状态枚举"
+      },
+      "ContainerStatus": {
+        "type": "string",
+        "enum": [
+          "created",
+          "restarting",
+          "running",
+          "removing",
+          "paused",
+          "exited",
+          "dead",
+          "not_found"
+        ],
+        "title": "ContainerStatus",
+        "description": "容器状态枚举"
+      },
       "ContainerStatusResponse": {
         "properties": {
           "container_id": {
@@ -1490,12 +1556,10 @@
             "title": "Name"
           },
           "status": {
-            "type": "string",
-            "title": "Status"
+            "$ref": "#/components/schemas/ContainerStatus"
           },
           "state": {
-            "type": "string",
-            "title": "State"
+            "$ref": "#/components/schemas/ContainerState"
           },
           "image": {
             "type": "string",
@@ -1528,8 +1592,7 @@
             "title": "Description"
           },
           "state": {
-            "type": "string",
-            "title": "State"
+            "$ref": "#/components/schemas/ExerciseState"
           },
           "file_path": {
             "type": "string",
@@ -1570,8 +1633,7 @@
             "title": "Description"
           },
           "state": {
-            "type": "string",
-            "title": "State"
+            "$ref": "#/components/schemas/ScenarioState"
           },
           "file_path": {
             "type": "string",
@@ -1599,6 +1661,16 @@
         "title": "CreateScenarioWithFilesResponse",
         "description": "创建场景（文件上传）响应模型"
       },
+      "ExerciseAction": {
+        "type": "string",
+        "enum": [
+          "start",
+          "stop",
+          "build"
+        ],
+        "title": "ExerciseAction",
+        "description": "练习操作枚举"
+      },
       "ExerciseResponse": {
         "properties": {
           "uuid": {
@@ -1614,8 +1686,7 @@
             "title": "Description"
           },
           "state": {
-            "type": "string",
-            "title": "State"
+            "$ref": "#/components/schemas/ExerciseState"
           },
           "file_path": {
             "type": "string",
@@ -1632,6 +1703,43 @@
         ],
         "title": "ExerciseResponse",
         "description": "练习响应模型"
+      },
+      "ExerciseState": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "building",
+          "running",
+          "stopped",
+          "build_error",
+          "runtime_error",
+          "error",
+          "removing"
+        ],
+        "title": "ExerciseState",
+        "description": "练习状态枚举"
+      },
+      "ExercisesListResponse": {
+        "properties": {
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/ExerciseResponse"
+            },
+            "type": "array",
+            "title": "Exercises"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "exercises",
+          "count"
+        ],
+        "title": "ExercisesListResponse",
+        "description": "练习列表响应模型"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1708,6 +1816,16 @@
         "title": "PartialUpdateScenarioRequest",
         "description": "部分更新场景请求模型"
       },
+      "ScenarioAction": {
+        "type": "string",
+        "enum": [
+          "start",
+          "stop",
+          "build"
+        ],
+        "title": "ScenarioAction",
+        "description": "场景操作枚举"
+      },
       "ScenarioResponse": {
         "properties": {
           "uuid": {
@@ -1723,8 +1841,7 @@
             "title": "Description"
           },
           "state": {
-            "type": "string",
-            "title": "State"
+            "$ref": "#/components/schemas/ScenarioState"
           },
           "file_path": {
             "type": "string",
@@ -1742,16 +1859,60 @@
         "title": "ScenarioResponse",
         "description": "场景响应模型"
       },
+      "ScenarioState": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "building",
+          "running",
+          "stopped",
+          "build_error",
+          "runtime_error",
+          "error",
+          "removing"
+        ],
+        "title": "ScenarioState",
+        "description": "场景状态枚举"
+      },
+      "ScenarioStatusResponse": {
+        "properties": {
+          "scenario_id": {
+            "type": "string",
+            "title": "Scenario Id"
+          },
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "status_info": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Status Info"
+          }
+        },
+        "type": "object",
+        "required": [
+          "scenario_id",
+          "state",
+          "status_info"
+        ],
+        "title": "ScenarioStatusResponse",
+        "description": "场景状态响应模型"
+      },
+      "ScenarioTargetState": {
+        "type": "string",
+        "enum": [
+          "running",
+          "stopped",
+          "building"
+        ],
+        "title": "ScenarioTargetState",
+        "description": "场景目标状态枚举（用于设置状态）"
+      },
       "SetScenarioStateRequest": {
         "properties": {
           "state": {
-            "type": "string",
-            "enum": [
-              "running",
-              "stopped",
-              "building"
-            ],
-            "title": "State",
+            "$ref": "#/components/schemas/ScenarioTargetState",
             "description": "目标状态"
           }
         },
@@ -1796,13 +1957,7 @@
       "UpdateExerciseStateRequest": {
         "properties": {
           "action": {
-            "type": "string",
-            "enum": [
-              "start",
-              "stop",
-              "build"
-            ],
-            "title": "Action",
+            "$ref": "#/components/schemas/ExerciseAction",
             "description": "要执行的操作"
           }
         },
@@ -1847,13 +2002,7 @@
       "UpdateScenarioStateRequest": {
         "properties": {
           "action": {
-            "type": "string",
-            "enum": [
-              "start",
-              "stop",
-              "build"
-            ],
-            "title": "Action",
+            "$ref": "#/components/schemas/ScenarioAction",
             "description": "要执行的操作"
           }
         },

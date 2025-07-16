@@ -4,7 +4,7 @@
     "title": "Attack Monitor Backend API",
     "description": "攻击监控系统后端API接口",
     "version": "1.0.0",
-    "x-generated-at": "2025-07-08T12:26:40.622320",
+    "x-generated-at": "2025-07-16T14:06:49.294240",
     "x-description": "此文件由FastAPI自动生成，用于AI生成前端代码"
   },
   "paths": {

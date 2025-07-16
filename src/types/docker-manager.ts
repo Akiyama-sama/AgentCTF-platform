@@ -101,6 +101,20 @@ export interface ApiResponseExerciseResponse {
 /**
  * 响应数据
  */
+export type ApiResponseExercisesListResponseData = ExercisesListResponse | null;
+
+export interface ApiResponseExercisesListResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseExercisesListResponseData;
+}
+
+/**
+ * 响应数据
+ */
 export type ApiResponseScenarioResponseData = ScenarioResponse | null;
 
 export interface ApiResponseScenarioResponse {
@@ -115,6 +129,20 @@ export interface ApiResponseScenarioResponse {
 /**
  * 响应数据
  */
+export type ApiResponseScenarioStatusResponseData = ScenarioStatusResponse | null;
+
+export interface ApiResponseScenarioStatusResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseScenarioStatusResponseData;
+}
+
+/**
+ * 响应数据
+ */
 export type ApiResponseListContainerStatusResponseData = ContainerStatusResponse[] | null;
 
 export interface ApiResponseListContainerStatusResponse {
@@ -124,20 +152,6 @@ export interface ApiResponseListContainerStatusResponse {
   message?: string;
   /** 响应数据 */
   data?: ApiResponseListContainerStatusResponseData;
-}
-
-/**
- * 响应数据
- */
-export type ApiResponseListExerciseResponseData = ExerciseResponse[] | null;
-
-export interface ApiResponseListExerciseResponse {
-  /** 状态码 */
-  code?: number;
-  /** 响应消息 */
-  message?: string;
-  /** 响应数据 */
-  data?: ApiResponseListExerciseResponseData;
 }
 
 /**
@@ -177,14 +191,68 @@ export interface BodyCreateScenarioScenariosPost {
 }
 
 /**
+ * Compose服务状态枚举
+ */
+export type ComposeStatus = typeof ComposeStatus[keyof typeof ComposeStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ComposeStatus = {
+  stopped: 'stopped',
+  starting: 'starting',
+  running: 'running',
+  stopping: 'stopping',
+  error: 'error',
+  not_found: 'not_found',
+  unknown: 'unknown',
+} as const;
+
+/**
  * Compose状态响应模型
  */
 export interface ComposeStatusResponse {
-  attacker_status: string;
-  defender_status: string;
-  target_status: string;
-  overall_status: string;
+  attacker_status: ComposeStatus;
+  defender_status: ComposeStatus;
+  target_status: ComposeStatus;
+  overall_status: ComposeStatus;
 }
+
+/**
+ * 容器内部状态枚举
+ */
+export type ContainerState = typeof ContainerState[keyof typeof ContainerState];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ContainerState = {
+  created: 'created',
+  running: 'running',
+  paused: 'paused',
+  restarting: 'restarting',
+  removing: 'removing',
+  exited: 'exited',
+  dead: 'dead',
+  unknown: 'unknown',
+  not_found: 'not_found',
+} as const;
+
+/**
+ * 容器状态枚举
+ */
+export type ContainerStatus = typeof ContainerStatus[keyof typeof ContainerStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ContainerStatus = {
+  created: 'created',
+  restarting: 'restarting',
+  running: 'running',
+  removing: 'removing',
+  paused: 'paused',
+  exited: 'exited',
+  dead: 'dead',
+  not_found: 'not_found',
+} as const;
 
 /**
  * 容器状态响应模型
@@ -192,8 +260,8 @@ export interface ComposeStatusResponse {
 export interface ContainerStatusResponse {
   container_id: string;
   name: string;
-  status: string;
-  state: string;
+  status: ContainerStatus;
+  state: ContainerState;
   image: string;
 }
 
@@ -206,7 +274,7 @@ export interface CreateExerciseWithFilesResponse {
   uuid: string;
   name: string;
   description: string;
-  state: string;
+  state: ExerciseState;
   file_path: string;
   uploaded_files?: CreateExerciseWithFilesResponseUploadedFiles;
 }
@@ -220,10 +288,23 @@ export interface CreateScenarioWithFilesResponse {
   uuid: string;
   name: string;
   description: string;
-  state: string;
+  state: ScenarioState;
   file_path: string;
   uploaded_files?: CreateScenarioWithFilesResponseUploadedFiles;
 }
+
+/**
+ * 练习操作枚举
+ */
+export type ExerciseAction = typeof ExerciseAction[keyof typeof ExerciseAction];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ExerciseAction = {
+  start: 'start',
+  stop: 'stop',
+  build: 'build',
+} as const;
 
 /**
  * 练习响应模型
@@ -232,8 +313,34 @@ export interface ExerciseResponse {
   uuid: string;
   name: string;
   description: string;
-  state: string;
+  state: ExerciseState;
   file_path: string;
+}
+
+/**
+ * 练习状态枚举
+ */
+export type ExerciseState = typeof ExerciseState[keyof typeof ExerciseState];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ExerciseState = {
+  pending: 'pending',
+  building: 'building',
+  running: 'running',
+  stopped: 'stopped',
+  build_error: 'build_error',
+  runtime_error: 'runtime_error',
+  error: 'error',
+  removing: 'removing',
+} as const;
+
+/**
+ * 练习列表响应模型
+ */
+export interface ExercisesListResponse {
+  exercises: ExerciseResponse[];
+  count: number;
 }
 
 export interface HTTPValidationError {
@@ -281,24 +388,66 @@ export interface PartialUpdateScenarioRequest {
 }
 
 /**
+ * 场景操作枚举
+ */
+export type ScenarioAction = typeof ScenarioAction[keyof typeof ScenarioAction];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ScenarioAction = {
+  start: 'start',
+  stop: 'stop',
+  build: 'build',
+} as const;
+
+/**
  * 场景响应模型
  */
 export interface ScenarioResponse {
   uuid: string;
   name: string;
   description: string;
-  state: string;
+  state: ScenarioState;
   file_path: string;
 }
 
 /**
- * 目标状态
+ * 场景状态枚举
  */
-export type SetScenarioStateRequestState = typeof SetScenarioStateRequestState[keyof typeof SetScenarioStateRequestState];
+export type ScenarioState = typeof ScenarioState[keyof typeof ScenarioState];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const SetScenarioStateRequestState = {
+export const ScenarioState = {
+  pending: 'pending',
+  building: 'building',
+  running: 'running',
+  stopped: 'stopped',
+  build_error: 'build_error',
+  runtime_error: 'runtime_error',
+  error: 'error',
+  removing: 'removing',
+} as const;
+
+export type ScenarioStatusResponseStatusInfo = { [key: string]: unknown };
+
+/**
+ * 场景状态响应模型
+ */
+export interface ScenarioStatusResponse {
+  scenario_id: string;
+  state: string;
+  status_info: ScenarioStatusResponseStatusInfo;
+}
+
+/**
+ * 场景目标状态枚举（用于设置状态）
+ */
+export type ScenarioTargetState = typeof ScenarioTargetState[keyof typeof ScenarioTargetState];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ScenarioTargetState = {
   running: 'running',
   stopped: 'stopped',
   building: 'building',
@@ -309,7 +458,7 @@ export const SetScenarioStateRequestState = {
  */
 export interface SetScenarioStateRequest {
   /** 目标状态 */
-  state: SetScenarioStateRequestState;
+  state: ScenarioTargetState;
 }
 
 /**
@@ -333,24 +482,11 @@ export interface UpdateExerciseRequest {
 }
 
 /**
- * 要执行的操作
- */
-export type UpdateExerciseStateRequestAction = typeof UpdateExerciseStateRequestAction[keyof typeof UpdateExerciseStateRequestAction];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const UpdateExerciseStateRequestAction = {
-  start: 'start',
-  stop: 'stop',
-  build: 'build',
-} as const;
-
-/**
  * 更新练习状态请求模型
  */
 export interface UpdateExerciseStateRequest {
   /** 要执行的操作 */
-  action: UpdateExerciseStateRequestAction;
+  action: ExerciseAction;
 }
 
 /**
@@ -374,24 +510,11 @@ export interface UpdateScenarioRequest {
 }
 
 /**
- * 要执行的操作
- */
-export type UpdateScenarioStateRequestAction = typeof UpdateScenarioStateRequestAction[keyof typeof UpdateScenarioStateRequestAction];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const UpdateScenarioStateRequestAction = {
-  start: 'start',
-  stop: 'stop',
-  build: 'build',
-} as const;
-
-/**
  * 更新场景状态请求模型
  */
 export interface UpdateScenarioStateRequest {
   /** 要执行的操作 */
-  action: UpdateScenarioStateRequestAction;
+  action: ScenarioAction;
 }
 
 export type ValidationErrorLocItem = string | number;
@@ -1167,7 +1290,7 @@ export const getScenarioStatusScenariosScenarioIdStatusGet = (
 ) => {
       
       
-      return docker_manager_api<ApiResponseComposeStatusResponse>(
+      return docker_manager_api<ApiResponseScenarioStatusResponse>(
       {url: `/scenarios/${scenarioId}/status`, method: 'GET', signal
     },
       );
@@ -1797,7 +1920,7 @@ export const getExercisesExercisesGet = (
 ) => {
       
       
-      return docker_manager_api<ApiResponseListExerciseResponse>(
+      return docker_manager_api<ApiResponseExercisesListResponse>(
       {url: `/exercises`, method: 'GET', signal
     },
       );
