@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import ButtonWithLoading from '@/components/loading-button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { scenarioStateConfig, type ActionType } from '../data/data'
 import { cn } from '@/lib/utils'
@@ -8,6 +8,7 @@ interface Props {
     name: string
     description: string
     state: ScenarioState
+    pendingAction: ActionType | null // 新增 pendingAction
     onAction: (action: ActionType) => void
 }
 
@@ -24,10 +25,11 @@ function StatusIndicator({ state }: { state: ScenarioState }) {
 }
 interface ScenarioCardActionsProps {  
     state: ScenarioState
+    pendingAction: ActionType | null
     onAction: (action: ActionType) => void
 }
 
-function ScenarioCardActions({ state, onAction }: ScenarioCardActionsProps) {
+function ScenarioCardActions({ state, onAction, pendingAction }: ScenarioCardActionsProps) {
     const config = scenarioStateConfig[state]
 
     if (config.component) {
@@ -41,15 +43,16 @@ function ScenarioCardActions({ state, onAction }: ScenarioCardActionsProps) {
                 {config.actions.map((action) => {
                     const Icon = action.icon
                     return (
-                        <Button 
+                        <ButtonWithLoading 
                             key={action.label} 
                             variant={action.variant || 'default'} 
                             size="sm"
+                            isLoading={pendingAction === action.actionType}
                             onClick={() => onAction(action.actionType)}
                         >
                             <Icon className='mr-2 h-4 w-4' />
                             {action.label}
-                        </Button>
+                        </ButtonWithLoading>
                     )
                 })}
             </div>
@@ -59,7 +62,7 @@ function ScenarioCardActions({ state, onAction }: ScenarioCardActionsProps) {
 }
 
 
-export function ScenarioCard({ name, description, state, onAction }: Props) {
+export function ScenarioCard({ name, description, state, onAction, pendingAction }: Props) {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="">
@@ -72,7 +75,7 @@ export function ScenarioCard({ name, description, state, onAction }: Props) {
         <p className='text-sm text-muted-foreground line-clamp-3'>{description}</p>
       </CardContent>
       <CardFooter className='pt-2 mt-auto'>
-        <ScenarioCardActions state={state} onAction={onAction} />
+        <ScenarioCardActions state={state} onAction={onAction} pendingAction={pendingAction} />
       </CardFooter>
     </Card>
   )

@@ -1,40 +1,77 @@
-import { cn } from '@/lib/utils';
-import  { useEffect, useRef } from 'react';
+import { cn } from '@/lib/utils'
+import { type LogEntry } from '@/types/api'
+import { useEffect, useRef } from 'react'
 
 type LogProps = {
-  logs: string[];
-  className?: string;
-};
+  logs: LogEntry[]
+  className?: string
+}
 
 const Log = ({ logs, className }: LogProps) => {
-  const endOfLogsRef = useRef<HTMLDivElement>(null);
+  const endOfLogsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    endOfLogsRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [logs]);
+    if (endOfLogsRef.current) {
+      endOfLogsRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [logs])
+
+  const getLevelColor = (level: string) => {
+    switch (level?.toUpperCase()) {
+      case 'INFO':
+        return 'text-primary'
+      case 'DEBUG':
+        return 'text-muted-foreground'
+      case 'WARNING':
+        return 'text-yellow-400'
+      case 'ERROR':
+        return 'text-destructive'
+      case 'CRITICAL':
+        return 'text-destructive font-bold animate-pulse'
+      default:
+        return 'text-primary'
+    }
+  }
 
   return (
     <div
       className={cn(
-        'bg-card text-primary font-mono text-sm p-4 rounded-lg overflow-y-auto no-scrollbar',
+        'bg-card text-foreground font-inter text-xs p-4 rounded-lg overflow-y-auto no-scrollbar h-full',
         className
       )}
     >
-      {logs.map((log, index) => (
-        <div key={index} className="flex items-start">
-          <span className="text-muted-foreground mr-2 select-none">{'>'}</span>
-          <p className="whitespace-pre-wrap break-words flex-1 min-w-0">{log}</p>
-        </div>
-      ))}
-      <div className="flex items-center">
-        <span className="text-muted-foreground mr-2 select-none">{'>'}</span>
-        <div className="w-2 h-4 bg-primary animate-pulse" />
+      <div className="space-y-1">
+        {logs.map((log, index) => (
+          <div
+            key={index}
+            className="grid grid-cols-[auto_auto_auto_1fr] items-baseline gap-x-2"
+          >
+            <span className="text-muted-foreground/70 select-none">
+              {new Date(log.timestamp).toLocaleTimeString([], {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+              })}
+            </span>
+            <span className={cn('font-bold', getLevelColor(log.level))}>
+              [{log.level?.toUpperCase()}]
+            </span>
+            <p className="whitespace-pre-wrap break-words min-w-0">
+              {log.message}
+            </p>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center pt-2">
+        <span className="text-muted-foreground/70 mr-2 select-none">{'>'}</span>
+        <div className="w-2 h-3 bg-primary animate-pulse" />
       </div>
       <div ref={endOfLogsRef} />
     </div>
-  );
-};
+  )
+}
 
-Log.displayName = 'Log';
+Log.displayName = 'Log'
 
-export default Log;
+export default Log

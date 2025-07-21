@@ -23,7 +23,9 @@ import {
 } from '@/components/ui/sheet'
 import { ScenarioResponse } from '@/types/docker-manager'
 import FileUpload from '@/components/file-upload'
-import { useScenario, useScenarios } from '@/hooks/use-scenario'
+import { useScenario, useScenarioFile, useScenarios } from '@/hooks/use-scenario'
+import { ScenarioFileTree } from './scenario-file-tree'
+import { Label } from '@/components/ui/label'
 
 interface Props {
   open: boolean
@@ -62,7 +64,7 @@ export function ScenariosMutateDrawer({
   const { createScenarioAsync } = useScenarios()
   // 在组件顶层有条件地获取更新函数
   const { updateScenarioAsync } = useScenario(isUpdate ? currentRow.uuid : null)
-
+  const { fileTreeItems, rootItemId,fileTreeQuery } = useScenarioFile(isUpdate ? currentRow.uuid : null)
   const form = useForm<ScenariosCreateForm | ScenariosUpdateForm>({
     resolver: zodResolver(isUpdate ? updateSchema : createSchema),
     defaultValues: isUpdate
@@ -100,7 +102,7 @@ export function ScenariosMutateDrawer({
         form.reset()
       }}
     >
-      <SheetContent className='flex flex-col'>
+      <SheetContent className='flex flex-col h-full'>
         <SheetHeader className='text-left'>
           <SheetTitle>{isUpdate ? '更新' : '创建'} 场景</SheetTitle>
           <SheetDescription>
@@ -108,11 +110,11 @@ export function ScenariosMutateDrawer({
             完成后点击保存.
           </SheetDescription>
         </SheetHeader>
-        <Form {...form}>
+        <Form {...form} >
           <form
             id='scenarios-form'
             onSubmit={form.handleSubmit(onSubmit)}
-            className='flex-1 space-y-5 px-4'
+            className='space-y-5 px-4 min-h-0  overflow-y-auto'
           >
             <FormField
               control={form.control}
@@ -140,6 +142,8 @@ export function ScenariosMutateDrawer({
                 </FormItem>
               )}
             />
+            
+
             {!isUpdate && (
               <>
                 <FormField
@@ -199,6 +203,19 @@ export function ScenariosMutateDrawer({
               </>
             )}
           </form>
+
+          {isUpdate && (
+            fileTreeQuery.isInitialLoading?<div className='flex-1 flex items-center justify-center px-4'>场景文件加载中...</div>:
+            <>
+            <Label className='text-lg font-bold px-4'>场景文件树</Label>
+            <ScenarioFileTree
+              className=' flex-1 '
+              scenarioId={currentRow.uuid}
+              fileTreeItems={fileTreeItems}
+              rootItemId={rootItemId}
+            />
+            </>
+          )}
         </Form>
         <SheetFooter className='gap-2'>
           <SheetClose asChild>

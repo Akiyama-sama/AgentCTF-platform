@@ -31,6 +31,8 @@ import ScenariosDialogProvider from './context/scenarios-context'
 import { ScenariosDialogs } from './components/scenarios-dialogs'
 import { useScenarioActions } from './hooks/useScenarioActions'
 import Log from '@/components/log'
+import { ScenarioFileDialogs } from './components/scenario-file-dialogs'
+import Loading from '@/components/Loading'
 
 export default function Scenarios() {
   const { scenarios, isLoading } = useScenarios()
@@ -39,11 +41,11 @@ export default function Scenarios() {
   const [sort, setSort] = useState('ascending')
   const [scenarioFilterStatus, setScenarioFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
-  const [isLogVisible, setIsLogVisible] = useState(true);
+  const [isLogVisible, setIsLogVisible] = useState(false);
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <Loading/>
   if (!scenarios) return <div>No scenarios found</div>
-
+  if(logs.length>0) setIsLogVisible(true)
   const filteredScenarios = scenarios
     .sort((a, b) =>
       sort === 'ascending'
@@ -154,7 +156,7 @@ export default function Scenarios() {
               <Log logs={logs} className='w-full h-64' />
             </div>
           )}
-          <ul className='faded-bottom no-scrollbar grid gap-4 overflow-auto pb-16 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
+          <ul className='  grid gap-4 overflow-auto pb-16 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
             {filteredScenarios.map((scenario) => (
               <li key={scenario.uuid}>
                 <ScenarioCardWrapper
@@ -167,6 +169,7 @@ export default function Scenarios() {
         </div>
       </Main>
       <ScenariosDialogs />
+      <ScenarioFileDialogs />
     </ScenariosDialogProvider>
   )
 }
@@ -182,8 +185,8 @@ function ScenarioCardWrapper({
   }
 }) {
   const { status } = useScenario(scenario.uuid)
-  
-  const { handleAction } = useScenarioActions(scenario.uuid, buildActions)
+  const { handleAction,pendingAction } = useScenarioActions(scenario.uuid, buildActions)
   if(status) scenario.state=status.state as ScenarioState
-  return <ScenarioCard {...scenario} onAction={handleAction}  />
+  
+  return <ScenarioCard {...scenario} onAction={handleAction} pendingAction={pendingAction}  />
 }

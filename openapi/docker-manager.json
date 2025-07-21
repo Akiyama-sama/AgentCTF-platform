@@ -55,7 +55,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse_list_ScenarioResponse__"
+                  "$ref": "#/components/schemas/ApiResponse_List_ScenarioResponse__"
                 }
               }
             }
@@ -436,7 +436,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse_list_ContainerStatusResponse__"
+                  "$ref": "#/components/schemas/ApiResponse_List_ContainerStatusResponse__"
                 }
               }
             }
@@ -632,6 +632,340 @@
         }
       }
     },
+    "/scenarios/{scenario_id}/files": {
+      "get": {
+        "summary": "Get Scenario File Tree",
+        "description": "获取场景数据文件树",
+        "operationId": "get_scenario_file_tree_scenarios__scenario_id__files_get",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_GetScenarioDataFileTreeResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Scenario File Content",
+        "description": "更新场景数据文件内容",
+        "operationId": "update_scenario_file_content_scenarios__scenario_id__files_put",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScenarioDataFileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Scenario File",
+        "description": "创建场景数据文件",
+        "operationId": "create_scenario_file_scenarios__scenario_id__files_post",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScenarioDataFileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Scenario File",
+        "description": "删除场景数据文件或目录",
+        "operationId": "delete_scenario_file_scenarios__scenario_id__files_delete",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteScenarioDataFileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios/{scenario_id}/files/content": {
+      "post": {
+        "summary": "Get Scenario File Content",
+        "description": "获取场景数据文件内容",
+        "operationId": "get_scenario_file_content_scenarios__scenario_id__files_content_post",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetScenarioDataFileContentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_GetScenarioDataFileContentResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios/{scenario_id}/directories": {
+      "post": {
+        "summary": "Create Scenario Directory",
+        "description": "创建场景数据目录",
+        "operationId": "create_scenario_directory_scenarios__scenario_id__directories_post",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScenarioDataDirectoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scenarios/{scenario_id}/files/upload": {
+      "post": {
+        "summary": "Upload Scenario File",
+        "description": "上传文件到场景目录",
+        "operationId": "upload_scenario_file_scenarios__scenario_id__files_upload_post",
+        "parameters": [
+          {
+            "name": "scenario_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scenario Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_scenario_file_scenarios__scenario_id__files_upload_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/exercises": {
       "get": {
         "summary": "Get Exercises",
@@ -643,7 +977,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse_ExercisesListResponse_"
+                  "$ref": "#/components/schemas/ApiResponse_List_ExerciseResponse__"
                 }
               }
             }
@@ -934,7 +1268,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse_ComposeStatusResponse_"
+                  "$ref": "#/components/schemas/ApiResponse_ExerciseStatusResponse_"
                 }
               }
             }
@@ -974,7 +1308,341 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiResponse_list_ContainerStatusResponse__"
+                  "$ref": "#/components/schemas/ApiResponse_List_ContainerStatusResponse__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{exercise_id}/files": {
+      "get": {
+        "summary": "Get Exercise File Tree",
+        "description": "获取练习数据文件树",
+        "operationId": "get_exercise_file_tree_exercises__exercise_id__files_get",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_GetExerciseDataFileTreeResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Exercise File Content",
+        "description": "更新练习数据文件内容",
+        "operationId": "update_exercise_file_content_exercises__exercise_id__files_put",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateExerciseDataFileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Exercise File",
+        "description": "创建练习数据文件",
+        "operationId": "create_exercise_file_exercises__exercise_id__files_post",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExerciseDataFileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Exercise File",
+        "description": "删除练习数据文件或目录",
+        "operationId": "delete_exercise_file_exercises__exercise_id__files_delete",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteExerciseDataFileRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{exercise_id}/files/content": {
+      "post": {
+        "summary": "Get Exercise File Content",
+        "description": "获取练习数据文件内容",
+        "operationId": "get_exercise_file_content_exercises__exercise_id__files_content_post",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetExerciseDataFileContentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_GetExerciseDataFileContentResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{exercise_id}/directories": {
+      "post": {
+        "summary": "Create Exercise Directory",
+        "description": "创建练习数据目录",
+        "operationId": "create_exercise_directory_exercises__exercise_id__directories_post",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExerciseDataDirectoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/exercises/{exercise_id}/files/upload": {
+      "post": {
+        "summary": "Upload Exercise File",
+        "description": "上传文件到练习目录",
+        "operationId": "upload_exercise_file_exercises__exercise_id__files_upload_post",
+        "parameters": [
+          {
+            "name": "exercise_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Exercise Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_exercise_file_exercises__exercise_id__files_upload_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
                 }
               }
             }
@@ -1138,35 +1806,6 @@
         "title": "ApiResponse",
         "description": "统一API响应格式"
       },
-      "ApiResponse_ComposeStatusResponse_": {
-        "properties": {
-          "code": {
-            "type": "integer",
-            "title": "Code",
-            "description": "状态码",
-            "default": 200
-          },
-          "message": {
-            "type": "string",
-            "title": "Message",
-            "description": "响应消息",
-            "default": "success"
-          },
-          "data": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ComposeStatusResponse"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "响应数据"
-          }
-        },
-        "type": "object",
-        "title": "ApiResponse[ComposeStatusResponse]"
-      },
       "ApiResponse_CreateExerciseWithFilesResponse_": {
         "properties": {
           "code": {
@@ -1254,7 +1893,7 @@
         "type": "object",
         "title": "ApiResponse[ExerciseResponse]"
       },
-      "ApiResponse_ExercisesListResponse_": {
+      "ApiResponse_ExerciseStatusResponse_": {
         "properties": {
           "code": {
             "type": "integer",
@@ -1271,7 +1910,7 @@
           "data": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/ExercisesListResponse"
+                "$ref": "#/components/schemas/ExerciseStatusResponse"
               },
               {
                 "type": "null"
@@ -1281,7 +1920,222 @@
           }
         },
         "type": "object",
-        "title": "ApiResponse[ExercisesListResponse]"
+        "title": "ApiResponse[ExerciseStatusResponse]"
+      },
+      "ApiResponse_GetExerciseDataFileContentResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GetExerciseDataFileContentResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[GetExerciseDataFileContentResponse]"
+      },
+      "ApiResponse_GetExerciseDataFileTreeResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GetExerciseDataFileTreeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[GetExerciseDataFileTreeResponse]"
+      },
+      "ApiResponse_GetScenarioDataFileContentResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GetScenarioDataFileContentResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[GetScenarioDataFileContentResponse]"
+      },
+      "ApiResponse_GetScenarioDataFileTreeResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GetScenarioDataFileTreeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[GetScenarioDataFileTreeResponse]"
+      },
+      "ApiResponse_List_ContainerStatusResponse__": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ContainerStatusResponse"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[List[ContainerStatusResponse]]"
+      },
+      "ApiResponse_List_ExerciseResponse__": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ExerciseResponse"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[List[ExerciseResponse]]"
+      },
+      "ApiResponse_List_ScenarioResponse__": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ScenarioResponse"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[List[ScenarioResponse]]"
       },
       "ApiResponse_ScenarioResponse_": {
         "properties": {
@@ -1340,72 +2194,6 @@
         },
         "type": "object",
         "title": "ApiResponse[ScenarioStatusResponse]"
-      },
-      "ApiResponse_list_ContainerStatusResponse__": {
-        "properties": {
-          "code": {
-            "type": "integer",
-            "title": "Code",
-            "description": "状态码",
-            "default": 200
-          },
-          "message": {
-            "type": "string",
-            "title": "Message",
-            "description": "响应消息",
-            "default": "success"
-          },
-          "data": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/ContainerStatusResponse"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Data",
-            "description": "响应数据"
-          }
-        },
-        "type": "object",
-        "title": "ApiResponse[list[ContainerStatusResponse]]"
-      },
-      "ApiResponse_list_ScenarioResponse__": {
-        "properties": {
-          "code": {
-            "type": "integer",
-            "title": "Code",
-            "description": "状态码",
-            "default": 200
-          },
-          "message": {
-            "type": "string",
-            "title": "Message",
-            "description": "响应消息",
-            "default": "success"
-          },
-          "data": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/ScenarioResponse"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Data",
-            "description": "响应数据"
-          }
-        },
-        "type": "object",
-        "title": "ApiResponse[list[ScenarioResponse]]"
       },
       "Body_create_exercise_exercises_post": {
         "properties": {
@@ -1475,44 +2263,47 @@
         ],
         "title": "Body_create_scenario_scenarios_post"
       },
-      "ComposeStatus": {
-        "type": "string",
-        "enum": [
-          "stopped",
-          "starting",
-          "running",
-          "stopping",
-          "error",
-          "not_found",
-          "unknown"
-        ],
-        "title": "ComposeStatus",
-        "description": "Compose服务状态枚举"
-      },
-      "ComposeStatusResponse": {
+      "Body_upload_exercise_file_exercises__exercise_id__files_upload_post": {
         "properties": {
-          "attacker_status": {
-            "$ref": "#/components/schemas/ComposeStatus"
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "要上传的文件"
           },
-          "defender_status": {
-            "$ref": "#/components/schemas/ComposeStatus"
-          },
-          "target_status": {
-            "$ref": "#/components/schemas/ComposeStatus"
-          },
-          "overall_status": {
-            "$ref": "#/components/schemas/ComposeStatus"
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件保存路径"
           }
         },
         "type": "object",
         "required": [
-          "attacker_status",
-          "defender_status",
-          "target_status",
-          "overall_status"
+          "file",
+          "file_path"
         ],
-        "title": "ComposeStatusResponse",
-        "description": "Compose状态响应模型"
+        "title": "Body_upload_exercise_file_exercises__exercise_id__files_upload_post"
+      },
+      "Body_upload_scenario_file_scenarios__scenario_id__files_upload_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File",
+            "description": "要上传的文件"
+          },
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件保存路径"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "file_path"
+        ],
+        "title": "Body_upload_scenario_file_scenarios__scenario_id__files_upload_post"
       },
       "ContainerState": {
         "type": "string",
@@ -1577,6 +2368,52 @@
         "title": "ContainerStatusResponse",
         "description": "容器状态响应模型"
       },
+      "CreateExerciseDataDirectoryRequest": {
+        "properties": {
+          "dir_path": {
+            "type": "string",
+            "title": "Dir Path",
+            "description": "目录路径"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dir_path"
+        ],
+        "title": "CreateExerciseDataDirectoryRequest",
+        "description": "创建场景数据目录请求模型"
+      },
+      "CreateExerciseDataFileRequest": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件路径"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "文件内容"
+          },
+          "file_type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "binary"
+            ],
+            "title": "File Type",
+            "description": "文件类型，text表示文本文件，binary表示二进制文件"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path",
+          "content",
+          "file_type"
+        ],
+        "title": "CreateExerciseDataFileRequest",
+        "description": "创建场景数据文件请求模型"
+      },
       "CreateExerciseWithFilesResponse": {
         "properties": {
           "uuid": {
@@ -1617,6 +2454,52 @@
         ],
         "title": "CreateExerciseWithFilesResponse",
         "description": "创建练习（文件上传）响应模型"
+      },
+      "CreateScenarioDataDirectoryRequest": {
+        "properties": {
+          "dir_path": {
+            "type": "string",
+            "title": "Dir Path",
+            "description": "目录路径"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dir_path"
+        ],
+        "title": "CreateScenarioDataDirectoryRequest",
+        "description": "创建场景数据目录请求模型"
+      },
+      "CreateScenarioDataFileRequest": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件路径"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "文件内容"
+          },
+          "file_type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "binary"
+            ],
+            "title": "File Type",
+            "description": "文件类型，text表示文本文件，binary表示二进制文件"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path",
+          "content",
+          "file_type"
+        ],
+        "title": "CreateScenarioDataFileRequest",
+        "description": "创建场景数据文件请求模型"
       },
       "CreateScenarioWithFilesResponse": {
         "properties": {
@@ -1660,6 +2543,36 @@
         ],
         "title": "CreateScenarioWithFilesResponse",
         "description": "创建场景（文件上传）响应模型"
+      },
+      "DeleteExerciseDataFileRequest": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件路径"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path"
+        ],
+        "title": "DeleteExerciseDataFileRequest",
+        "description": "删除场景数据文件目录请求模型"
+      },
+      "DeleteScenarioDataFileRequest": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件路径"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path"
+        ],
+        "title": "DeleteScenarioDataFileRequest",
+        "description": "删除场景数据文件目录请求模型"
       },
       "ExerciseAction": {
         "type": "string",
@@ -1719,27 +2632,142 @@
         "title": "ExerciseState",
         "description": "练习状态枚举"
       },
-      "ExercisesListResponse": {
+      "ExerciseStatusResponse": {
         "properties": {
-          "exercises": {
-            "items": {
-              "$ref": "#/components/schemas/ExerciseResponse"
-            },
-            "type": "array",
-            "title": "Exercises"
+          "exercise_id": {
+            "type": "string",
+            "title": "Exercise Id"
           },
-          "count": {
-            "type": "integer",
-            "title": "Count"
+          "state": {
+            "type": "string",
+            "title": "State"
+          },
+          "status_info": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Status Info"
           }
         },
         "type": "object",
         "required": [
-          "exercises",
-          "count"
+          "exercise_id",
+          "state",
+          "status_info"
         ],
-        "title": "ExercisesListResponse",
-        "description": "练习列表响应模型"
+        "title": "ExerciseStatusResponse",
+        "description": "练习状态响应模型"
+      },
+      "GetExerciseDataFileContentRequest": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件路径"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path"
+        ],
+        "title": "GetExerciseDataFileContentRequest",
+        "description": "获取场景数据文件内容请求模型"
+      },
+      "GetExerciseDataFileContentResponse": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "文件内容"
+          },
+          "file_type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "binary"
+            ],
+            "title": "File Type",
+            "description": "文件类型，text表示文本文件，binary表示二进制文件"
+          }
+        },
+        "type": "object",
+        "required": [
+          "content",
+          "file_type"
+        ],
+        "title": "GetExerciseDataFileContentResponse",
+        "description": "获取场景数据文件内容响应模型"
+      },
+      "GetExerciseDataFileTreeResponse": {
+        "properties": {
+          "file_tree": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "File Tree",
+            "description": "文件树结构，键为目录或文件名，值为子目录或文件列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_tree"
+        ],
+        "title": "GetExerciseDataFileTreeResponse",
+        "description": "获取场景数据文件树响应模型"
+      },
+      "GetScenarioDataFileContentRequest": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件路径"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path"
+        ],
+        "title": "GetScenarioDataFileContentRequest",
+        "description": "获取场景数据文件内容请求模型"
+      },
+      "GetScenarioDataFileContentResponse": {
+        "properties": {
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "文件内容"
+          },
+          "file_type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "binary"
+            ],
+            "title": "File Type",
+            "description": "文件类型，text表示文本文件，binary表示二进制文件"
+          }
+        },
+        "type": "object",
+        "required": [
+          "content",
+          "file_type"
+        ],
+        "title": "GetScenarioDataFileContentResponse",
+        "description": "获取场景数据文件内容响应模型"
+      },
+      "GetScenarioDataFileTreeResponse": {
+        "properties": {
+          "file_tree": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "File Tree",
+            "description": "文件树结构，键为目录或文件名，值为子目录或文件列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_tree"
+        ],
+        "title": "GetScenarioDataFileTreeResponse",
+        "description": "获取场景数据文件树响应模型"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1923,6 +2951,37 @@
         "title": "SetScenarioStateRequest",
         "description": "设置场景状态请求模型"
       },
+      "UpdateExerciseDataFileRequest": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件路径"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "文件内容"
+          },
+          "file_type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "binary"
+            ],
+            "title": "File Type",
+            "description": "文件类型，text表示文本文件，binary表示二进制文件"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path",
+          "content",
+          "file_type"
+        ],
+        "title": "UpdateExerciseDataFileRequest",
+        "description": "更新场景数据文件请求模型"
+      },
       "UpdateExerciseRequest": {
         "properties": {
           "name": {
@@ -1967,6 +3026,37 @@
         ],
         "title": "UpdateExerciseStateRequest",
         "description": "更新练习状态请求模型"
+      },
+      "UpdateScenarioDataFileRequest": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path",
+            "description": "文件路径"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "文件内容"
+          },
+          "file_type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "binary"
+            ],
+            "title": "File Type",
+            "description": "文件类型，text表示文本文件，binary表示二进制文件"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path",
+          "content",
+          "file_type"
+        ],
+        "title": "UpdateScenarioDataFileRequest",
+        "description": "更新场景数据文件请求模型"
       },
       "UpdateScenarioRequest": {
         "properties": {

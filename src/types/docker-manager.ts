@@ -45,20 +45,6 @@ export interface ApiResponse {
 /**
  * 响应数据
  */
-export type ApiResponseComposeStatusResponseData = ComposeStatusResponse | null;
-
-export interface ApiResponseComposeStatusResponse {
-  /** 状态码 */
-  code?: number;
-  /** 响应消息 */
-  message?: string;
-  /** 响应数据 */
-  data?: ApiResponseComposeStatusResponseData;
-}
-
-/**
- * 响应数据
- */
 export type ApiResponseCreateExerciseWithFilesResponseData = CreateExerciseWithFilesResponse | null;
 
 export interface ApiResponseCreateExerciseWithFilesResponse {
@@ -101,15 +87,113 @@ export interface ApiResponseExerciseResponse {
 /**
  * 响应数据
  */
-export type ApiResponseExercisesListResponseData = ExercisesListResponse | null;
+export type ApiResponseExerciseStatusResponseData = ExerciseStatusResponse | null;
 
-export interface ApiResponseExercisesListResponse {
+export interface ApiResponseExerciseStatusResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseExercisesListResponseData;
+  data?: ApiResponseExerciseStatusResponseData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseGetExerciseDataFileContentResponseData = GetExerciseDataFileContentResponse | null;
+
+export interface ApiResponseGetExerciseDataFileContentResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseGetExerciseDataFileContentResponseData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseGetExerciseDataFileTreeResponseData = GetExerciseDataFileTreeResponse | null;
+
+export interface ApiResponseGetExerciseDataFileTreeResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseGetExerciseDataFileTreeResponseData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseGetScenarioDataFileContentResponseData = GetScenarioDataFileContentResponse | null;
+
+export interface ApiResponseGetScenarioDataFileContentResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseGetScenarioDataFileContentResponseData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseGetScenarioDataFileTreeResponseData = GetScenarioDataFileTreeResponse | null;
+
+export interface ApiResponseGetScenarioDataFileTreeResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseGetScenarioDataFileTreeResponseData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseListContainerStatusResponseData = ContainerStatusResponse[] | null;
+
+export interface ApiResponseListContainerStatusResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseListContainerStatusResponseData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseListExerciseResponseData = ExerciseResponse[] | null;
+
+export interface ApiResponseListExerciseResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseListExerciseResponseData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseListScenarioResponseData = ScenarioResponse[] | null;
+
+export interface ApiResponseListScenarioResponse {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseListScenarioResponseData;
 }
 
 /**
@@ -140,34 +224,6 @@ export interface ApiResponseScenarioStatusResponse {
   data?: ApiResponseScenarioStatusResponseData;
 }
 
-/**
- * 响应数据
- */
-export type ApiResponseListContainerStatusResponseData = ContainerStatusResponse[] | null;
-
-export interface ApiResponseListContainerStatusResponse {
-  /** 状态码 */
-  code?: number;
-  /** 响应消息 */
-  message?: string;
-  /** 响应数据 */
-  data?: ApiResponseListContainerStatusResponseData;
-}
-
-/**
- * 响应数据
- */
-export type ApiResponseListScenarioResponseData = ScenarioResponse[] | null;
-
-export interface ApiResponseListScenarioResponse {
-  /** 状态码 */
-  code?: number;
-  /** 响应消息 */
-  message?: string;
-  /** 响应数据 */
-  data?: ApiResponseListScenarioResponseData;
-}
-
 export interface BodyCreateExerciseExercisesPost {
   /** 练习名称 */
   name: string;
@@ -190,31 +246,18 @@ export interface BodyCreateScenarioScenariosPost {
   target_file: Blob;
 }
 
-/**
- * Compose服务状态枚举
- */
-export type ComposeStatus = typeof ComposeStatus[keyof typeof ComposeStatus];
+export interface BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost {
+  /** 要上传的文件 */
+  file: Blob;
+  /** 文件保存路径 */
+  file_path: string;
+}
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ComposeStatus = {
-  stopped: 'stopped',
-  starting: 'starting',
-  running: 'running',
-  stopping: 'stopping',
-  error: 'error',
-  not_found: 'not_found',
-  unknown: 'unknown',
-} as const;
-
-/**
- * Compose状态响应模型
- */
-export interface ComposeStatusResponse {
-  attacker_status: ComposeStatus;
-  defender_status: ComposeStatus;
-  target_status: ComposeStatus;
-  overall_status: ComposeStatus;
+export interface BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost {
+  /** 要上传的文件 */
+  file: Blob;
+  /** 文件保存路径 */
+  file_path: string;
 }
 
 /**
@@ -265,6 +308,38 @@ export interface ContainerStatusResponse {
   image: string;
 }
 
+/**
+ * 创建场景数据目录请求模型
+ */
+export interface CreateExerciseDataDirectoryRequest {
+  /** 目录路径 */
+  dir_path: string;
+}
+
+/**
+ * 文件类型，text表示文本文件，binary表示二进制文件
+ */
+export type CreateExerciseDataFileRequestFileType = typeof CreateExerciseDataFileRequestFileType[keyof typeof CreateExerciseDataFileRequestFileType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateExerciseDataFileRequestFileType = {
+  text: 'text',
+  binary: 'binary',
+} as const;
+
+/**
+ * 创建场景数据文件请求模型
+ */
+export interface CreateExerciseDataFileRequest {
+  /** 文件路径 */
+  file_path: string;
+  /** 文件内容 */
+  content: string;
+  /** 文件类型，text表示文本文件，binary表示二进制文件 */
+  file_type: CreateExerciseDataFileRequestFileType;
+}
+
 export type CreateExerciseWithFilesResponseUploadedFiles = { [key: string]: unknown };
 
 /**
@@ -279,6 +354,38 @@ export interface CreateExerciseWithFilesResponse {
   uploaded_files?: CreateExerciseWithFilesResponseUploadedFiles;
 }
 
+/**
+ * 创建场景数据目录请求模型
+ */
+export interface CreateScenarioDataDirectoryRequest {
+  /** 目录路径 */
+  dir_path: string;
+}
+
+/**
+ * 文件类型，text表示文本文件，binary表示二进制文件
+ */
+export type CreateScenarioDataFileRequestFileType = typeof CreateScenarioDataFileRequestFileType[keyof typeof CreateScenarioDataFileRequestFileType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateScenarioDataFileRequestFileType = {
+  text: 'text',
+  binary: 'binary',
+} as const;
+
+/**
+ * 创建场景数据文件请求模型
+ */
+export interface CreateScenarioDataFileRequest {
+  /** 文件路径 */
+  file_path: string;
+  /** 文件内容 */
+  content: string;
+  /** 文件类型，text表示文本文件，binary表示二进制文件 */
+  file_type: CreateScenarioDataFileRequestFileType;
+}
+
 export type CreateScenarioWithFilesResponseUploadedFiles = { [key: string]: unknown };
 
 /**
@@ -291,6 +398,22 @@ export interface CreateScenarioWithFilesResponse {
   state: ScenarioState;
   file_path: string;
   uploaded_files?: CreateScenarioWithFilesResponseUploadedFiles;
+}
+
+/**
+ * 删除场景数据文件目录请求模型
+ */
+export interface DeleteExerciseDataFileRequest {
+  /** 文件路径 */
+  file_path: string;
+}
+
+/**
+ * 删除场景数据文件目录请求模型
+ */
+export interface DeleteScenarioDataFileRequest {
+  /** 文件路径 */
+  file_path: string;
 }
 
 /**
@@ -335,12 +458,101 @@ export const ExerciseState = {
   removing: 'removing',
 } as const;
 
+export type ExerciseStatusResponseStatusInfo = { [key: string]: unknown };
+
 /**
- * 练习列表响应模型
+ * 练习状态响应模型
  */
-export interface ExercisesListResponse {
-  exercises: ExerciseResponse[];
-  count: number;
+export interface ExerciseStatusResponse {
+  exercise_id: string;
+  state: string;
+  status_info: ExerciseStatusResponseStatusInfo;
+}
+
+/**
+ * 获取场景数据文件内容请求模型
+ */
+export interface GetExerciseDataFileContentRequest {
+  /** 文件路径 */
+  file_path: string;
+}
+
+/**
+ * 文件类型，text表示文本文件，binary表示二进制文件
+ */
+export type GetExerciseDataFileContentResponseFileType = typeof GetExerciseDataFileContentResponseFileType[keyof typeof GetExerciseDataFileContentResponseFileType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetExerciseDataFileContentResponseFileType = {
+  text: 'text',
+  binary: 'binary',
+} as const;
+
+/**
+ * 获取场景数据文件内容响应模型
+ */
+export interface GetExerciseDataFileContentResponse {
+  /** 文件内容 */
+  content: string;
+  /** 文件类型，text表示文本文件，binary表示二进制文件 */
+  file_type: GetExerciseDataFileContentResponseFileType;
+}
+
+/**
+ * 文件树结构，键为目录或文件名，值为子目录或文件列表
+ */
+export type GetExerciseDataFileTreeResponseFileTree = { [key: string]: unknown };
+
+/**
+ * 获取场景数据文件树响应模型
+ */
+export interface GetExerciseDataFileTreeResponse {
+  /** 文件树结构，键为目录或文件名，值为子目录或文件列表 */
+  file_tree: GetExerciseDataFileTreeResponseFileTree;
+}
+
+/**
+ * 获取场景数据文件内容请求模型
+ */
+export interface GetScenarioDataFileContentRequest {
+  /** 文件路径 */
+  file_path: string;
+}
+
+/**
+ * 文件类型，text表示文本文件，binary表示二进制文件
+ */
+export type GetScenarioDataFileContentResponseFileType = typeof GetScenarioDataFileContentResponseFileType[keyof typeof GetScenarioDataFileContentResponseFileType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetScenarioDataFileContentResponseFileType = {
+  text: 'text',
+  binary: 'binary',
+} as const;
+
+/**
+ * 获取场景数据文件内容响应模型
+ */
+export interface GetScenarioDataFileContentResponse {
+  /** 文件内容 */
+  content: string;
+  /** 文件类型，text表示文本文件，binary表示二进制文件 */
+  file_type: GetScenarioDataFileContentResponseFileType;
+}
+
+/**
+ * 文件树结构，键为目录或文件名，值为子目录或文件列表
+ */
+export type GetScenarioDataFileTreeResponseFileTree = { [key: string]: unknown };
+
+/**
+ * 获取场景数据文件树响应模型
+ */
+export interface GetScenarioDataFileTreeResponse {
+  /** 文件树结构，键为目录或文件名，值为子目录或文件列表 */
+  file_tree: GetScenarioDataFileTreeResponseFileTree;
 }
 
 export interface HTTPValidationError {
@@ -462,6 +674,30 @@ export interface SetScenarioStateRequest {
 }
 
 /**
+ * 文件类型，text表示文本文件，binary表示二进制文件
+ */
+export type UpdateExerciseDataFileRequestFileType = typeof UpdateExerciseDataFileRequestFileType[keyof typeof UpdateExerciseDataFileRequestFileType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateExerciseDataFileRequestFileType = {
+  text: 'text',
+  binary: 'binary',
+} as const;
+
+/**
+ * 更新场景数据文件请求模型
+ */
+export interface UpdateExerciseDataFileRequest {
+  /** 文件路径 */
+  file_path: string;
+  /** 文件内容 */
+  content: string;
+  /** 文件类型，text表示文本文件，binary表示二进制文件 */
+  file_type: UpdateExerciseDataFileRequestFileType;
+}
+
+/**
  * 练习名称
  */
 export type UpdateExerciseRequestName = string | null;
@@ -487,6 +723,30 @@ export interface UpdateExerciseRequest {
 export interface UpdateExerciseStateRequest {
   /** 要执行的操作 */
   action: ExerciseAction;
+}
+
+/**
+ * 文件类型，text表示文本文件，binary表示二进制文件
+ */
+export type UpdateScenarioDataFileRequestFileType = typeof UpdateScenarioDataFileRequestFileType[keyof typeof UpdateScenarioDataFileRequestFileType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const UpdateScenarioDataFileRequestFileType = {
+  text: 'text',
+  binary: 'binary',
+} as const;
+
+/**
+ * 更新场景数据文件请求模型
+ */
+export interface UpdateScenarioDataFileRequest {
+  /** 文件路径 */
+  file_path: string;
+  /** 文件内容 */
+  content: string;
+  /** 文件类型，text表示文本文件，binary表示二进制文件 */
+  file_type: UpdateScenarioDataFileRequestFileType;
 }
 
 /**
@@ -1911,6 +2171,498 @@ export function useStreamContainerLogsLogsStreamScenarioScenarioIdContainerConta
 
 
 /**
+ * 获取场景数据文件树
+ * @summary Get Scenario File Tree
+ */
+export const getScenarioFileTreeScenariosScenarioIdFilesGet = (
+    scenarioId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseGetScenarioDataFileTreeResponse>(
+      {url: `/scenarios/${scenarioId}/files`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryKey = (scenarioId: string,) => {
+    return [`/scenarios/${scenarioId}/files`] as const;
+    }
+
+    
+export const getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryOptions = <TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryKey(scenarioId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>> = ({ signal }) => getScenarioFileTreeScenariosScenarioIdFilesGet(scenarioId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(scenarioId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetScenarioFileTreeScenariosScenarioIdFilesGetQueryResult = NonNullable<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>>
+export type GetScenarioFileTreeScenariosScenarioIdFilesGetQueryError = HTTPValidationError
+
+
+export function useGetScenarioFileTreeScenariosScenarioIdFilesGet<TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(
+ scenarioId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>,
+          TError,
+          Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetScenarioFileTreeScenariosScenarioIdFilesGet<TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(
+ scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>,
+          TError,
+          Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetScenarioFileTreeScenariosScenarioIdFilesGet<TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(
+ scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Scenario File Tree
+ */
+
+export function useGetScenarioFileTreeScenariosScenarioIdFilesGet<TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(
+ scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryOptions(scenarioId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 更新场景数据文件内容
+ * @summary Update Scenario File Content
+ */
+export const updateScenarioFileContentScenariosScenarioIdFilesPut = (
+    scenarioId: string,
+    updateScenarioDataFileRequest: UpdateScenarioDataFileRequest,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/scenarios/${scenarioId}/files`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateScenarioDataFileRequest
+    },
+      );
+    }
+  
+
+
+export const getUpdateScenarioFileContentScenariosScenarioIdFilesPutMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>, TError,{scenarioId: string;data: UpdateScenarioDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>, TError,{scenarioId: string;data: UpdateScenarioDataFileRequest}, TContext> => {
+
+const mutationKey = ['updateScenarioFileContentScenariosScenarioIdFilesPut'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>, {scenarioId: string;data: UpdateScenarioDataFileRequest}> = (props) => {
+          const {scenarioId,data} = props ?? {};
+
+          return  updateScenarioFileContentScenariosScenarioIdFilesPut(scenarioId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateScenarioFileContentScenariosScenarioIdFilesPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>>
+    export type UpdateScenarioFileContentScenariosScenarioIdFilesPutMutationBody = UpdateScenarioDataFileRequest
+    export type UpdateScenarioFileContentScenariosScenarioIdFilesPutMutationError = HTTPValidationError
+
+    /**
+ * @summary Update Scenario File Content
+ */
+export const useUpdateScenarioFileContentScenariosScenarioIdFilesPut = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>, TError,{scenarioId: string;data: UpdateScenarioDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>,
+        TError,
+        {scenarioId: string;data: UpdateScenarioDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateScenarioFileContentScenariosScenarioIdFilesPutMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 创建场景数据文件
+ * @summary Create Scenario File
+ */
+export const createScenarioFileScenariosScenarioIdFilesPost = (
+    scenarioId: string,
+    createScenarioDataFileRequest: CreateScenarioDataFileRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/scenarios/${scenarioId}/files`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createScenarioDataFileRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getCreateScenarioFileScenariosScenarioIdFilesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>, TError,{scenarioId: string;data: CreateScenarioDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>, TError,{scenarioId: string;data: CreateScenarioDataFileRequest}, TContext> => {
+
+const mutationKey = ['createScenarioFileScenariosScenarioIdFilesPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>, {scenarioId: string;data: CreateScenarioDataFileRequest}> = (props) => {
+          const {scenarioId,data} = props ?? {};
+
+          return  createScenarioFileScenariosScenarioIdFilesPost(scenarioId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateScenarioFileScenariosScenarioIdFilesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>>
+    export type CreateScenarioFileScenariosScenarioIdFilesPostMutationBody = CreateScenarioDataFileRequest
+    export type CreateScenarioFileScenariosScenarioIdFilesPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Create Scenario File
+ */
+export const useCreateScenarioFileScenariosScenarioIdFilesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>, TError,{scenarioId: string;data: CreateScenarioDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>,
+        TError,
+        {scenarioId: string;data: CreateScenarioDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateScenarioFileScenariosScenarioIdFilesPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 删除场景数据文件或目录
+ * @summary Delete Scenario File
+ */
+export const deleteScenarioFileScenariosScenarioIdFilesDelete = (
+    scenarioId: string,
+    deleteScenarioDataFileRequest: DeleteScenarioDataFileRequest,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/scenarios/${scenarioId}/files`, method: 'DELETE',
+      headers: {'Content-Type': 'application/json', },
+      data: deleteScenarioDataFileRequest
+    },
+      );
+    }
+  
+
+
+export const getDeleteScenarioFileScenariosScenarioIdFilesDeleteMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>, TError,{scenarioId: string;data: DeleteScenarioDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>, TError,{scenarioId: string;data: DeleteScenarioDataFileRequest}, TContext> => {
+
+const mutationKey = ['deleteScenarioFileScenariosScenarioIdFilesDelete'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>, {scenarioId: string;data: DeleteScenarioDataFileRequest}> = (props) => {
+          const {scenarioId,data} = props ?? {};
+
+          return  deleteScenarioFileScenariosScenarioIdFilesDelete(scenarioId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteScenarioFileScenariosScenarioIdFilesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>>
+    export type DeleteScenarioFileScenariosScenarioIdFilesDeleteMutationBody = DeleteScenarioDataFileRequest
+    export type DeleteScenarioFileScenariosScenarioIdFilesDeleteMutationError = HTTPValidationError
+
+    /**
+ * @summary Delete Scenario File
+ */
+export const useDeleteScenarioFileScenariosScenarioIdFilesDelete = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>, TError,{scenarioId: string;data: DeleteScenarioDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>,
+        TError,
+        {scenarioId: string;data: DeleteScenarioDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteScenarioFileScenariosScenarioIdFilesDeleteMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 获取场景数据文件内容
+ * @summary Get Scenario File Content
+ */
+export const getScenarioFileContentScenariosScenarioIdFilesContentPost = (
+    scenarioId: string,
+    getScenarioDataFileContentRequest: GetScenarioDataFileContentRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseGetScenarioDataFileContentResponse>(
+      {url: `/scenarios/${scenarioId}/files/content`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: getScenarioDataFileContentRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getGetScenarioFileContentScenariosScenarioIdFilesContentPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>, TError,{scenarioId: string;data: GetScenarioDataFileContentRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>, TError,{scenarioId: string;data: GetScenarioDataFileContentRequest}, TContext> => {
+
+const mutationKey = ['getScenarioFileContentScenariosScenarioIdFilesContentPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>, {scenarioId: string;data: GetScenarioDataFileContentRequest}> = (props) => {
+          const {scenarioId,data} = props ?? {};
+
+          return  getScenarioFileContentScenariosScenarioIdFilesContentPost(scenarioId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GetScenarioFileContentScenariosScenarioIdFilesContentPostMutationResult = NonNullable<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>>
+    export type GetScenarioFileContentScenariosScenarioIdFilesContentPostMutationBody = GetScenarioDataFileContentRequest
+    export type GetScenarioFileContentScenariosScenarioIdFilesContentPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Get Scenario File Content
+ */
+export const useGetScenarioFileContentScenariosScenarioIdFilesContentPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>, TError,{scenarioId: string;data: GetScenarioDataFileContentRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>,
+        TError,
+        {scenarioId: string;data: GetScenarioDataFileContentRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getGetScenarioFileContentScenariosScenarioIdFilesContentPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 创建场景数据目录
+ * @summary Create Scenario Directory
+ */
+export const createScenarioDirectoryScenariosScenarioIdDirectoriesPost = (
+    scenarioId: string,
+    createScenarioDataDirectoryRequest: CreateScenarioDataDirectoryRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/scenarios/${scenarioId}/directories`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createScenarioDataDirectoryRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getCreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>, TError,{scenarioId: string;data: CreateScenarioDataDirectoryRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>, TError,{scenarioId: string;data: CreateScenarioDataDirectoryRequest}, TContext> => {
+
+const mutationKey = ['createScenarioDirectoryScenariosScenarioIdDirectoriesPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>, {scenarioId: string;data: CreateScenarioDataDirectoryRequest}> = (props) => {
+          const {scenarioId,data} = props ?? {};
+
+          return  createScenarioDirectoryScenariosScenarioIdDirectoriesPost(scenarioId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>>
+    export type CreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationBody = CreateScenarioDataDirectoryRequest
+    export type CreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Create Scenario Directory
+ */
+export const useCreateScenarioDirectoryScenariosScenarioIdDirectoriesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>, TError,{scenarioId: string;data: CreateScenarioDataDirectoryRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>,
+        TError,
+        {scenarioId: string;data: CreateScenarioDataDirectoryRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 上传文件到场景目录
+ * @summary Upload Scenario File
+ */
+export const uploadScenarioFileScenariosScenarioIdFilesUploadPost = (
+    scenarioId: string,
+    bodyUploadScenarioFileScenariosScenarioIdFilesUploadPost: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+formData.append(`file`, bodyUploadScenarioFileScenariosScenarioIdFilesUploadPost.file)
+formData.append(`file_path`, bodyUploadScenarioFileScenariosScenarioIdFilesUploadPost.file_path)
+
+      return docker_manager_api<ApiResponse>(
+      {url: `/scenarios/${scenarioId}/files/upload`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      );
+    }
+  
+
+
+export const getUploadScenarioFileScenariosScenarioIdFilesUploadPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>, TError,{scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>, TError,{scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost}, TContext> => {
+
+const mutationKey = ['uploadScenarioFileScenariosScenarioIdFilesUploadPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>, {scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost}> = (props) => {
+          const {scenarioId,data} = props ?? {};
+
+          return  uploadScenarioFileScenariosScenarioIdFilesUploadPost(scenarioId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadScenarioFileScenariosScenarioIdFilesUploadPostMutationResult = NonNullable<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>>
+    export type UploadScenarioFileScenariosScenarioIdFilesUploadPostMutationBody = BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost
+    export type UploadScenarioFileScenariosScenarioIdFilesUploadPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Upload Scenario File
+ */
+export const useUploadScenarioFileScenariosScenarioIdFilesUploadPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>, TError,{scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>,
+        TError,
+        {scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost},
+        TContext
+      > => {
+
+      const mutationOptions = getUploadScenarioFileScenariosScenarioIdFilesUploadPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * 获取所有练习列表
  * @summary Get Exercises
  */
@@ -1920,7 +2672,7 @@ export const getExercisesExercisesGet = (
 ) => {
       
       
-      return docker_manager_api<ApiResponseExercisesListResponse>(
+      return docker_manager_api<ApiResponseListExerciseResponse>(
       {url: `/exercises`, method: 'GET', signal
     },
       );
@@ -2429,7 +3181,7 @@ export const getExerciseStatusExercisesExerciseIdStatusGet = (
 ) => {
       
       
-      return docker_manager_api<ApiResponseComposeStatusResponse>(
+      return docker_manager_api<ApiResponseExerciseStatusResponse>(
       {url: `/exercises/${exerciseId}/status`, method: 'GET', signal
     },
       );
@@ -2597,6 +3349,498 @@ export function useGetExerciseContainersExercisesExerciseIdContainersGet<TData =
 
 
 
+/**
+ * 获取练习数据文件树
+ * @summary Get Exercise File Tree
+ */
+export const getExerciseFileTreeExercisesExerciseIdFilesGet = (
+    exerciseId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseGetExerciseDataFileTreeResponse>(
+      {url: `/exercises/${exerciseId}/files`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetExerciseFileTreeExercisesExerciseIdFilesGetQueryKey = (exerciseId: string,) => {
+    return [`/exercises/${exerciseId}/files`] as const;
+    }
+
+    
+export const getGetExerciseFileTreeExercisesExerciseIdFilesGetQueryOptions = <TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetExerciseFileTreeExercisesExerciseIdFilesGetQueryKey(exerciseId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>> = ({ signal }) => getExerciseFileTreeExercisesExerciseIdFilesGet(exerciseId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(exerciseId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetExerciseFileTreeExercisesExerciseIdFilesGetQueryResult = NonNullable<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>>
+export type GetExerciseFileTreeExercisesExerciseIdFilesGetQueryError = HTTPValidationError
+
+
+export function useGetExerciseFileTreeExercisesExerciseIdFilesGet<TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(
+ exerciseId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>,
+          TError,
+          Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetExerciseFileTreeExercisesExerciseIdFilesGet<TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(
+ exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>,
+          TError,
+          Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetExerciseFileTreeExercisesExerciseIdFilesGet<TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(
+ exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Exercise File Tree
+ */
+
+export function useGetExerciseFileTreeExercisesExerciseIdFilesGet<TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(
+ exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetExerciseFileTreeExercisesExerciseIdFilesGetQueryOptions(exerciseId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 更新练习数据文件内容
+ * @summary Update Exercise File Content
+ */
+export const updateExerciseFileContentExercisesExerciseIdFilesPut = (
+    exerciseId: string,
+    updateExerciseDataFileRequest: UpdateExerciseDataFileRequest,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/exercises/${exerciseId}/files`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateExerciseDataFileRequest
+    },
+      );
+    }
+  
+
+
+export const getUpdateExerciseFileContentExercisesExerciseIdFilesPutMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>, TError,{exerciseId: string;data: UpdateExerciseDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>, TError,{exerciseId: string;data: UpdateExerciseDataFileRequest}, TContext> => {
+
+const mutationKey = ['updateExerciseFileContentExercisesExerciseIdFilesPut'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>, {exerciseId: string;data: UpdateExerciseDataFileRequest}> = (props) => {
+          const {exerciseId,data} = props ?? {};
+
+          return  updateExerciseFileContentExercisesExerciseIdFilesPut(exerciseId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateExerciseFileContentExercisesExerciseIdFilesPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>>
+    export type UpdateExerciseFileContentExercisesExerciseIdFilesPutMutationBody = UpdateExerciseDataFileRequest
+    export type UpdateExerciseFileContentExercisesExerciseIdFilesPutMutationError = HTTPValidationError
+
+    /**
+ * @summary Update Exercise File Content
+ */
+export const useUpdateExerciseFileContentExercisesExerciseIdFilesPut = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>, TError,{exerciseId: string;data: UpdateExerciseDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>,
+        TError,
+        {exerciseId: string;data: UpdateExerciseDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateExerciseFileContentExercisesExerciseIdFilesPutMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 创建练习数据文件
+ * @summary Create Exercise File
+ */
+export const createExerciseFileExercisesExerciseIdFilesPost = (
+    exerciseId: string,
+    createExerciseDataFileRequest: CreateExerciseDataFileRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/exercises/${exerciseId}/files`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createExerciseDataFileRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getCreateExerciseFileExercisesExerciseIdFilesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>, TError,{exerciseId: string;data: CreateExerciseDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>, TError,{exerciseId: string;data: CreateExerciseDataFileRequest}, TContext> => {
+
+const mutationKey = ['createExerciseFileExercisesExerciseIdFilesPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>, {exerciseId: string;data: CreateExerciseDataFileRequest}> = (props) => {
+          const {exerciseId,data} = props ?? {};
+
+          return  createExerciseFileExercisesExerciseIdFilesPost(exerciseId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateExerciseFileExercisesExerciseIdFilesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>>
+    export type CreateExerciseFileExercisesExerciseIdFilesPostMutationBody = CreateExerciseDataFileRequest
+    export type CreateExerciseFileExercisesExerciseIdFilesPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Create Exercise File
+ */
+export const useCreateExerciseFileExercisesExerciseIdFilesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>, TError,{exerciseId: string;data: CreateExerciseDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>,
+        TError,
+        {exerciseId: string;data: CreateExerciseDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateExerciseFileExercisesExerciseIdFilesPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 删除练习数据文件或目录
+ * @summary Delete Exercise File
+ */
+export const deleteExerciseFileExercisesExerciseIdFilesDelete = (
+    exerciseId: string,
+    deleteExerciseDataFileRequest: DeleteExerciseDataFileRequest,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/exercises/${exerciseId}/files`, method: 'DELETE',
+      headers: {'Content-Type': 'application/json', },
+      data: deleteExerciseDataFileRequest
+    },
+      );
+    }
+  
+
+
+export const getDeleteExerciseFileExercisesExerciseIdFilesDeleteMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>, TError,{exerciseId: string;data: DeleteExerciseDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>, TError,{exerciseId: string;data: DeleteExerciseDataFileRequest}, TContext> => {
+
+const mutationKey = ['deleteExerciseFileExercisesExerciseIdFilesDelete'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>, {exerciseId: string;data: DeleteExerciseDataFileRequest}> = (props) => {
+          const {exerciseId,data} = props ?? {};
+
+          return  deleteExerciseFileExercisesExerciseIdFilesDelete(exerciseId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteExerciseFileExercisesExerciseIdFilesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>>
+    export type DeleteExerciseFileExercisesExerciseIdFilesDeleteMutationBody = DeleteExerciseDataFileRequest
+    export type DeleteExerciseFileExercisesExerciseIdFilesDeleteMutationError = HTTPValidationError
+
+    /**
+ * @summary Delete Exercise File
+ */
+export const useDeleteExerciseFileExercisesExerciseIdFilesDelete = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>, TError,{exerciseId: string;data: DeleteExerciseDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>,
+        TError,
+        {exerciseId: string;data: DeleteExerciseDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteExerciseFileExercisesExerciseIdFilesDeleteMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 获取练习数据文件内容
+ * @summary Get Exercise File Content
+ */
+export const getExerciseFileContentExercisesExerciseIdFilesContentPost = (
+    exerciseId: string,
+    getExerciseDataFileContentRequest: GetExerciseDataFileContentRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseGetExerciseDataFileContentResponse>(
+      {url: `/exercises/${exerciseId}/files/content`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: getExerciseDataFileContentRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getGetExerciseFileContentExercisesExerciseIdFilesContentPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>, TError,{exerciseId: string;data: GetExerciseDataFileContentRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>, TError,{exerciseId: string;data: GetExerciseDataFileContentRequest}, TContext> => {
+
+const mutationKey = ['getExerciseFileContentExercisesExerciseIdFilesContentPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>, {exerciseId: string;data: GetExerciseDataFileContentRequest}> = (props) => {
+          const {exerciseId,data} = props ?? {};
+
+          return  getExerciseFileContentExercisesExerciseIdFilesContentPost(exerciseId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GetExerciseFileContentExercisesExerciseIdFilesContentPostMutationResult = NonNullable<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>>
+    export type GetExerciseFileContentExercisesExerciseIdFilesContentPostMutationBody = GetExerciseDataFileContentRequest
+    export type GetExerciseFileContentExercisesExerciseIdFilesContentPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Get Exercise File Content
+ */
+export const useGetExerciseFileContentExercisesExerciseIdFilesContentPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>, TError,{exerciseId: string;data: GetExerciseDataFileContentRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>,
+        TError,
+        {exerciseId: string;data: GetExerciseDataFileContentRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getGetExerciseFileContentExercisesExerciseIdFilesContentPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 创建练习数据目录
+ * @summary Create Exercise Directory
+ */
+export const createExerciseDirectoryExercisesExerciseIdDirectoriesPost = (
+    exerciseId: string,
+    createExerciseDataDirectoryRequest: CreateExerciseDataDirectoryRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/exercises/${exerciseId}/directories`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createExerciseDataDirectoryRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getCreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>, TError,{exerciseId: string;data: CreateExerciseDataDirectoryRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>, TError,{exerciseId: string;data: CreateExerciseDataDirectoryRequest}, TContext> => {
+
+const mutationKey = ['createExerciseDirectoryExercisesExerciseIdDirectoriesPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>, {exerciseId: string;data: CreateExerciseDataDirectoryRequest}> = (props) => {
+          const {exerciseId,data} = props ?? {};
+
+          return  createExerciseDirectoryExercisesExerciseIdDirectoriesPost(exerciseId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>>
+    export type CreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationBody = CreateExerciseDataDirectoryRequest
+    export type CreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Create Exercise Directory
+ */
+export const useCreateExerciseDirectoryExercisesExerciseIdDirectoriesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>, TError,{exerciseId: string;data: CreateExerciseDataDirectoryRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>,
+        TError,
+        {exerciseId: string;data: CreateExerciseDataDirectoryRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 上传文件到练习目录
+ * @summary Upload Exercise File
+ */
+export const uploadExerciseFileExercisesExerciseIdFilesUploadPost = (
+    exerciseId: string,
+    bodyUploadExerciseFileExercisesExerciseIdFilesUploadPost: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+formData.append(`file`, bodyUploadExerciseFileExercisesExerciseIdFilesUploadPost.file)
+formData.append(`file_path`, bodyUploadExerciseFileExercisesExerciseIdFilesUploadPost.file_path)
+
+      return docker_manager_api<ApiResponse>(
+      {url: `/exercises/${exerciseId}/files/upload`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      );
+    }
+  
+
+
+export const getUploadExerciseFileExercisesExerciseIdFilesUploadPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>, TError,{exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>, TError,{exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost}, TContext> => {
+
+const mutationKey = ['uploadExerciseFileExercisesExerciseIdFilesUploadPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>, {exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost}> = (props) => {
+          const {exerciseId,data} = props ?? {};
+
+          return  uploadExerciseFileExercisesExerciseIdFilesUploadPost(exerciseId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadExerciseFileExercisesExerciseIdFilesUploadPostMutationResult = NonNullable<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>>
+    export type UploadExerciseFileExercisesExerciseIdFilesUploadPostMutationBody = BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost
+    export type UploadExerciseFileExercisesExerciseIdFilesUploadPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Upload Exercise File
+ */
+export const useUploadExerciseFileExercisesExerciseIdFilesUploadPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>, TError,{exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>,
+        TError,
+        {exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost},
+        TContext
+      > => {
+
+      const mutationOptions = getUploadExerciseFileExercisesExerciseIdFilesUploadPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
 /**
  * 流式获取练习构建日志
  * @summary Stream Exercise Build Logs

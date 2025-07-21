@@ -135,3 +135,179 @@ export const scenarios: ScenarioResponse[] = [
     file_path: '/data/scenarios/c0d1e2f3-a4b5-4cf6-8e7f-8a9b0c1d2e3f/',
   },
 ];
+
+export const testScenarioGraph1 = {
+  "sceneId": "devops-pipeline-uuid",
+  "sceneName": "企业级DevOps流水线",
+  "nodes": [
+    {
+      "id": "attacker-kali-devops",
+      "type": "attacker",
+      "position": { "x": 50, "y": 200 },
+      "data": {
+        "label": "Attacker - Kali",
+        "ipAddress": "192.168.20.5",
+        "status": "running",
+        "image": "kalilinux/kali-rolling",
+        "ports": ["41001:5001", "42001:2222"],
+        "vulnerabilities": [],
+        "isCoreAsset": false,
+        "info": "模拟外部攻击者，扫描并利用公开漏洞。"
+      }
+    },
+    {
+      "id": "defender-ubuntu-devops",
+      "type": "defender",
+      "position": { "x": 450, "y": 450 },
+      "data": {
+        "label": "Defender - Ubuntu",
+        "ipAddress": "192.168.20.6",
+        "status": "running",
+        "image": "ubuntu:22.04",
+        "ports": ["41002:5002", "42002:2223"],
+        "vulnerabilities": [],
+        "isCoreAsset": false,
+        "info": "模拟防御方，监控异常并进行响应。"
+      }
+    },
+    {
+      "id": "dind-group-devops",
+      "type": "dindGroup",
+      "position": { "x": 400, "y": 50 },
+      "data": {
+        "label": "靶机环境 (DevOps Pipeline)",
+        "ipAddress": "192.168.20.100",
+        "status": "running",
+        "image": "docker:dind",
+        "info": "一个模拟企业软件开发与交付流程的环境。"
+      }
+    },
+    {
+      "id": "internal-jenkins-ci",
+      "type": "ci-cd",
+      "position": { "x": 50, "y": 50 },
+      "parentNode": "dind-group-devops",
+      "data": {
+        "label": "Jenkins CI/CD",
+        "ipAddress": "172.19.0.2",
+        "status": "compromised",
+        "image": "jenkins/jenkins:2.190-lts",
+        "ports": ["48080:8080"],
+        "vulnerabilities": ["远程命令执行(CVE-2019-1003000)"],
+        "isCoreAsset": true,
+        "info": "持续集成服务器，存在严重漏洞，是攻击入口。"
+      }
+    },
+    {
+      "id": "internal-gitea-repo",
+      "type": "gitServer",
+      "position": { "x": 300, "y": 100 },
+      "parentNode": "dind-group-devops",
+      "data": {
+        "label": "Gitea Code Repo",
+        "ipAddress": "172.19.0.3",
+        "status": "compromised",
+        "image": "gitea/gitea:1.14",
+        "ports": ["40080:3000", "40022:22"],
+        "vulnerabilities": ["弱口令(admin/admin123)"],
+        "isCoreAsset": true,
+        "info": "存储公司核心源代码。"
+      }
+    },
+    {
+      "id": "internal-nexus-artifact",
+      "type": "repository",
+      "position": { "x": 150, "y": 200 },
+      "parentNode": "dind-group-devops",
+      "data": {
+        "label": "Nexus Artifacts",
+        "ipAddress": "172.19.0.4",
+        "status": "running",
+        "image": "sonatype/nexus3",
+        "ports": ["48081:8081"],
+        "vulnerabilities": [],
+        "isCoreAsset": false,
+        "info": "存储编译好的软件包和依赖。"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e-attacker-dind-devops", "source": "attacker-kali-devops", "target": "dind-group-devops", "type": "straight" },
+    { "id": "e-defender-dind-devops", "source": "defender-ubuntu-devops", "target": "dind-group-devops", "type": "straight" },
+    { "id": "e-jenkins-gitea", "source": "internal-jenkins-ci", "target": "internal-gitea-repo", "type": "straight" },
+    { "id": "e-jenkins-nexus", "source": "internal-jenkins-ci", "target": "internal-nexus-artifact", "type": "straight"  },
+    { "id": "attack-path-devops-1", "source": "attacker-kali-devops", "target": "internal-jenkins-ci", "type": "straight" },
+    { "id": "attack-path-devops-2", "source": "internal-jenkins-ci", "target": "internal-gitea-repo", "type": "straight" },
+  ]
+}
+
+const position = { x: 0, y: 0 };
+const edgeType = 'straight';
+
+export const initialNodes = [
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'input' },
+    position,
+  },
+  {
+    id: '2',
+    data: { label: 'node 2' },
+    position,
+  },
+  {
+    id: '2a',
+    data: { label: 'node 2a' },
+    position,
+  },
+  {
+    id: '2b',
+    data: { label: 'node 2b' },
+    position,
+  },
+  {
+    id: '2c',
+    data: { label: 'node 2c' },
+    position,
+  },
+  {
+    id: '2d',
+    data: { label: 'node 2d' },
+    position,
+  },
+  {
+    id: '3',
+    data: { label: 'node 3' },
+    position,
+  },
+  {
+    id: '4',
+    data: { label: 'node 4' },
+    position,
+  },
+  {
+    id: '5',
+    data: { label: 'node 5' },
+    position,
+  },
+  {
+    id: '6',
+    type: 'output',
+    data: { label: 'output' },
+    position,
+  },
+  { id: '7', type: 'output', data: { label: 'output' }, position },
+];
+
+export const initialEdges = [
+  { id: 'e12', source: '1', target: '2', type: edgeType, animated: true },
+  { id: 'e13', source: '1', target: '3', type: edgeType, animated: true },
+  { id: 'e22a', source: '2', target: '2a', type: edgeType, animated: true },
+  { id: 'e22b', source: '2', target: '2b', type: edgeType, animated: true },
+  { id: 'e22c', source: '2', target: '2c', type: edgeType, animated: true },
+  { id: 'e2c2d', source: '2c', target: '2d', type: edgeType, animated: true },
+  { id: 'e45', source: '4', target: '5', type: edgeType, animated: true },
+  { id: 'e56', source: '5', target: '6', type: edgeType, animated: true },
+  { id: 'e57', source: '5', target: '7', type: edgeType, animated: true },
+];

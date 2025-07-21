@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useScenario } from '@/hooks/use-scenario';
 import { type ActionType } from '@/features/scenarios/data/data';
 import { useScenariosDialog } from '../context/scenarios-context';
+import { useNavigate } from '@tanstack/react-router';
 
 /**
  * 一个专门用于处理单个场景操作逻辑的 Hook。
@@ -17,24 +18,43 @@ export const useScenarioActions = (
     stopBuild: () => void;
   },
 ) => {
-  const { scenario, updateState } = useScenario(scenarioId);
+  const { scenario, updateState, isUpdatingState } = useScenario(scenarioId);
   const { setOpen, setCurrentRow } = useScenariosDialog();
   const { startBuild, stopBuild } = buildActions;
+  const navigate = useNavigate();
+
+  // 新增一个 state 来追踪正在进行中的 action
+  const [pendingAction, setPendingAction] = useState<ActionType | null>(null);
+
+  // 当 updateState 的 isPending 状态从未决（true）变到已决（false）时，
+  // 我们知道异步操作已完成，可以清除 pendingAction 状态。
+  useEffect(() => {
+    if (!isUpdatingState) {
+      setPendingAction(null);
+    }
+  }, [isUpdatingState]);
   
   const handleAction = useCallback((action: ActionType) => {
     if (!scenario) return
     switch (action) {
+      case 'enter':
+        navigate({
+          to: '/scenarios/$scenarioId',
+          params: { scenarioId },
+        });
+        break
       case 'build':
+        setPendingAction('build'); 
         updateState({ scenarioId, data: { action } });
         startBuild(scenarioId);
         break;
       case 'start':
-        // `start` 动作也应该先停止当前的构建日志流
+        setPendingAction('start'); 
         stopBuild();
         updateState({ scenarioId, data: { action } });
         break;
       case 'stop':
-        // `stop` 动作更新状态，但让 SSE 连接保持，直到新的构建或操作开始
+        setPendingAction('stop'); 
         updateState({ scenarioId, data: { action } });
         break;
       case 'delete':
@@ -46,7 +66,7 @@ export const useScenarioActions = (
         setOpen('update');
         break;
     }
-  }, [scenarioId, updateState, setOpen, startBuild, stopBuild]);
+  }, [scenarioId, updateState, setOpen, startBuild, stopBuild, scenario, setCurrentRow, navigate]);
 
-  return { handleAction };
+  return { handleAction, pendingAction };
 }; 

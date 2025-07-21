@@ -13,7 +13,7 @@ import {
 import React from 'react'
 import { ScenarioAction, ScenarioState } from '../../../types/docker-manager'
 
-export type ActionType = ScenarioAction | 'delete' | 'view_details'
+export type ActionType = ScenarioAction | 'delete' | 'view_details'|'enter'
 
 export interface StateAction {
   label: string
@@ -36,8 +36,8 @@ export const scenarioStateConfig: Record<ScenarioState, StateConfig> = {
     icon: CircleDot,
     iconClassName: 'text-green-500',
     actions: [
-      { label: '进入场景', icon: Play, variant: 'default', actionType: 'start' },
-      { label: '停止', icon: StopCircle, variant: 'outline', actionType: 'stop' },
+      { label: '进入场景', icon: Play, variant: 'default', actionType: 'enter' },
+      { label: '停止', icon: StopCircle, variant: 'destructive', actionType: 'stop' },
     ],
   },
   stopped: {
@@ -47,7 +47,7 @@ export const scenarioStateConfig: Record<ScenarioState, StateConfig> = {
     actions: [
       { label: '启动', icon: Play, actionType: 'start' },
       { label: '详细信息', icon: Info, variant: 'outline', actionType: 'view_details' },
-      { label: '删除', icon: Trash2, variant: 'outline', actionType: 'delete' },
+      { label: '删除', icon: Trash2, variant: 'destructive', actionType: 'delete' },
     ],
   },
   error: {
@@ -56,7 +56,7 @@ export const scenarioStateConfig: Record<ScenarioState, StateConfig> = {
     iconClassName: 'text-red-500',
     actions: [
       { label: '详细信息', icon: Info, variant: 'outline', actionType: 'view_details' },
-      { label: '删除', icon: Trash2, variant: 'outline', actionType: 'delete' },
+      { label: '删除', icon: Trash2, variant: 'destructive', actionType: 'delete' },
     ],
   },
   building: {
@@ -78,7 +78,7 @@ export const scenarioStateConfig: Record<ScenarioState, StateConfig> = {
     actions: [
       { label: '开始构建', icon: Play,variant:'secondary', actionType: 'build' },
       { label: '详细信息', icon: Info, variant: 'outline', actionType: 'view_details' },
-      { label: '删除', icon: Trash2, variant: 'outline', actionType: 'delete' },
+      { label: '删除', icon: Trash2, variant: 'destructive', actionType: 'delete' },
     ],
   },
   build_error: {
@@ -87,7 +87,7 @@ export const scenarioStateConfig: Record<ScenarioState, StateConfig> = {
     iconClassName: 'text-red-500',
     actions: [
       { label: '详细信息', icon: Info, variant: 'outline', actionType: 'view_details' },
-      { label: '删除', icon: Trash2, variant: 'outline', actionType: 'delete' },
+      { label: '删除', icon: Trash2, variant: 'destructive', actionType: 'delete' },
     ],
   },
   runtime_error: {
@@ -96,7 +96,7 @@ export const scenarioStateConfig: Record<ScenarioState, StateConfig> = {
     iconClassName: 'text-red-500',
     actions: [
       { label: '详细信息', icon: Info, variant: 'outline', actionType: 'view_details' },
-      { label: '删除', icon: Trash2, variant: 'outline', actionType: 'delete' },
+      { label: '删除', icon: Trash2, variant: 'destructive', actionType: 'delete' },
     ],
   },
 }

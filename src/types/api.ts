@@ -7,3 +7,24 @@ export type User ={
     created_time: string
     role: string
 }
+
+export interface FileNode {
+    key: string;
+    name: string;
+    children?: FileNode[];
+}
+
+export interface FileTreeNode {
+    type: 'file' | 'directory';
+    size?: number;
+    children?: Record<string, FileTreeNode>;
+  };
+
+// 日志相关类型
+export interface LogEntry {
+    timestamp: string;
+    level: string;
+    message: string;
+    logger_name: string;
+    type: 'log' | 'history' | 'heartbeat' | 'error' | 'end' | 'history_end';
+}
