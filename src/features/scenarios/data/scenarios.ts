@@ -142,7 +142,7 @@ export const testScenarioGraph1 = {
   "nodes": [
     {
       "id": "attacker-kali-devops",
-      "type": "attacker",
+      "type": "input",
       "position": { "x": 50, "y": 200 },
       "data": {
         "label": "Attacker - Kali",
@@ -157,7 +157,7 @@ export const testScenarioGraph1 = {
     },
     {
       "id": "defender-ubuntu-devops",
-      "type": "defender",
+      "type": "input",
       "position": { "x": 450, "y": 450 },
       "data": {
         "label": "Defender - Ubuntu",
@@ -172,7 +172,7 @@ export const testScenarioGraph1 = {
     },
     {
       "id": "dind-group-devops",
-      "type": "dindGroup",
+      "type": "group",
       "position": { "x": 400, "y": 50 },
       "data": {
         "label": "靶机环境 (DevOps Pipeline)",
@@ -180,13 +180,14 @@ export const testScenarioGraph1 = {
         "status": "running",
         "image": "docker:dind",
         "info": "一个模拟企业软件开发与交付流程的环境。"
-      }
+      },
+
     },
     {
       "id": "internal-jenkins-ci",
-      "type": "ci-cd",
+      "type": "input",
       "position": { "x": 50, "y": 50 },
-      "parentNode": "dind-group-devops",
+      "parentId": "dind-group-devops",
       "data": {
         "label": "Jenkins CI/CD",
         "ipAddress": "172.19.0.2",
@@ -196,13 +197,14 @@ export const testScenarioGraph1 = {
         "vulnerabilities": ["远程命令执行(CVE-2019-1003000)"],
         "isCoreAsset": true,
         "info": "持续集成服务器，存在严重漏洞，是攻击入口。"
-      }
+      },
+      "extent":"parent"
     },
     {
       "id": "internal-gitea-repo",
-      "type": "gitServer",
+      "type": "output",
       "position": { "x": 300, "y": 100 },
-      "parentNode": "dind-group-devops",
+      "parentId": "dind-group-devops",
       "data": {
         "label": "Gitea Code Repo",
         "ipAddress": "172.19.0.3",
@@ -212,13 +214,14 @@ export const testScenarioGraph1 = {
         "vulnerabilities": ["弱口令(admin/admin123)"],
         "isCoreAsset": true,
         "info": "存储公司核心源代码。"
-      }
+      },
+      "extent":"parent"
     },
     {
       "id": "internal-nexus-artifact",
-      "type": "repository",
+      "type": "output",
       "position": { "x": 150, "y": 200 },
-      "parentNode": "dind-group-devops",
+      "parentId": "dind-group-devops",
       "data": {
         "label": "Nexus Artifacts",
         "ipAddress": "172.19.0.4",
@@ -228,7 +231,8 @@ export const testScenarioGraph1 = {
         "vulnerabilities": [],
         "isCoreAsset": false,
         "info": "存储编译好的软件包和依赖。"
-      }
+      },
+      "extent":"parent"
     }
   ],
   "edges": [
@@ -240,6 +244,107 @@ export const testScenarioGraph1 = {
     { "id": "attack-path-devops-2", "source": "internal-jenkins-ci", "target": "internal-gitea-repo", "type": "straight" },
   ]
 }
+export const corporateNetworkNodes = [
+  // 1. 外部节点
+  {
+    id: 'attacker',
+     // 'input' 类型通常在图的开始位置
+    data: { label: '外部攻击者' },
+    position: { x: 0, y: 0 }, // 初始位置，将由 ELK 重新计算
+  },
+  {
+    id: 'defender',
+    data: { label: '安全运维中心' },
+    position: { x: 0, y: 0 },
+  },
+
+  // 2. 嵌套容器 (Group)
+  // 这是我们的嵌套层，ELKjs 会将子节点布局在它的内部。
+  {
+    id: 'dmz-group',
+    type: 'group', // 必须是 'group' 类型
+    data: { label: '隔离区 (DMZ)' },
+    position: { x: 0, y: 0 },
+    // 必须为 Group 节点提供明确的尺寸，ELKjs 需要它来进行布局计算
+    style: {
+      width: 300,
+      height: 250,
+      backgroundColor: 'rgba(208, 192, 247, 0.2)', // 给Group一个背景色以示区分
+    },
+  },
+
+  // 3. 嵌套在 Group 内的子节点
+  // 注意 'parentId' 属性，它告诉 React Flow 和 ELKjs 这个节点属于哪个 Group。
+  {
+    id: 'web-server',
+    data: { label: 'Web 服务器 (对外)' },
+    position: { x: 0, y: 0 },
+    parentId: 'dmz-group', // 关键属性：指定父节点ID
+    extent: 'parent', // 关键属性：限制节点只能在其父节点内部拖动
+  },
+  {
+    id: 'mail-gateway',
+    data: { label: '邮件网关' },
+    position: { x: 0, y: 0 },
+    parentId: 'dmz-group', // 关键属性：指定父节点ID
+    extent: 'parent',
+  },
+
+  // 4. 内部核心节点
+  {
+    id: 'database-server',
+    data: { label: '核心数据库' },
+    position: { x: 0, y: 0 },
+  },
+];
+
+
+// 边数据 (Edges)
+export const corporateNetworkEdges = [
+  // 攻击路径
+  { 
+    id: 'e-attacker-web', 
+    source: 'attacker', 
+    target: 'web-server', 
+    type: 'straight', 
+    animated: true, // 使用动画表示关键路径
+    label: '漏洞利用' 
+  },
+  { 
+    id: 'e-web-db', 
+    source: 'web-server', 
+    target: 'database-server', 
+    type: 'straight', 
+    animated: true,
+    label: '横向移动' 
+  },
+  
+  // 正常业务流量
+  { 
+    id: 'e-mail-db', 
+    source: 'mail-gateway', 
+    target: 'database-server', 
+    type: 'straight', 
+    label: '同步数据' 
+  },
+
+  // 防御方监控
+  // 边可以直接连接到 Group 节点
+  { 
+    id: 'e-defender-dmz', 
+    source: 'defender', 
+    target: 'dmz-group', 
+    type: 'straight', 
+    label: '监控DMZ' 
+  },
+  { 
+    id: 'e-defender-db', 
+    source: 'defender', 
+    target: 'database-server', 
+    type: 'straight', 
+    label: '重点防护' 
+  },
+];
 
 const position = { x: 0, y: 0 };
 const edgeType = 'straight';

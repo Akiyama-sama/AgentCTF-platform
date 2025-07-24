@@ -72,7 +72,7 @@ export default function Scenarios() {
       </Header>
 
       {/* ===== Content ===== */}
-      <Main fixed>
+      <Main fixed className='overflow-y-auto min-h-0'>
         <div className='flex items-center justify-between'>
           <div>
             <h1 className='text-2xl font-bold tracking-tight'>

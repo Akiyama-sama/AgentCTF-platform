@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Background,
   ReactFlow,
@@ -8,83 +8,109 @@ import {
   useNodesState,
   useEdgesState,
 } from '@xyflow/react';
-import dagre from '@dagrejs/dagre';
+import ELK from 'elkjs/lib/elk.bundled.js';
 
 import '@xyflow/react/dist/style.css';
 import { testScenarioGraph1 } from '@/features/scenarios/data/scenarios';
+
 const initialNodes = testScenarioGraph1.nodes;
 const initialEdges = testScenarioGraph1.edges;
 
-//import { initialNodes, initialEdges } from '@/features/scenarios/data/scenarios';
-
-const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+const elk = new ELK();
 
 const nodeWidth = 172;
 const nodeHeight = 36;
 
-const getLayoutedElements = (nodes, edges, direction = 'TB') => {
+// 使用 ELKjs 的异步布局函数
+const getLayoutedElements = async (nodes, edges, direction = 'TB') => {
   const isHorizontal = direction === 'LR';
-  dagreGraph.setGraph({ rankdir: direction });
+  const elkOptions = {
+    'elk.algorithm': 'layered',
+    'elk.direction': isHorizontal ? 'RIGHT' : 'DOWN',
+    'elk.layered.spacing.nodeNodeBetweenLayers': '100',
+    'elk.spacing.nodeNode': '80',
+    'elk.insideSelfLoops.spacing': '20',
+  };
 
-  nodes.forEach((node) => {
-    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
-  });
-
-  edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.source, edge.target);
-  });
-
-  dagre.layout(dagreGraph);
-
-  const newNodes = nodes.map((node) => {
-    const nodeWithPosition = dagreGraph.node(node.id);
-    const newNode = {
+  const graph = {
+    id: 'root',
+    layoutOptions: elkOptions,
+    // 对于 group 节点，React Flow 通过 style 属性传递尺寸，我们需要将其映射到 ELK 的 width/height
+    children: nodes.map((node) => ({
       ...node,
-      targetPosition: isHorizontal ? 'left' : 'top',
-      sourcePosition: isHorizontal ? 'right' : 'bottom',
-      // We are shifting the dagre node position (anchor=center center) to the top left
-      // so it matches the React Flow node anchor point (top left).
-      position: {
-        x: nodeWithPosition.x - nodeWidth / 2,
-        y: nodeWithPosition.y - nodeHeight / 2,
-      },
-    };
+      width: node.style?.width || nodeWidth,
+      height: node.style?.height || nodeHeight,
+    })),
+    edges: edges,
+  };
 
-    return newNode;
-  });
-
-  return { nodes: newNodes, edges };
+  try {
+    const layoutedGraph = await elk.layout(graph);
+    const newNodes = layoutedGraph.children.map((node) => {
+        // 对于 Group 节点，我们需要保留它的 style 属性
+        const style = nodes.find(n => n.id === node.id)?.style;
+        return {
+            ...node,
+            // 从 ELK 结果中删除 width/height，让 React Flow 处理
+            width: undefined,
+            height: undefined,
+            position: { x: node.x, y: node.y },
+            style: style, // 重新应用 style
+        };
+    });
+    return { nodes: newNodes, edges };
+  } catch (e) {
+    console.error(e);
+    return { nodes, edges };
+  }
 };
 
-const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-  initialNodes,
-  initialEdges,
-);
 
 const TopologyMap = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
+  // 注意：初始状态为空数组，通过 useEffect 异步加载
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 使用 useEffect 进行初始的异步布局
+  useEffect(() => {
+    setIsLoading(true);
+    getLayoutedElements(initialNodes, initialEdges, 'TB').then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
+      setNodes(layoutedNodes);
+      setEdges(layoutedEdges);
+      setIsLoading(false);
+    });
+  }, []); // 空依赖数组确保只在挂载时运行一次
 
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
-        addEdge({ ...params, type: ConnectionLineType.Straight, animated: true }, eds),
+        addEdge({ ...params, type: 'straight', animated: true }, eds),
       ),
     [],
   );
+
+  // onLayout 回调需要是 async 函数
   const onLayout = useCallback(
-    (direction) => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+    async (direction) => {
+      setIsLoading(true);
+      const { nodes: layoutedNodes, edges: layoutedEdges } = await getLayoutedElements(
         nodes,
         edges,
         direction,
       );
-
+      // 使用最新的布局更新状态
       setNodes([...layoutedNodes]);
       setEdges([...layoutedEdges]);
+      // 延迟一点取消加载状态，让视图有时间重新渲染
+      setTimeout(() => setIsLoading(false), 100);
     },
-    [nodes, edges],
+    [nodes, edges, setNodes, setEdges],
   );
+
+  if (isLoading) {
+    return <div>Loading layout...</div>; // 可以添加一个加载指示器
+  }
 
   return (
     <ReactFlow

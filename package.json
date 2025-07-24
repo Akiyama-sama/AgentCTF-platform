@@ -18,6 +18,8 @@
     "generate": "orval --config ./orval.config.cjs"
   },
   "dependencies": {
+    "@ai-sdk/google": "^1.2.22",
+    "@ai-sdk/react": "^1.2.12",
     "@clerk/clerk-react": "^5.32.1",
     "@codemirror/basic-setup": "^0.20.0",
     "@dagrejs/dagre": "^1.1.5",
@@ -48,12 +50,14 @@
     "@tanstack/react-table": "^8.21.3",
     "@uiw/react-codemirror": "^4.24.1",
     "@xyflow/react": "^12.8.2",
+    "ai": "^4.3.19",
     "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",
     "date-fns": "^4.1.0",
     "elkjs": "^0.10.0",
+    "framer-motion": "^12.23.6",
     "input-otp": "^1.4.2",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.523.0",

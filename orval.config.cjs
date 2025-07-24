@@ -28,4 +28,18 @@ module.exports = {
           },
         },
       },
+    attackerAgent: {
+        input: './openapi/attacker-agent.json',
+        output: {
+          target: './src/types/attacker-agent.ts',
+          client: 'react-query',
+          mode: 'single', 
+          override: {
+            mutator: {
+              path: './src/utils/attacker-agent-api.ts',
+              name: 'attacker_agent_api',
+            },
+          },
+        },
+      },
   };
