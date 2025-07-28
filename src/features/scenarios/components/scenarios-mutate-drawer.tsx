@@ -21,16 +21,15 @@ import {
   SheetHeader,
   SheetTitle
 } from '@/components/ui/sheet'
-import { ScenarioResponse } from '@/types/docker-manager'
 import FileUpload from '@/components/file-upload'
 import { useScenario, useScenarioFile, useScenarios } from '@/hooks/use-scenario'
 import { ScenarioFileTree } from './scenario-file-tree'
 import { Label } from '@/components/ui/label'
-
+import { ModelResponse } from '@/types/docker-manager'
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow?: ScenarioResponse
+  currentRow?: ModelResponse
 }
 
 const updateSchema = z.object({
@@ -42,11 +41,11 @@ const createSchema = z.object({
   name: z.string().min(1, '场景名称必填'),
   description: z.string().min(1, '场景描述必填'),
   attacker_file: z
-    .instanceof(Blob, { message: '请上传攻击端压缩包' })
-    .refine(file => file.size > 0, '请上传攻击端压缩包'),
+    .instanceof(Blob, { message: '请上传攻击端压缩包(可选)' })
+    .optional(),
   defender_file: z
-    .instanceof(Blob, { message: '请上传防守端压缩包' })
-    .refine(file => file.size > 0, '请上传防守端压缩包'),
+    .instanceof(Blob, { message: '请上传防守端压缩包(可选)' })
+    .optional(),
   target_file: z
     .instanceof(Blob, { message: '请上传靶机压缩包' })
     .refine(file => file.size > 0, '请上传靶机压缩包')
@@ -72,9 +71,9 @@ export function ScenariosMutateDrawer({
       : {
           name: '',
           description: '',
-          attacker_file: new File([], ''),
-          defender_file: new File([], ''),
-          target_file: new File([], '')
+          attacker_file: undefined,
+          defender_file: undefined,
+          target_file: undefined,
         }
   })
 
@@ -82,12 +81,21 @@ export function ScenariosMutateDrawer({
     if (isUpdate && currentRow) {
       // Type guard for update
       updateScenarioAsync({
-        scenarioId: currentRow.uuid,
+        modelId: currentRow.uuid,
         data: data as ScenariosUpdateForm
       })
     } else {
+      const createData = data as ScenariosCreateForm;
+      // 移除未选择的可选文件
+      if (createData.attacker_file?.size === 0) {
+        delete createData.attacker_file;
+      }
+      if (createData.defender_file?.size === 0) {
+        delete createData.defender_file;
+      }
       // Type guard for create
-      createScenarioAsync({ data: data as ScenariosCreateForm })
+      createScenarioAsync(createData)
+      
     }
     onOpenChange(false)
     form.reset()

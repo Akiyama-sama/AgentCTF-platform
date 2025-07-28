@@ -1,54 +1,60 @@
+import { useEffect, useState } from 'react'
+import { BaseState } from '@/types/docker-manager'
+import { useScenarioBuildLogs } from '@/hooks/use-log'
+import { useScenario, useScenarioContainers } from '@/hooks/use-scenario'
+import { Card } from '@/components/ui/card'
+import { useSidebar } from '@/components/ui/sidebar'
+import { TextScroll } from '@/components/ui/text-scroll'
+import Loading from '@/components/Loading'
+import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
+import { PillTabs } from '@/components/pill-tabs'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { ThemeSwitch } from '@/components/theme-switch'
+import TopologyMap from '@/components/topology-map'
+import { ScenarioFileDialogs } from '../scenarios/components/scenario-file-dialogs'
+import { ScenariosDialogs } from '../scenarios/components/scenarios-dialogs'
+import ScenariosDialogProvider from '../scenarios/context/scenarios-context'
+import { useScenarioActions } from '../scenarios/hooks/useScenarioActions'
+import { ChatBot } from './components/chat-bot'
+import { ContainerLog } from './components/container-log'
+import { ScenarioCardActions } from './components/scenario-card'
+import { displayTab } from './data/data'
+import { LogController } from './components/log-controller'
 
-import { useScenario, useScenarioBuildLogs } from '@/hooks/use-scenario';
-import { Header } from '@/components/layout/header';
-import { ThemeSwitch } from '@/components/theme-switch';
-import { ProfileDropdown } from '@/components/profile-dropdown';
-import { Main } from '@/components/layout/main';
-import TopologyMap from '@/components/topology-map';
-import { useSidebar } from '@/components/ui/sidebar';
-import { useEffect } from 'react';
-import { ScenarioCardActions } from './components/scenario-card';
-import { useScenarioActions } from '../scenarios/hooks/useScenarioActions';
-import { ScenarioState } from '@/types/docker-manager';
-
-import { ScenarioFileDialogs } from '../scenarios/components/scenario-file-dialogs';
-import { ScenariosDialogs } from '../scenarios/components/scenarios-dialogs';
-import ScenariosDialogProvider from '../scenarios/context/scenarios-context';
-import { Card } from '@/components/ui/card';
-import { TextScroll } from '@/components/ui/text-scroll';
-import { ChatBot } from './components/chat-bot';
 interface ScenarioDetailProps {
-  scenarioId: string;
+  scenarioId: string
 }
 
 const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
-  const { scenario } = useScenario(scenarioId);
+  const { scenario } = useScenario(scenarioId)
   const { status } = useScenario(scenarioId)
-  const { startBuild, stopBuild } = useScenarioBuildLogs()
-  const { handleAction,pendingAction } = useScenarioActions(scenarioId, {startBuild,stopBuild})
+  const { createBuildConnection, closeBuildConnection } = useScenarioBuildLogs()
+  const { handleAction, pendingAction } = useScenarioActions(
+    scenarioId,
+    createBuildConnection,
+    closeBuildConnection
+  )
   
+ 
   if (!scenario) {
     return (
-      <div className="p-4 text-center text-muted-foreground">
-        场景加载中...
-      </div>
-    );
+      <div className='text-muted-foreground p-4 text-center'>场景加载中...</div>
+    )
   }
 
-  if(status) scenario.state=status.state as ScenarioState
+  if (status) scenario.state = status.state as BaseState
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col min-h-screen overflow-y-auto'>
       {/* ===== Top Heading ===== */}
       <Header>
-        <h1 className='text-2xl font-bold tracking-tight'>
-            {scenario.name}
-        </h1>
+        <h1 className='text-2xl font-bold tracking-tight'>{scenario.name}</h1>
         <div className='ml-auto flex items-center gap-4'>
-          <ScenarioCardActions 
-            state={scenario.state} 
-            pendingAction={pendingAction} 
-            onAction={handleAction} 
+          <ScenarioCardActions
+            state={scenario.state}
+            pendingAction={pendingAction}
+            onAction={handleAction}
           />
           <ThemeSwitch />
           <ProfileDropdown />
@@ -56,58 +62,62 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
       </Header>
 
       {/* ===== Content ===== */}
-      <Main fixed >
-        <div className='w-full h-dvh grid grid-cols-5 gap-2'>
-         <div className='col-span-1'>
-          <ChatBot
-            className='w-full h-3/5 pt-0'
-          />
-          <Card className='w-full h-2/5'/>
-         </div>
-         <Card className='col-span-3 flex flex-col p-4'>
-          <div className='w-full h-1/2'>
-          <TextScroll
-            text='SAFE'
-            className='w-full font-display text-center text-4xl font-semibold tracking-tighter  text-green-600 dark:text-white md:text-7xl md:leading-[5rems'
-           />
-          <TopologyMap/>
+      <Main fixed>
+        <div className='flex flex-1 w-full  gap-2'>
+          <div className='w-1/3'>
+            <ChatBot className='h-3/5 w-full pt-0' />
+            <Card className='h-2/5 w-full flex flex-col '>
+              <div className='flex  w-full items-center justify-center'>
+              
+              </div>
+              <div className='flex-1 overflow-auto min-h-0 '>
+                
+              </div>
+            </Card>
           </div>
-          
-         </Card>
-         <Card className='col-span-1'>
-
-          
-         </Card>
-         
+          <Card className='w-2/3 flex flex-col p-4 mt-0'>
+            <div className='h-2/3 w-full p-10 '>
+              <TextScroll
+                text='TARGET SAFE'
+                className='text-green-600 text-2xl'
+                />
+              <TopologyMap />
+              <TextScroll
+                text='TARGET SAFE'
+                className='text-green-600 text-2xl'
+                />
+            </div>
+            <div className='h-1/3 w-full  gap-2 flex flex-col'>
+              <LogController
+                modelId={scenarioId}
+              />
+            </div>
+          </Card>
         </div>
-      
       </Main>
-    
     </div>
   )
 }
 
 const ScenarioDetail = ({ scenarioId }: ScenarioDetailProps) => {
-  const { scenario } = useScenario(scenarioId);
-  const {open,setOpen} = useSidebar();
+  const { scenario } = useScenario(scenarioId)
+  const { open, setOpen } = useSidebar()
 
   useEffect(() => {
-     if (open) {
+    if (open) {
       setOpen(false)
-     }
+    }
     return () => {
       if (!open) {
         setOpen(true)
       }
     }
-  }, [open, setOpen]);
+  }, [open, setOpen])
 
   if (!scenario) {
     return (
-      <div className="p-4 text-center text-muted-foreground">
-        场景未找到。
-      </div>
-    );
+      <div className='text-muted-foreground p-4 text-center'>场景未找到。</div>
+    )
   }
 
   return (
@@ -116,8 +126,7 @@ const ScenarioDetail = ({ scenarioId }: ScenarioDetailProps) => {
       <ScenariosDialogs />
       <ScenarioFileDialogs />
     </ScenariosDialogProvider>
-  );
-};
+  )
+}
 
-export default ScenarioDetail;
-
+export default ScenarioDetail

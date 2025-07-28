@@ -4,14 +4,14 @@ import {
   useScenariosDialog,
 } from '../context/scenarios-context'
 import { ScenariosMutateDrawer } from './scenarios-mutate-drawer'
-import { ScenarioResponse } from '@/types/docker-manager'
+import { ModelResponse } from '@/types/docker-manager'
 import { useScenario } from '@/hooks/use-scenario'
 
 function ScenarioDialogsInner({
   currentRow,
   open
 }: {
-  currentRow: ScenarioResponse
+  currentRow: ModelResponse
   open: string | null
 }) {
   const { setOpen, setCurrentRow } = useScenariosDialog()
@@ -44,7 +44,7 @@ function ScenarioDialogsInner({
             setCurrentRow(null)
           }, 500)
           showSubmittedData(currentRow, '以下场景已删除:')
-          deleteScenarioAsync({ scenarioId: currentRow.uuid })
+          deleteScenarioAsync({ modelId: currentRow.uuid })
         }}
         className='max-w-md'
         title={`删除场景: ${currentRow.name} ?`}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
-import { ScenarioResponse } from '@/types/docker-manager'
+import { ModelResponse } from '@/types/docker-manager'
 
 export type ScenariosDialogType = 'update' | 'delete' | 'create' |
 'create_directory'|'create_file'|'update_file'|'delete_file'|'upload_file'|'get_file_content'
@@ -8,8 +8,8 @@ export type ScenariosDialogType = 'update' | 'delete' | 'create' |
 interface ScenariosDialogContextType {
   open: ScenariosDialogType | null
   setOpen: (str: ScenariosDialogType | null) => void
-  currentRow: ScenarioResponse | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<ScenarioResponse | null>>
+  currentRow: ModelResponse | null
+  setCurrentRow: React.Dispatch<React.SetStateAction<ModelResponse | null>>
   filePath: string | null
   setFilePath: React.Dispatch<React.SetStateAction<string | null>>
   isFile: boolean
@@ -24,7 +24,7 @@ interface Props {
 
 export default function ScenariosDialogProvider({ children }: Props) {
   const [open, setOpen] = useDialogState<ScenariosDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<ScenarioResponse | null>(null)
+  const [currentRow, setCurrentRow] = useState<ModelResponse | null>(null)
   const [filePath, setFilePath] = useState<string | null>(null)
   const [isFile, setIsFile] = useState<boolean>(false)
 

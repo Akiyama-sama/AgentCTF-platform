@@ -26,6 +26,18 @@ import type {
 
 import { docker_manager_api } from '../utils/docker-manager-api';
 /**
+ * 所有容器数据包文件响应模型
+ */
+export interface AllPacketFilesResponse {
+  /** 模型ID */
+  model_id: string;
+  /** 所有容器的数据包文件列表 */
+  packet_files: PacketFileResponse[];
+  /** 总文件数量 */
+  total_count: number;
+}
+
+/**
  * 响应数据
  */
 export type ApiResponseData = unknown | null;
@@ -45,409 +57,165 @@ export interface ApiResponse {
 /**
  * 响应数据
  */
-export type ApiResponseCreateExerciseWithFilesResponseData = CreateExerciseWithFilesResponse | null;
+export type ApiResponseAllPacketFilesResponseData = AllPacketFilesResponse | null;
 
-export interface ApiResponseCreateExerciseWithFilesResponse {
+export interface ApiResponseAllPacketFilesResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseCreateExerciseWithFilesResponseData;
+  data?: ApiResponseAllPacketFilesResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseCreateScenarioWithFilesResponseData = CreateScenarioWithFilesResponse | null;
+export type ApiResponseGetDataFileContentResponseData = GetDataFileContentResponse | null;
 
-export interface ApiResponseCreateScenarioWithFilesResponse {
+export interface ApiResponseGetDataFileContentResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseCreateScenarioWithFilesResponseData;
+  data?: ApiResponseGetDataFileContentResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseExerciseResponseData = ExerciseResponse | null;
+export type ApiResponseGetDataFileTreeResponseData = GetDataFileTreeResponse | null;
 
-export interface ApiResponseExerciseResponse {
+export interface ApiResponseGetDataFileTreeResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseExerciseResponseData;
+  data?: ApiResponseGetDataFileTreeResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseExerciseStatusResponseData = ExerciseStatusResponse | null;
+export type ApiResponseGetModelAllContainerInspectResponseData = GetModelAllContainerInspectResponse | null;
 
-export interface ApiResponseExerciseStatusResponse {
+export interface ApiResponseGetModelAllContainerInspectResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseExerciseStatusResponseData;
+  data?: ApiResponseGetModelAllContainerInspectResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseGetExerciseDataFileContentResponseData = GetExerciseDataFileContentResponse | null;
+export type ApiResponseGetModelContainerInspectResponseData = GetModelContainerInspectResponse | null;
 
-export interface ApiResponseGetExerciseDataFileContentResponse {
+export interface ApiResponseGetModelContainerInspectResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseGetExerciseDataFileContentResponseData;
+  data?: ApiResponseGetModelContainerInspectResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseGetExerciseDataFileTreeResponseData = GetExerciseDataFileTreeResponse | null;
+export type ApiResponseListModelResponseData = ModelResponse[] | null;
 
-export interface ApiResponseGetExerciseDataFileTreeResponse {
+export interface ApiResponseListModelResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseGetExerciseDataFileTreeResponseData;
+  data?: ApiResponseListModelResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseGetScenarioDataFileContentResponseData = GetScenarioDataFileContentResponse | null;
+export type ApiResponseModelDeleteResponseData = ModelDeleteResponse | null;
 
-export interface ApiResponseGetScenarioDataFileContentResponse {
+export interface ApiResponseModelDeleteResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseGetScenarioDataFileContentResponseData;
+  data?: ApiResponseModelDeleteResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseGetScenarioDataFileTreeResponseData = GetScenarioDataFileTreeResponse | null;
+export type ApiResponseModelDetailResponseData = ModelDetailResponse | null;
 
-export interface ApiResponseGetScenarioDataFileTreeResponse {
+export interface ApiResponseModelDetailResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseGetScenarioDataFileTreeResponseData;
+  data?: ApiResponseModelDetailResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseListContainerStatusResponseData = ContainerStatusResponse[] | null;
+export type ApiResponseModelResponseData = ModelResponse | null;
 
-export interface ApiResponseListContainerStatusResponse {
+export interface ApiResponseModelResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseListContainerStatusResponseData;
+  data?: ApiResponseModelResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseListExerciseResponseData = ExerciseResponse[] | null;
+export type ApiResponseModelStateResponseData = ModelStateResponse | null;
 
-export interface ApiResponseListExerciseResponse {
+export interface ApiResponseModelStateResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseListExerciseResponseData;
+  data?: ApiResponseModelStateResponseData;
 }
 
 /**
  * 响应数据
  */
-export type ApiResponseListScenarioResponseData = ScenarioResponse[] | null;
+export type ApiResponsePacketFileResponseData = PacketFileResponse | null;
 
-export interface ApiResponseListScenarioResponse {
+export interface ApiResponsePacketFileResponse {
   /** 状态码 */
   code?: number;
   /** 响应消息 */
   message?: string;
   /** 响应数据 */
-  data?: ApiResponseListScenarioResponseData;
+  data?: ApiResponsePacketFileResponseData;
 }
 
 /**
- * 响应数据
+ * 场景状态枚举
  */
-export type ApiResponseScenarioResponseData = ScenarioResponse | null;
-
-export interface ApiResponseScenarioResponse {
-  /** 状态码 */
-  code?: number;
-  /** 响应消息 */
-  message?: string;
-  /** 响应数据 */
-  data?: ApiResponseScenarioResponseData;
-}
-
-/**
- * 响应数据
- */
-export type ApiResponseScenarioStatusResponseData = ScenarioStatusResponse | null;
-
-export interface ApiResponseScenarioStatusResponse {
-  /** 状态码 */
-  code?: number;
-  /** 响应消息 */
-  message?: string;
-  /** 响应数据 */
-  data?: ApiResponseScenarioStatusResponseData;
-}
-
-export interface BodyCreateExerciseExercisesPost {
-  /** 练习名称 */
-  name: string;
-  /** 练习描述 */
-  description: string;
-  /** 靶机压缩包 */
-  target_file: Blob;
-}
-
-export interface BodyCreateScenarioScenariosPost {
-  /** 场景名称 */
-  name: string;
-  /** 场景描述 */
-  description: string;
-  /** 攻击端压缩包 */
-  attacker_file: Blob;
-  /** 防守端压缩包 */
-  defender_file: Blob;
-  /** 靶机压缩包 */
-  target_file: Blob;
-}
-
-export interface BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost {
-  /** 要上传的文件 */
-  file: Blob;
-  /** 文件保存路径 */
-  file_path: string;
-}
-
-export interface BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost {
-  /** 要上传的文件 */
-  file: Blob;
-  /** 文件保存路径 */
-  file_path: string;
-}
-
-/**
- * 容器内部状态枚举
- */
-export type ContainerState = typeof ContainerState[keyof typeof ContainerState];
+export type BaseState = typeof BaseState[keyof typeof BaseState];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ContainerState = {
-  created: 'created',
-  running: 'running',
-  paused: 'paused',
-  restarting: 'restarting',
-  removing: 'removing',
-  exited: 'exited',
-  dead: 'dead',
-  unknown: 'unknown',
-  not_found: 'not_found',
-} as const;
-
-/**
- * 容器状态枚举
- */
-export type ContainerStatus = typeof ContainerStatus[keyof typeof ContainerStatus];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ContainerStatus = {
-  created: 'created',
-  restarting: 'restarting',
-  running: 'running',
-  removing: 'removing',
-  paused: 'paused',
-  exited: 'exited',
-  dead: 'dead',
-  not_found: 'not_found',
-} as const;
-
-/**
- * 容器状态响应模型
- */
-export interface ContainerStatusResponse {
-  container_id: string;
-  name: string;
-  status: ContainerStatus;
-  state: ContainerState;
-  image: string;
-}
-
-/**
- * 创建场景数据目录请求模型
- */
-export interface CreateExerciseDataDirectoryRequest {
-  /** 目录路径 */
-  dir_path: string;
-}
-
-/**
- * 文件类型，text表示文本文件，binary表示二进制文件
- */
-export type CreateExerciseDataFileRequestFileType = typeof CreateExerciseDataFileRequestFileType[keyof typeof CreateExerciseDataFileRequestFileType];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CreateExerciseDataFileRequestFileType = {
-  text: 'text',
-  binary: 'binary',
-} as const;
-
-/**
- * 创建场景数据文件请求模型
- */
-export interface CreateExerciseDataFileRequest {
-  /** 文件路径 */
-  file_path: string;
-  /** 文件内容 */
-  content: string;
-  /** 文件类型，text表示文本文件，binary表示二进制文件 */
-  file_type: CreateExerciseDataFileRequestFileType;
-}
-
-export type CreateExerciseWithFilesResponseUploadedFiles = { [key: string]: unknown };
-
-/**
- * 创建练习（文件上传）响应模型
- */
-export interface CreateExerciseWithFilesResponse {
-  uuid: string;
-  name: string;
-  description: string;
-  state: ExerciseState;
-  file_path: string;
-  uploaded_files?: CreateExerciseWithFilesResponseUploadedFiles;
-}
-
-/**
- * 创建场景数据目录请求模型
- */
-export interface CreateScenarioDataDirectoryRequest {
-  /** 目录路径 */
-  dir_path: string;
-}
-
-/**
- * 文件类型，text表示文本文件，binary表示二进制文件
- */
-export type CreateScenarioDataFileRequestFileType = typeof CreateScenarioDataFileRequestFileType[keyof typeof CreateScenarioDataFileRequestFileType];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CreateScenarioDataFileRequestFileType = {
-  text: 'text',
-  binary: 'binary',
-} as const;
-
-/**
- * 创建场景数据文件请求模型
- */
-export interface CreateScenarioDataFileRequest {
-  /** 文件路径 */
-  file_path: string;
-  /** 文件内容 */
-  content: string;
-  /** 文件类型，text表示文本文件，binary表示二进制文件 */
-  file_type: CreateScenarioDataFileRequestFileType;
-}
-
-export type CreateScenarioWithFilesResponseUploadedFiles = { [key: string]: unknown };
-
-/**
- * 创建场景（文件上传）响应模型
- */
-export interface CreateScenarioWithFilesResponse {
-  uuid: string;
-  name: string;
-  description: string;
-  state: ScenarioState;
-  file_path: string;
-  uploaded_files?: CreateScenarioWithFilesResponseUploadedFiles;
-}
-
-/**
- * 删除场景数据文件目录请求模型
- */
-export interface DeleteExerciseDataFileRequest {
-  /** 文件路径 */
-  file_path: string;
-}
-
-/**
- * 删除场景数据文件目录请求模型
- */
-export interface DeleteScenarioDataFileRequest {
-  /** 文件路径 */
-  file_path: string;
-}
-
-/**
- * 练习操作枚举
- */
-export type ExerciseAction = typeof ExerciseAction[keyof typeof ExerciseAction];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ExerciseAction = {
-  start: 'start',
-  stop: 'stop',
-  build: 'build',
-} as const;
-
-/**
- * 练习响应模型
- */
-export interface ExerciseResponse {
-  uuid: string;
-  name: string;
-  description: string;
-  state: ExerciseState;
-  file_path: string;
-}
-
-/**
- * 练习状态枚举
- */
-export type ExerciseState = typeof ExerciseState[keyof typeof ExerciseState];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ExerciseState = {
+export const BaseState = {
   pending: 'pending',
   building: 'building',
   running: 'running',
@@ -455,24 +223,74 @@ export const ExerciseState = {
   build_error: 'build_error',
   runtime_error: 'runtime_error',
   error: 'error',
-  removing: 'removing',
 } as const;
 
-export type ExerciseStatusResponseStatusInfo = { [key: string]: unknown };
+export interface BodyCreateModelsModelsPost {
+  /** 模型名称 */
+  name: string;
+  /** 模型描述 */
+  description: string;
+  /** 模型类型: scenario 或 exercise */
+  model_type: string;
+  /** 攻击端压缩包（场景必需） */
+  attacker_file?: Blob;
+  /** 防守端压缩包（场景必需） */
+  defender_file?: Blob;
+  /** 靶机压缩包 */
+  target_file: Blob;
+}
+
+export interface BodyUploadModelFileModelsModelIdFilesUploadPost {
+  /** 要上传的文件 */
+  file: Blob;
+  /** 文件保存路径 */
+  file_path: string;
+}
 
 /**
- * 练习状态响应模型
+ * 创建场景数据目录请求模型
  */
-export interface ExerciseStatusResponse {
-  exercise_id: string;
-  state: string;
-  status_info: ExerciseStatusResponseStatusInfo;
+export interface CreateDataDirectoryRequest {
+  /** 目录路径 */
+  dir_path: string;
+}
+
+/**
+ * 文件类型，text表示文本文件，binary表示二进制文件
+ */
+export type CreateDataFileRequestFileType = typeof CreateDataFileRequestFileType[keyof typeof CreateDataFileRequestFileType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateDataFileRequestFileType = {
+  text: 'text',
+  binary: 'binary',
+} as const;
+
+/**
+ * 创建场景数据文件请求模型
+ */
+export interface CreateDataFileRequest {
+  /** 文件路径 */
+  file_path: string;
+  /** 文件内容 */
+  content: string;
+  /** 文件类型，text表示文本文件，binary表示二进制文件 */
+  file_type: CreateDataFileRequestFileType;
+}
+
+/**
+ * 删除场景数据文件目录请求模型
+ */
+export interface DeleteDataFileRequest {
+  /** 文件路径 */
+  file_path: string;
 }
 
 /**
  * 获取场景数据文件内容请求模型
  */
-export interface GetExerciseDataFileContentRequest {
+export interface GetDataFileContentRequest {
   /** 文件路径 */
   file_path: string;
 }
@@ -480,11 +298,11 @@ export interface GetExerciseDataFileContentRequest {
 /**
  * 文件类型，text表示文本文件，binary表示二进制文件
  */
-export type GetExerciseDataFileContentResponseFileType = typeof GetExerciseDataFileContentResponseFileType[keyof typeof GetExerciseDataFileContentResponseFileType];
+export type GetDataFileContentResponseFileType = typeof GetDataFileContentResponseFileType[keyof typeof GetDataFileContentResponseFileType];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetExerciseDataFileContentResponseFileType = {
+export const GetDataFileContentResponseFileType = {
   text: 'text',
   binary: 'binary',
 } as const;
@@ -492,67 +310,56 @@ export const GetExerciseDataFileContentResponseFileType = {
 /**
  * 获取场景数据文件内容响应模型
  */
-export interface GetExerciseDataFileContentResponse {
+export interface GetDataFileContentResponse {
   /** 文件内容 */
   content: string;
   /** 文件类型，text表示文本文件，binary表示二进制文件 */
-  file_type: GetExerciseDataFileContentResponseFileType;
+  file_type: GetDataFileContentResponseFileType;
 }
 
 /**
  * 文件树结构，键为目录或文件名，值为子目录或文件列表
  */
-export type GetExerciseDataFileTreeResponseFileTree = { [key: string]: unknown };
+export type GetDataFileTreeResponseFileTree = { [key: string]: unknown };
 
 /**
  * 获取场景数据文件树响应模型
  */
-export interface GetExerciseDataFileTreeResponse {
+export interface GetDataFileTreeResponse {
   /** 文件树结构，键为目录或文件名，值为子目录或文件列表 */
-  file_tree: GetExerciseDataFileTreeResponseFileTree;
+  file_tree: GetDataFileTreeResponseFileTree;
 }
 
 /**
- * 获取场景数据文件内容请求模型
+ * 所有容器详细信息，格式为 {容器名: inspect信息}
  */
-export interface GetScenarioDataFileContentRequest {
-  /** 文件路径 */
-  file_path: string;
+export type GetModelAllContainerInspectResponseContainers = { [key: string]: unknown };
+
+/**
+ * 获取模型所有容器详细信息响应模型
+ */
+export interface GetModelAllContainerInspectResponse {
+  /** 模型ID */
+  model_id: string;
+  /** 所有容器详细信息，格式为 {容器名: inspect信息} */
+  containers: GetModelAllContainerInspectResponseContainers;
 }
 
 /**
- * 文件类型，text表示文本文件，binary表示二进制文件
+ * 容器详细信息
  */
-export type GetScenarioDataFileContentResponseFileType = typeof GetScenarioDataFileContentResponseFileType[keyof typeof GetScenarioDataFileContentResponseFileType];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetScenarioDataFileContentResponseFileType = {
-  text: 'text',
-  binary: 'binary',
-} as const;
+export type GetModelContainerInspectResponseInspect = { [key: string]: unknown };
 
 /**
- * 获取场景数据文件内容响应模型
+ * 获取模型容器详细信息响应模型
  */
-export interface GetScenarioDataFileContentResponse {
-  /** 文件内容 */
-  content: string;
-  /** 文件类型，text表示文本文件，binary表示二进制文件 */
-  file_type: GetScenarioDataFileContentResponseFileType;
-}
-
-/**
- * 文件树结构，键为目录或文件名，值为子目录或文件列表
- */
-export type GetScenarioDataFileTreeResponseFileTree = { [key: string]: unknown };
-
-/**
- * 获取场景数据文件树响应模型
- */
-export interface GetScenarioDataFileTreeResponse {
-  /** 文件树结构，键为目录或文件名，值为子目录或文件列表 */
-  file_tree: GetScenarioDataFileTreeResponseFileTree;
+export interface GetModelContainerInspectResponse {
+  /** 模型ID */
+  model_id: string;
+  /** 容器名称 */
+  container_name: string;
+  /** 容器详细信息 */
+  inspect: GetModelContainerInspectResponseInspect;
 }
 
 export interface HTTPValidationError {
@@ -560,127 +367,92 @@ export interface HTTPValidationError {
 }
 
 /**
- * 练习名称
- */
-export type PartialUpdateExerciseRequestName = string | null;
-
-/**
- * 练习描述
- */
-export type PartialUpdateExerciseRequestDescription = string | null;
-
-/**
- * 部分更新练习请求模型
- */
-export interface PartialUpdateExerciseRequest {
-  /** 练习名称 */
-  name?: PartialUpdateExerciseRequestName;
-  /** 练习描述 */
-  description?: PartialUpdateExerciseRequestDescription;
-}
-
-/**
- * 场景名称
- */
-export type PartialUpdateScenarioRequestName = string | null;
-
-/**
- * 场景描述
- */
-export type PartialUpdateScenarioRequestDescription = string | null;
-
-/**
- * 部分更新场景请求模型
- */
-export interface PartialUpdateScenarioRequest {
-  /** 场景名称 */
-  name?: PartialUpdateScenarioRequestName;
-  /** 场景描述 */
-  description?: PartialUpdateScenarioRequestDescription;
-}
-
-/**
  * 场景操作枚举
  */
-export type ScenarioAction = typeof ScenarioAction[keyof typeof ScenarioAction];
+export type ModelAction = typeof ModelAction[keyof typeof ModelAction];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ScenarioAction = {
+export const ModelAction = {
   start: 'start',
   stop: 'stop',
   build: 'build',
+  force_stop_build: 'force_stop_build',
 } as const;
 
 /**
- * 场景响应模型
+ * 模型删除响应模型
  */
-export interface ScenarioResponse {
+export interface ModelDeleteResponse {
+  deleted_model_id: string;
+}
+
+/**
+ * Compose内容
+ */
+export type ModelDetailResponseComposeInfo = { [key: string]: unknown };
+
+/**
+ * 模型详细信息响应模型
+ */
+export interface ModelDetailResponse {
   uuid: string;
   name: string;
   description: string;
-  state: ScenarioState;
+  state: BaseState;
+  /** 模型类型：scenario 或 exercise */
+  model_type: string;
+  data_path: string;
+  /** Compose内容 */
+  compose_info: ModelDetailResponseComposeInfo;
+}
+
+/**
+ * 模型响应模型
+ */
+export interface ModelResponse {
+  uuid: string;
+  name: string;
+  description: string;
+  state: BaseState;
+  /** 模型类型：scenario 或 exercise */
+  model_type: string;
+}
+
+/**
+ * 模型状态响应模型
+ */
+export interface ModelStateResponse {
+  uuid: string;
+  state: BaseState;
+}
+
+/**
+ * 数据包文件响应模型
+ */
+export interface PacketFileResponse {
+  /** 容器名称 */
+  container_name: string;
+  /** 数据包文件路径 */
   file_path: string;
-}
-
-/**
- * 场景状态枚举
- */
-export type ScenarioState = typeof ScenarioState[keyof typeof ScenarioState];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ScenarioState = {
-  pending: 'pending',
-  building: 'building',
-  running: 'running',
-  stopped: 'stopped',
-  build_error: 'build_error',
-  runtime_error: 'runtime_error',
-  error: 'error',
-  removing: 'removing',
-} as const;
-
-export type ScenarioStatusResponseStatusInfo = { [key: string]: unknown };
-
-/**
- * 场景状态响应模型
- */
-export interface ScenarioStatusResponse {
-  scenario_id: string;
-  state: string;
-  status_info: ScenarioStatusResponseStatusInfo;
-}
-
-/**
- * 场景目标状态枚举（用于设置状态）
- */
-export type ScenarioTargetState = typeof ScenarioTargetState[keyof typeof ScenarioTargetState];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ScenarioTargetState = {
-  running: 'running',
-  stopped: 'stopped',
-  building: 'building',
-} as const;
-
-/**
- * 设置场景状态请求模型
- */
-export interface SetScenarioStateRequest {
-  /** 目标状态 */
-  state: ScenarioTargetState;
+  /** 数据包文件名 */
+  file_name: string;
+  /** 文件大小（字节） */
+  file_size: number;
+  /** 创建时间 */
+  created_time: string;
+  /** 文件是否存在 */
+  exists: boolean;
 }
 
 /**
  * 文件类型，text表示文本文件，binary表示二进制文件
  */
-export type UpdateExerciseDataFileRequestFileType = typeof UpdateExerciseDataFileRequestFileType[keyof typeof UpdateExerciseDataFileRequestFileType];
+export type UpdateDataFileRequestFileType = typeof UpdateDataFileRequestFileType[keyof typeof UpdateDataFileRequestFileType];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const UpdateExerciseDataFileRequestFileType = {
+export const UpdateDataFileRequestFileType = {
   text: 'text',
   binary: 'binary',
 } as const;
@@ -688,93 +460,41 @@ export const UpdateExerciseDataFileRequestFileType = {
 /**
  * 更新场景数据文件请求模型
  */
-export interface UpdateExerciseDataFileRequest {
+export interface UpdateDataFileRequest {
   /** 文件路径 */
   file_path: string;
   /** 文件内容 */
   content: string;
   /** 文件类型，text表示文本文件，binary表示二进制文件 */
-  file_type: UpdateExerciseDataFileRequestFileType;
+  file_type: UpdateDataFileRequestFileType;
 }
 
 /**
- * 练习名称
+ * 模型名称, 可选
  */
-export type UpdateExerciseRequestName = string | null;
+export type UpdateModelRequestName = string | null;
 
 /**
- * 练习描述
+ * 模型描述, 可选
  */
-export type UpdateExerciseRequestDescription = string | null;
+export type UpdateModelRequestDescription = string | null;
 
 /**
- * 更新练习信息请求模型
+ * 更新模型信息请求模型
  */
-export interface UpdateExerciseRequest {
-  /** 练习名称 */
-  name?: UpdateExerciseRequestName;
-  /** 练习描述 */
-  description?: UpdateExerciseRequestDescription;
+export interface UpdateModelRequest {
+  /** 模型名称, 可选 */
+  name?: UpdateModelRequestName;
+  /** 模型描述, 可选 */
+  description?: UpdateModelRequestDescription;
 }
 
 /**
- * 更新练习状态请求模型
+ * 更新模型状态请求模型
  */
-export interface UpdateExerciseStateRequest {
+export interface UpdateModelStateRequest {
   /** 要执行的操作 */
-  action: ExerciseAction;
-}
-
-/**
- * 文件类型，text表示文本文件，binary表示二进制文件
- */
-export type UpdateScenarioDataFileRequestFileType = typeof UpdateScenarioDataFileRequestFileType[keyof typeof UpdateScenarioDataFileRequestFileType];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const UpdateScenarioDataFileRequestFileType = {
-  text: 'text',
-  binary: 'binary',
-} as const;
-
-/**
- * 更新场景数据文件请求模型
- */
-export interface UpdateScenarioDataFileRequest {
-  /** 文件路径 */
-  file_path: string;
-  /** 文件内容 */
-  content: string;
-  /** 文件类型，text表示文本文件，binary表示二进制文件 */
-  file_type: UpdateScenarioDataFileRequestFileType;
-}
-
-/**
- * 场景名称
- */
-export type UpdateScenarioRequestName = string | null;
-
-/**
- * 场景描述
- */
-export type UpdateScenarioRequestDescription = string | null;
-
-/**
- * 更新场景信息请求模型
- */
-export interface UpdateScenarioRequest {
-  /** 场景名称 */
-  name?: UpdateScenarioRequestName;
-  /** 场景描述 */
-  description?: UpdateScenarioRequestDescription;
-}
-
-/**
- * 更新场景状态请求模型
- */
-export interface UpdateScenarioStateRequest {
-  /** 要执行的操作 */
-  action: ScenarioAction;
+  action: ModelAction;
 }
 
 export type ValidationErrorLocItem = string | number;
@@ -784,6 +504,1503 @@ export interface ValidationError {
   msg: string;
   type: string;
 }
+
+/**
+ * 获取所有模型列表
+ * @summary Get Models
+ */
+export const getModelsModelsGet = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseListModelResponse>(
+      {url: `/models`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetModelsModelsGetQueryKey = () => {
+    return [`/models`] as const;
+    }
+
+    
+export const getGetModelsModelsGetQueryOptions = <TData = Awaited<ReturnType<typeof getModelsModelsGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelsModelsGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModelsModelsGetQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModelsModelsGet>>> = ({ signal }) => getModelsModelsGet(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModelsModelsGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModelsModelsGetQueryResult = NonNullable<Awaited<ReturnType<typeof getModelsModelsGet>>>
+export type GetModelsModelsGetQueryError = unknown
+
+
+export function useGetModelsModelsGet<TData = Awaited<ReturnType<typeof getModelsModelsGet>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelsModelsGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelsModelsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelsModelsGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelsModelsGet<TData = Awaited<ReturnType<typeof getModelsModelsGet>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelsModelsGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelsModelsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelsModelsGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelsModelsGet<TData = Awaited<ReturnType<typeof getModelsModelsGet>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelsModelsGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Models
+ */
+
+export function useGetModelsModelsGet<TData = Awaited<ReturnType<typeof getModelsModelsGet>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelsModelsGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModelsModelsGetQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 获取指定模型详情
+ * @summary Get Model
+ */
+export const getModelModelsModelIdGet = (
+    modelId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseModelDetailResponse>(
+      {url: `/models/${modelId}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetModelModelsModelIdGetQueryKey = (modelId: string,) => {
+    return [`/models/${modelId}`] as const;
+    }
+
+    
+export const getGetModelModelsModelIdGetQueryOptions = <TData = Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModelModelsModelIdGetQueryKey(modelId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModelModelsModelIdGet>>> = ({ signal }) => getModelModelsModelIdGet(modelId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModelModelsModelIdGetQueryResult = NonNullable<Awaited<ReturnType<typeof getModelModelsModelIdGet>>>
+export type GetModelModelsModelIdGetQueryError = HTTPValidationError
+
+
+export function useGetModelModelsModelIdGet<TData = Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelModelsModelIdGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelModelsModelIdGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelModelsModelIdGet<TData = Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelModelsModelIdGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelModelsModelIdGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelModelsModelIdGet<TData = Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Model
+ */
+
+export function useGetModelModelsModelIdGet<TData = Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelModelsModelIdGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModelModelsModelIdGetQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 删除模型
+ * @summary Delete Model
+ */
+export const deleteModelModelsModelIdDelete = (
+    modelId: string,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponseModelDeleteResponse>(
+      {url: `/models/${modelId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteModelModelsModelIdDeleteMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteModelModelsModelIdDelete>>, TError,{modelId: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteModelModelsModelIdDelete>>, TError,{modelId: string}, TContext> => {
+
+const mutationKey = ['deleteModelModelsModelIdDelete'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteModelModelsModelIdDelete>>, {modelId: string}> = (props) => {
+          const {modelId} = props ?? {};
+
+          return  deleteModelModelsModelIdDelete(modelId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteModelModelsModelIdDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteModelModelsModelIdDelete>>>
+    
+    export type DeleteModelModelsModelIdDeleteMutationError = HTTPValidationError
+
+    /**
+ * @summary Delete Model
+ */
+export const useDeleteModelModelsModelIdDelete = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteModelModelsModelIdDelete>>, TError,{modelId: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteModelModelsModelIdDelete>>,
+        TError,
+        {modelId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteModelModelsModelIdDeleteMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 更新模型信息
+ * @summary Update Model
+ */
+export const updateModelModelsModelIdPut = (
+    modelId: string,
+    updateModelRequest: UpdateModelRequest,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponseModelResponse>(
+      {url: `/models/${modelId}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateModelRequest
+    },
+      );
+    }
+  
+
+
+export const getUpdateModelModelsModelIdPutMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateModelModelsModelIdPut>>, TError,{modelId: string;data: UpdateModelRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof updateModelModelsModelIdPut>>, TError,{modelId: string;data: UpdateModelRequest}, TContext> => {
+
+const mutationKey = ['updateModelModelsModelIdPut'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateModelModelsModelIdPut>>, {modelId: string;data: UpdateModelRequest}> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  updateModelModelsModelIdPut(modelId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateModelModelsModelIdPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateModelModelsModelIdPut>>>
+    export type UpdateModelModelsModelIdPutMutationBody = UpdateModelRequest
+    export type UpdateModelModelsModelIdPutMutationError = HTTPValidationError
+
+    /**
+ * @summary Update Model
+ */
+export const useUpdateModelModelsModelIdPut = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateModelModelsModelIdPut>>, TError,{modelId: string;data: UpdateModelRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateModelModelsModelIdPut>>,
+        TError,
+        {modelId: string;data: UpdateModelRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateModelModelsModelIdPutMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 更新模型状态
+ * @summary Update Model State
+ */
+export const updateModelStateModelsModelIdPatch = (
+    modelId: string,
+    updateModelStateRequest: UpdateModelStateRequest,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponseModelResponse>(
+      {url: `/models/${modelId}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updateModelStateRequest
+    },
+      );
+    }
+  
+
+
+export const getUpdateModelStateModelsModelIdPatchMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateModelStateModelsModelIdPatch>>, TError,{modelId: string;data: UpdateModelStateRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof updateModelStateModelsModelIdPatch>>, TError,{modelId: string;data: UpdateModelStateRequest}, TContext> => {
+
+const mutationKey = ['updateModelStateModelsModelIdPatch'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateModelStateModelsModelIdPatch>>, {modelId: string;data: UpdateModelStateRequest}> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  updateModelStateModelsModelIdPatch(modelId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateModelStateModelsModelIdPatchMutationResult = NonNullable<Awaited<ReturnType<typeof updateModelStateModelsModelIdPatch>>>
+    export type UpdateModelStateModelsModelIdPatchMutationBody = UpdateModelStateRequest
+    export type UpdateModelStateModelsModelIdPatchMutationError = HTTPValidationError
+
+    /**
+ * @summary Update Model State
+ */
+export const useUpdateModelStateModelsModelIdPatch = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateModelStateModelsModelIdPatch>>, TError,{modelId: string;data: UpdateModelStateRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateModelStateModelsModelIdPatch>>,
+        TError,
+        {modelId: string;data: UpdateModelStateRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateModelStateModelsModelIdPatchMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 获取指定模型状态
+ * @summary Get Model State
+ */
+export const getModelStateModelsModelIdStateGet = (
+    modelId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseModelStateResponse>(
+      {url: `/models/${modelId}/state`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetModelStateModelsModelIdStateGetQueryKey = (modelId: string,) => {
+    return [`/models/${modelId}/state`] as const;
+    }
+
+    
+export const getGetModelStateModelsModelIdStateGetQueryOptions = <TData = Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModelStateModelsModelIdStateGetQueryKey(modelId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>> = ({ signal }) => getModelStateModelsModelIdStateGet(modelId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModelStateModelsModelIdStateGetQueryResult = NonNullable<Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>>
+export type GetModelStateModelsModelIdStateGetQueryError = HTTPValidationError
+
+
+export function useGetModelStateModelsModelIdStateGet<TData = Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelStateModelsModelIdStateGet<TData = Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelStateModelsModelIdStateGet<TData = Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Model State
+ */
+
+export function useGetModelStateModelsModelIdStateGet<TData = Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelStateModelsModelIdStateGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModelStateModelsModelIdStateGetQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 创建新模型（支持场景/练习）
+ * @summary Create Models
+ */
+export const createModelsModelsPost = (
+    bodyCreateModelsModelsPost: BodyCreateModelsModelsPost,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+formData.append(`name`, bodyCreateModelsModelsPost.name)
+formData.append(`description`, bodyCreateModelsModelsPost.description)
+formData.append(`model_type`, bodyCreateModelsModelsPost.model_type)
+if(bodyCreateModelsModelsPost.attacker_file !== undefined) {
+ formData.append(`attacker_file`, bodyCreateModelsModelsPost.attacker_file)
+ }
+if(bodyCreateModelsModelsPost.defender_file !== undefined) {
+ formData.append(`defender_file`, bodyCreateModelsModelsPost.defender_file)
+ }
+formData.append(`target_file`, bodyCreateModelsModelsPost.target_file)
+
+      return docker_manager_api<ApiResponseModelResponse>(
+      {url: `/models/`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      );
+    }
+  
+
+
+export const getCreateModelsModelsPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelsModelsPost>>, TError,{data: BodyCreateModelsModelsPost}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createModelsModelsPost>>, TError,{data: BodyCreateModelsModelsPost}, TContext> => {
+
+const mutationKey = ['createModelsModelsPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createModelsModelsPost>>, {data: BodyCreateModelsModelsPost}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createModelsModelsPost(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateModelsModelsPostMutationResult = NonNullable<Awaited<ReturnType<typeof createModelsModelsPost>>>
+    export type CreateModelsModelsPostMutationBody = BodyCreateModelsModelsPost
+    export type CreateModelsModelsPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Create Models
+ */
+export const useCreateModelsModelsPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelsModelsPost>>, TError,{data: BodyCreateModelsModelsPost}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createModelsModelsPost>>,
+        TError,
+        {data: BodyCreateModelsModelsPost},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateModelsModelsPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 获取模型容器详细信息
+ * @summary Get Model Container Inspect
+ */
+export const getModelContainerInspectModelsModelIdInspectContainerNameGet = (
+    modelId: string,
+    containerName: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseGetModelContainerInspectResponse>(
+      {url: `/models/${modelId}/inspect/${containerName}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetModelContainerInspectModelsModelIdInspectContainerNameGetQueryKey = (modelId: string,
+    containerName: string,) => {
+    return [`/models/${modelId}/inspect/${containerName}`] as const;
+    }
+
+    
+export const getGetModelContainerInspectModelsModelIdInspectContainerNameGetQueryOptions = <TData = Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError = HTTPValidationError>(modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModelContainerInspectModelsModelIdInspectContainerNameGetQueryKey(modelId,containerName);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>> = ({ signal }) => getModelContainerInspectModelsModelIdInspectContainerNameGet(modelId,containerName, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId && containerName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModelContainerInspectModelsModelIdInspectContainerNameGetQueryResult = NonNullable<Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>>
+export type GetModelContainerInspectModelsModelIdInspectContainerNameGetQueryError = HTTPValidationError
+
+
+export function useGetModelContainerInspectModelsModelIdInspectContainerNameGet<TData = Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelContainerInspectModelsModelIdInspectContainerNameGet<TData = Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelContainerInspectModelsModelIdInspectContainerNameGet<TData = Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Model Container Inspect
+ */
+
+export function useGetModelContainerInspectModelsModelIdInspectContainerNameGet<TData = Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelContainerInspectModelsModelIdInspectContainerNameGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModelContainerInspectModelsModelIdInspectContainerNameGetQueryOptions(modelId,containerName,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 获取所有模型容器详细信息
+ * @summary Get Model All Container Inspect
+ */
+export const getModelAllContainerInspectModelsModelIdInspectGet = (
+    modelId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseGetModelAllContainerInspectResponse>(
+      {url: `/models/${modelId}/inspect`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetModelAllContainerInspectModelsModelIdInspectGetQueryKey = (modelId: string,) => {
+    return [`/models/${modelId}/inspect`] as const;
+    }
+
+    
+export const getGetModelAllContainerInspectModelsModelIdInspectGetQueryOptions = <TData = Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModelAllContainerInspectModelsModelIdInspectGetQueryKey(modelId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>> = ({ signal }) => getModelAllContainerInspectModelsModelIdInspectGet(modelId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModelAllContainerInspectModelsModelIdInspectGetQueryResult = NonNullable<Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>>
+export type GetModelAllContainerInspectModelsModelIdInspectGetQueryError = HTTPValidationError
+
+
+export function useGetModelAllContainerInspectModelsModelIdInspectGet<TData = Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelAllContainerInspectModelsModelIdInspectGet<TData = Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelAllContainerInspectModelsModelIdInspectGet<TData = Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Model All Container Inspect
+ */
+
+export function useGetModelAllContainerInspectModelsModelIdInspectGet<TData = Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelAllContainerInspectModelsModelIdInspectGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModelAllContainerInspectModelsModelIdInspectGetQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 获取模型数据文件树
+ * @summary Get Model File Tree
+ */
+export const getModelFileTreeModelsModelIdFilesGet = (
+    modelId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseGetDataFileTreeResponse>(
+      {url: `/models/${modelId}/files`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetModelFileTreeModelsModelIdFilesGetQueryKey = (modelId: string,) => {
+    return [`/models/${modelId}/files`] as const;
+    }
+
+    
+export const getGetModelFileTreeModelsModelIdFilesGetQueryOptions = <TData = Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModelFileTreeModelsModelIdFilesGetQueryKey(modelId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>> = ({ signal }) => getModelFileTreeModelsModelIdFilesGet(modelId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModelFileTreeModelsModelIdFilesGetQueryResult = NonNullable<Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>>
+export type GetModelFileTreeModelsModelIdFilesGetQueryError = HTTPValidationError
+
+
+export function useGetModelFileTreeModelsModelIdFilesGet<TData = Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelFileTreeModelsModelIdFilesGet<TData = Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelFileTreeModelsModelIdFilesGet<TData = Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Model File Tree
+ */
+
+export function useGetModelFileTreeModelsModelIdFilesGet<TData = Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelFileTreeModelsModelIdFilesGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModelFileTreeModelsModelIdFilesGetQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 更新模型数据文件内容
+ * @summary Update Model File Content
+ */
+export const updateModelFileContentModelsModelIdFilesPut = (
+    modelId: string,
+    updateDataFileRequest: UpdateDataFileRequest,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/models/${modelId}/files`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateDataFileRequest
+    },
+      );
+    }
+  
+
+
+export const getUpdateModelFileContentModelsModelIdFilesPutMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateModelFileContentModelsModelIdFilesPut>>, TError,{modelId: string;data: UpdateDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof updateModelFileContentModelsModelIdFilesPut>>, TError,{modelId: string;data: UpdateDataFileRequest}, TContext> => {
+
+const mutationKey = ['updateModelFileContentModelsModelIdFilesPut'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateModelFileContentModelsModelIdFilesPut>>, {modelId: string;data: UpdateDataFileRequest}> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  updateModelFileContentModelsModelIdFilesPut(modelId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateModelFileContentModelsModelIdFilesPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateModelFileContentModelsModelIdFilesPut>>>
+    export type UpdateModelFileContentModelsModelIdFilesPutMutationBody = UpdateDataFileRequest
+    export type UpdateModelFileContentModelsModelIdFilesPutMutationError = HTTPValidationError
+
+    /**
+ * @summary Update Model File Content
+ */
+export const useUpdateModelFileContentModelsModelIdFilesPut = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateModelFileContentModelsModelIdFilesPut>>, TError,{modelId: string;data: UpdateDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateModelFileContentModelsModelIdFilesPut>>,
+        TError,
+        {modelId: string;data: UpdateDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateModelFileContentModelsModelIdFilesPutMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 创建模型数据文件
+ * @summary Create Model File
+ */
+export const createModelFileModelsModelIdFilesPost = (
+    modelId: string,
+    createDataFileRequest: CreateDataFileRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/models/${modelId}/files`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createDataFileRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getCreateModelFileModelsModelIdFilesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelFileModelsModelIdFilesPost>>, TError,{modelId: string;data: CreateDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createModelFileModelsModelIdFilesPost>>, TError,{modelId: string;data: CreateDataFileRequest}, TContext> => {
+
+const mutationKey = ['createModelFileModelsModelIdFilesPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createModelFileModelsModelIdFilesPost>>, {modelId: string;data: CreateDataFileRequest}> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  createModelFileModelsModelIdFilesPost(modelId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateModelFileModelsModelIdFilesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createModelFileModelsModelIdFilesPost>>>
+    export type CreateModelFileModelsModelIdFilesPostMutationBody = CreateDataFileRequest
+    export type CreateModelFileModelsModelIdFilesPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Create Model File
+ */
+export const useCreateModelFileModelsModelIdFilesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelFileModelsModelIdFilesPost>>, TError,{modelId: string;data: CreateDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createModelFileModelsModelIdFilesPost>>,
+        TError,
+        {modelId: string;data: CreateDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateModelFileModelsModelIdFilesPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 删除模型数据文件或目录
+ * @summary Delete Model File
+ */
+export const deleteModelFileModelsModelIdFilesDelete = (
+    modelId: string,
+    deleteDataFileRequest: DeleteDataFileRequest,
+ ) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/models/${modelId}/files`, method: 'DELETE',
+      headers: {'Content-Type': 'application/json', },
+      data: deleteDataFileRequest
+    },
+      );
+    }
+  
+
+
+export const getDeleteModelFileModelsModelIdFilesDeleteMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteModelFileModelsModelIdFilesDelete>>, TError,{modelId: string;data: DeleteDataFileRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteModelFileModelsModelIdFilesDelete>>, TError,{modelId: string;data: DeleteDataFileRequest}, TContext> => {
+
+const mutationKey = ['deleteModelFileModelsModelIdFilesDelete'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteModelFileModelsModelIdFilesDelete>>, {modelId: string;data: DeleteDataFileRequest}> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  deleteModelFileModelsModelIdFilesDelete(modelId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteModelFileModelsModelIdFilesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteModelFileModelsModelIdFilesDelete>>>
+    export type DeleteModelFileModelsModelIdFilesDeleteMutationBody = DeleteDataFileRequest
+    export type DeleteModelFileModelsModelIdFilesDeleteMutationError = HTTPValidationError
+
+    /**
+ * @summary Delete Model File
+ */
+export const useDeleteModelFileModelsModelIdFilesDelete = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteModelFileModelsModelIdFilesDelete>>, TError,{modelId: string;data: DeleteDataFileRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteModelFileModelsModelIdFilesDelete>>,
+        TError,
+        {modelId: string;data: DeleteDataFileRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteModelFileModelsModelIdFilesDeleteMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 获取模型数据文件内容
+ * @summary Get Model File Content
+ */
+export const getModelFileContentModelsModelIdFilesContentPost = (
+    modelId: string,
+    getDataFileContentRequest: GetDataFileContentRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseGetDataFileContentResponse>(
+      {url: `/models/${modelId}/files/content`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: getDataFileContentRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getGetModelFileContentModelsModelIdFilesContentPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getModelFileContentModelsModelIdFilesContentPost>>, TError,{modelId: string;data: GetDataFileContentRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof getModelFileContentModelsModelIdFilesContentPost>>, TError,{modelId: string;data: GetDataFileContentRequest}, TContext> => {
+
+const mutationKey = ['getModelFileContentModelsModelIdFilesContentPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getModelFileContentModelsModelIdFilesContentPost>>, {modelId: string;data: GetDataFileContentRequest}> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  getModelFileContentModelsModelIdFilesContentPost(modelId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GetModelFileContentModelsModelIdFilesContentPostMutationResult = NonNullable<Awaited<ReturnType<typeof getModelFileContentModelsModelIdFilesContentPost>>>
+    export type GetModelFileContentModelsModelIdFilesContentPostMutationBody = GetDataFileContentRequest
+    export type GetModelFileContentModelsModelIdFilesContentPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Get Model File Content
+ */
+export const useGetModelFileContentModelsModelIdFilesContentPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getModelFileContentModelsModelIdFilesContentPost>>, TError,{modelId: string;data: GetDataFileContentRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof getModelFileContentModelsModelIdFilesContentPost>>,
+        TError,
+        {modelId: string;data: GetDataFileContentRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getGetModelFileContentModelsModelIdFilesContentPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 创建模型数据目录
+ * @summary Create Model Directory
+ */
+export const createModelDirectoryModelsModelIdDirectoriesPost = (
+    modelId: string,
+    createDataDirectoryRequest: CreateDataDirectoryRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponse>(
+      {url: `/models/${modelId}/directories`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createDataDirectoryRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getCreateModelDirectoryModelsModelIdDirectoriesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext> => {
+
+const mutationKey = ['createModelDirectoryModelsModelIdDirectoriesPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>, {modelId: string;data: CreateDataDirectoryRequest}> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  createModelDirectoryModelsModelIdDirectoriesPost(modelId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateModelDirectoryModelsModelIdDirectoriesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>>
+    export type CreateModelDirectoryModelsModelIdDirectoriesPostMutationBody = CreateDataDirectoryRequest
+    export type CreateModelDirectoryModelsModelIdDirectoriesPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Create Model Directory
+ */
+export const useCreateModelDirectoryModelsModelIdDirectoriesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>,
+        TError,
+        {modelId: string;data: CreateDataDirectoryRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getCreateModelDirectoryModelsModelIdDirectoriesPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 上传文件到模型目录
+ * @summary Upload Model File
+ */
+export const uploadModelFileModelsModelIdFilesUploadPost = (
+    modelId: string,
+    bodyUploadModelFileModelsModelIdFilesUploadPost: BodyUploadModelFileModelsModelIdFilesUploadPost,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+formData.append(`file`, bodyUploadModelFileModelsModelIdFilesUploadPost.file)
+formData.append(`file_path`, bodyUploadModelFileModelsModelIdFilesUploadPost.file_path)
+
+      return docker_manager_api<ApiResponse>(
+      {url: `/models/${modelId}/files/upload`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      );
+    }
+  
+
+
+export const getUploadModelFileModelsModelIdFilesUploadPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadModelFileModelsModelIdFilesUploadPost>>, TError,{modelId: string;data: BodyUploadModelFileModelsModelIdFilesUploadPost}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof uploadModelFileModelsModelIdFilesUploadPost>>, TError,{modelId: string;data: BodyUploadModelFileModelsModelIdFilesUploadPost}, TContext> => {
+
+const mutationKey = ['uploadModelFileModelsModelIdFilesUploadPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadModelFileModelsModelIdFilesUploadPost>>, {modelId: string;data: BodyUploadModelFileModelsModelIdFilesUploadPost}> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  uploadModelFileModelsModelIdFilesUploadPost(modelId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadModelFileModelsModelIdFilesUploadPostMutationResult = NonNullable<Awaited<ReturnType<typeof uploadModelFileModelsModelIdFilesUploadPost>>>
+    export type UploadModelFileModelsModelIdFilesUploadPostMutationBody = BodyUploadModelFileModelsModelIdFilesUploadPost
+    export type UploadModelFileModelsModelIdFilesUploadPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Upload Model File
+ */
+export const useUploadModelFileModelsModelIdFilesUploadPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadModelFileModelsModelIdFilesUploadPost>>, TError,{modelId: string;data: BodyUploadModelFileModelsModelIdFilesUploadPost}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof uploadModelFileModelsModelIdFilesUploadPost>>,
+        TError,
+        {modelId: string;data: BodyUploadModelFileModelsModelIdFilesUploadPost},
+        TContext
+      > => {
+
+      const mutationOptions = getUploadModelFileModelsModelIdFilesUploadPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 获取指定容器的最新数据包文件信息
+ * @summary Get Container Packet File
+ */
+export const getContainerPacketFileModelsModelIdContainersContainerNamePacketGet = (
+    modelId: string,
+    containerName: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponsePacketFileResponse>(
+      {url: `/models/${modelId}/containers/${containerName}/packet`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetContainerPacketFileModelsModelIdContainersContainerNamePacketGetQueryKey = (modelId: string,
+    containerName: string,) => {
+    return [`/models/${modelId}/containers/${containerName}/packet`] as const;
+    }
+
+    
+export const getGetContainerPacketFileModelsModelIdContainersContainerNamePacketGetQueryOptions = <TData = Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError = HTTPValidationError>(modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetContainerPacketFileModelsModelIdContainersContainerNamePacketGetQueryKey(modelId,containerName);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>> = ({ signal }) => getContainerPacketFileModelsModelIdContainersContainerNamePacketGet(modelId,containerName, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId && containerName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetContainerPacketFileModelsModelIdContainersContainerNamePacketGetQueryResult = NonNullable<Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>>
+export type GetContainerPacketFileModelsModelIdContainersContainerNamePacketGetQueryError = HTTPValidationError
+
+
+export function useGetContainerPacketFileModelsModelIdContainersContainerNamePacketGet<TData = Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>,
+          TError,
+          Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetContainerPacketFileModelsModelIdContainersContainerNamePacketGet<TData = Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>,
+          TError,
+          Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetContainerPacketFileModelsModelIdContainersContainerNamePacketGet<TData = Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Container Packet File
+ */
+
+export function useGetContainerPacketFileModelsModelIdContainersContainerNamePacketGet<TData = Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getContainerPacketFileModelsModelIdContainersContainerNamePacketGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetContainerPacketFileModelsModelIdContainersContainerNamePacketGetQueryOptions(modelId,containerName,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 获取指定模型所有容器的数据包文件信息
+ * @summary Get All Packet Files
+ */
+export const getAllPacketFilesModelsModelIdPacketsGet = (
+    modelId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseAllPacketFilesResponse>(
+      {url: `/models/${modelId}/packets`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetAllPacketFilesModelsModelIdPacketsGetQueryKey = (modelId: string,) => {
+    return [`/models/${modelId}/packets`] as const;
+    }
+
+    
+export const getGetAllPacketFilesModelsModelIdPacketsGetQueryOptions = <TData = Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAllPacketFilesModelsModelIdPacketsGetQueryKey(modelId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>> = ({ signal }) => getAllPacketFilesModelsModelIdPacketsGet(modelId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetAllPacketFilesModelsModelIdPacketsGetQueryResult = NonNullable<Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>>
+export type GetAllPacketFilesModelsModelIdPacketsGetQueryError = HTTPValidationError
+
+
+export function useGetAllPacketFilesModelsModelIdPacketsGet<TData = Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAllPacketFilesModelsModelIdPacketsGet<TData = Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAllPacketFilesModelsModelIdPacketsGet<TData = Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get All Packet Files
+ */
+
+export function useGetAllPacketFilesModelsModelIdPacketsGet<TData = Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAllPacketFilesModelsModelIdPacketsGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAllPacketFilesModelsModelIdPacketsGetQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 下载指定容器的数据包文件
+ * @summary Download Container Packet File
+ */
+export const downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet = (
+    modelId: string,
+    containerName: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<unknown>(
+      {url: `/models/${modelId}/containers/${containerName}/packet/download`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getDownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGetQueryKey = (modelId: string,
+    containerName: string,) => {
+    return [`/models/${modelId}/containers/${containerName}/packet/download`] as const;
+    }
+
+    
+export const getDownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGetQueryOptions = <TData = Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError = HTTPValidationError>(modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGetQueryKey(modelId,containerName);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>> = ({ signal }) => downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet(modelId,containerName, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId && containerName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type DownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGetQueryResult = NonNullable<Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>>
+export type DownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGetQueryError = HTTPValidationError
+
+
+export function useDownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet<TData = Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>,
+          TError,
+          Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet<TData = Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>,
+          TError,
+          Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet<TData = Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Download Container Packet File
+ */
+
+export function useDownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet<TData = Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getDownloadContainerPacketFileModelsModelIdContainersContainerNamePacketDownloadGetQueryOptions(modelId,containerName,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
 
 /**
  * 根路径
@@ -964,1105 +2181,83 @@ export function useHealthCheckHealthGet<TData = Awaited<ReturnType<typeof health
 
 
 /**
- * 获取所有场景列表
- * @summary Get Scenarios
+ * 流式获取模型构建日志
+ * @summary Stream Model Build Logs
  */
-export const getScenariosScenariosGet = (
-    
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseListScenarioResponse>(
-      {url: `/scenarios`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetScenariosScenariosGetQueryKey = () => {
-    return [`/scenarios`] as const;
-    }
-
-    
-export const getGetScenariosScenariosGetQueryOptions = <TData = Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetScenariosScenariosGetQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getScenariosScenariosGet>>> = ({ signal }) => getScenariosScenariosGet(signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetScenariosScenariosGetQueryResult = NonNullable<Awaited<ReturnType<typeof getScenariosScenariosGet>>>
-export type GetScenariosScenariosGetQueryError = unknown
-
-
-export function useGetScenariosScenariosGet<TData = Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenariosScenariosGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenariosScenariosGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenariosScenariosGet<TData = Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenariosScenariosGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenariosScenariosGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenariosScenariosGet<TData = Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Scenarios
- */
-
-export function useGetScenariosScenariosGet<TData = Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenariosScenariosGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetScenariosScenariosGetQueryOptions(options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 创建新场景
- * @summary Create Scenario
- */
-export const createScenarioScenariosPost = (
-    bodyCreateScenarioScenariosPost: BodyCreateScenarioScenariosPost,
- signal?: AbortSignal
-) => {
-      
-      const formData = new FormData();
-formData.append(`name`, bodyCreateScenarioScenariosPost.name)
-formData.append(`description`, bodyCreateScenarioScenariosPost.description)
-formData.append(`attacker_file`, bodyCreateScenarioScenariosPost.attacker_file)
-formData.append(`defender_file`, bodyCreateScenarioScenariosPost.defender_file)
-formData.append(`target_file`, bodyCreateScenarioScenariosPost.target_file)
-
-      return docker_manager_api<ApiResponseCreateScenarioWithFilesResponse>(
-      {url: `/scenarios`, method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data', },
-       data: formData, signal
-    },
-      );
-    }
-  
-
-
-export const getCreateScenarioScenariosPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioScenariosPost>>, TError,{data: BodyCreateScenarioScenariosPost}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof createScenarioScenariosPost>>, TError,{data: BodyCreateScenarioScenariosPost}, TContext> => {
-
-const mutationKey = ['createScenarioScenariosPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createScenarioScenariosPost>>, {data: BodyCreateScenarioScenariosPost}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createScenarioScenariosPost(data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateScenarioScenariosPostMutationResult = NonNullable<Awaited<ReturnType<typeof createScenarioScenariosPost>>>
-    export type CreateScenarioScenariosPostMutationBody = BodyCreateScenarioScenariosPost
-    export type CreateScenarioScenariosPostMutationError = HTTPValidationError
-
-    /**
- * @summary Create Scenario
- */
-export const useCreateScenarioScenariosPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioScenariosPost>>, TError,{data: BodyCreateScenarioScenariosPost}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createScenarioScenariosPost>>,
-        TError,
-        {data: BodyCreateScenarioScenariosPost},
-        TContext
-      > => {
-
-      const mutationOptions = getCreateScenarioScenariosPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 获取指定场景详情
- * @summary Get Scenario
- */
-export const getScenarioScenariosScenarioIdGet = (
-    scenarioId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseScenarioResponse>(
-      {url: `/scenarios/${scenarioId}`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetScenarioScenariosScenarioIdGetQueryKey = (scenarioId: string,) => {
-    return [`/scenarios/${scenarioId}`] as const;
-    }
-
-    
-export const getGetScenarioScenariosScenarioIdGetQueryOptions = <TData = Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError = HTTPValidationError>(scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetScenarioScenariosScenarioIdGetQueryKey(scenarioId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>> = ({ signal }) => getScenarioScenariosScenarioIdGet(scenarioId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(scenarioId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetScenarioScenariosScenarioIdGetQueryResult = NonNullable<Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>>
-export type GetScenarioScenariosScenarioIdGetQueryError = HTTPValidationError
-
-
-export function useGetScenarioScenariosScenarioIdGet<TData = Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError = HTTPValidationError>(
- scenarioId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenarioScenariosScenarioIdGet<TData = Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenarioScenariosScenarioIdGet<TData = Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Scenario
- */
-
-export function useGetScenarioScenariosScenarioIdGet<TData = Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioScenariosScenarioIdGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetScenarioScenariosScenarioIdGetQueryOptions(scenarioId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 删除场景
- * @summary Delete Scenario
- */
-export const deleteScenarioScenariosScenarioIdDelete = (
-    scenarioId: string,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/scenarios/${scenarioId}`, method: 'DELETE'
-    },
-      );
-    }
-  
-
-
-export const getDeleteScenarioScenariosScenarioIdDeleteMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioScenariosScenarioIdDelete>>, TError,{scenarioId: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioScenariosScenarioIdDelete>>, TError,{scenarioId: string}, TContext> => {
-
-const mutationKey = ['deleteScenarioScenariosScenarioIdDelete'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteScenarioScenariosScenarioIdDelete>>, {scenarioId: string}> = (props) => {
-          const {scenarioId} = props ?? {};
-
-          return  deleteScenarioScenariosScenarioIdDelete(scenarioId,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteScenarioScenariosScenarioIdDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteScenarioScenariosScenarioIdDelete>>>
-    
-    export type DeleteScenarioScenariosScenarioIdDeleteMutationError = HTTPValidationError
-
-    /**
- * @summary Delete Scenario
- */
-export const useDeleteScenarioScenariosScenarioIdDelete = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioScenariosScenarioIdDelete>>, TError,{scenarioId: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteScenarioScenariosScenarioIdDelete>>,
-        TError,
-        {scenarioId: string},
-        TContext
-      > => {
-
-      const mutationOptions = getDeleteScenarioScenariosScenarioIdDeleteMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 完整更新场景信息
- * @summary Update Scenario
- */
-export const updateScenarioScenariosScenarioIdPut = (
-    scenarioId: string,
-    updateScenarioRequest: UpdateScenarioRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponseScenarioResponse>(
-      {url: `/scenarios/${scenarioId}`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: updateScenarioRequest
-    },
-      );
-    }
-  
-
-
-export const getUpdateScenarioScenariosScenarioIdPutMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScenarioScenariosScenarioIdPut>>, TError,{scenarioId: string;data: UpdateScenarioRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof updateScenarioScenariosScenarioIdPut>>, TError,{scenarioId: string;data: UpdateScenarioRequest}, TContext> => {
-
-const mutationKey = ['updateScenarioScenariosScenarioIdPut'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateScenarioScenariosScenarioIdPut>>, {scenarioId: string;data: UpdateScenarioRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  updateScenarioScenariosScenarioIdPut(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateScenarioScenariosScenarioIdPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateScenarioScenariosScenarioIdPut>>>
-    export type UpdateScenarioScenariosScenarioIdPutMutationBody = UpdateScenarioRequest
-    export type UpdateScenarioScenariosScenarioIdPutMutationError = HTTPValidationError
-
-    /**
- * @summary Update Scenario
- */
-export const useUpdateScenarioScenariosScenarioIdPut = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScenarioScenariosScenarioIdPut>>, TError,{scenarioId: string;data: UpdateScenarioRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateScenarioScenariosScenarioIdPut>>,
-        TError,
-        {scenarioId: string;data: UpdateScenarioRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdateScenarioScenariosScenarioIdPutMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 更新场景状态（RESTful方式）
- * @summary Update Scenario State
- */
-export const updateScenarioStateScenariosScenarioIdPatch = (
-    scenarioId: string,
-    updateScenarioStateRequest: UpdateScenarioStateRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/scenarios/${scenarioId}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: updateScenarioStateRequest
-    },
-      );
-    }
-  
-
-
-export const getUpdateScenarioStateScenariosScenarioIdPatchMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScenarioStateScenariosScenarioIdPatch>>, TError,{scenarioId: string;data: UpdateScenarioStateRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof updateScenarioStateScenariosScenarioIdPatch>>, TError,{scenarioId: string;data: UpdateScenarioStateRequest}, TContext> => {
-
-const mutationKey = ['updateScenarioStateScenariosScenarioIdPatch'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateScenarioStateScenariosScenarioIdPatch>>, {scenarioId: string;data: UpdateScenarioStateRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  updateScenarioStateScenariosScenarioIdPatch(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateScenarioStateScenariosScenarioIdPatchMutationResult = NonNullable<Awaited<ReturnType<typeof updateScenarioStateScenariosScenarioIdPatch>>>
-    export type UpdateScenarioStateScenariosScenarioIdPatchMutationBody = UpdateScenarioStateRequest
-    export type UpdateScenarioStateScenariosScenarioIdPatchMutationError = HTTPValidationError
-
-    /**
- * @summary Update Scenario State
- */
-export const useUpdateScenarioStateScenariosScenarioIdPatch = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScenarioStateScenariosScenarioIdPatch>>, TError,{scenarioId: string;data: UpdateScenarioStateRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateScenarioStateScenariosScenarioIdPatch>>,
-        TError,
-        {scenarioId: string;data: UpdateScenarioStateRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdateScenarioStateScenariosScenarioIdPatchMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 部分更新场景信息
- * @summary Partial Update Scenario
- */
-export const partialUpdateScenarioScenariosScenarioIdInfoPatch = (
-    scenarioId: string,
-    partialUpdateScenarioRequest: PartialUpdateScenarioRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponseScenarioResponse>(
-      {url: `/scenarios/${scenarioId}/info`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: partialUpdateScenarioRequest
-    },
-      );
-    }
-  
-
-
-export const getPartialUpdateScenarioScenariosScenarioIdInfoPatchMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof partialUpdateScenarioScenariosScenarioIdInfoPatch>>, TError,{scenarioId: string;data: PartialUpdateScenarioRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof partialUpdateScenarioScenariosScenarioIdInfoPatch>>, TError,{scenarioId: string;data: PartialUpdateScenarioRequest}, TContext> => {
-
-const mutationKey = ['partialUpdateScenarioScenariosScenarioIdInfoPatch'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof partialUpdateScenarioScenariosScenarioIdInfoPatch>>, {scenarioId: string;data: PartialUpdateScenarioRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  partialUpdateScenarioScenariosScenarioIdInfoPatch(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PartialUpdateScenarioScenariosScenarioIdInfoPatchMutationResult = NonNullable<Awaited<ReturnType<typeof partialUpdateScenarioScenariosScenarioIdInfoPatch>>>
-    export type PartialUpdateScenarioScenariosScenarioIdInfoPatchMutationBody = PartialUpdateScenarioRequest
-    export type PartialUpdateScenarioScenariosScenarioIdInfoPatchMutationError = HTTPValidationError
-
-    /**
- * @summary Partial Update Scenario
- */
-export const usePartialUpdateScenarioScenariosScenarioIdInfoPatch = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof partialUpdateScenarioScenariosScenarioIdInfoPatch>>, TError,{scenarioId: string;data: PartialUpdateScenarioRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof partialUpdateScenarioScenariosScenarioIdInfoPatch>>,
-        TError,
-        {scenarioId: string;data: PartialUpdateScenarioRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getPartialUpdateScenarioScenariosScenarioIdInfoPatchMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 设置场景状态（独立状态资源）
- * @summary Set Scenario State
- */
-export const setScenarioStateScenariosScenarioIdStatePut = (
-    scenarioId: string,
-    setScenarioStateRequest: SetScenarioStateRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/scenarios/${scenarioId}/state`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: setScenarioStateRequest
-    },
-      );
-    }
-  
-
-
-export const getSetScenarioStateScenariosScenarioIdStatePutMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setScenarioStateScenariosScenarioIdStatePut>>, TError,{scenarioId: string;data: SetScenarioStateRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof setScenarioStateScenariosScenarioIdStatePut>>, TError,{scenarioId: string;data: SetScenarioStateRequest}, TContext> => {
-
-const mutationKey = ['setScenarioStateScenariosScenarioIdStatePut'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setScenarioStateScenariosScenarioIdStatePut>>, {scenarioId: string;data: SetScenarioStateRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  setScenarioStateScenariosScenarioIdStatePut(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type SetScenarioStateScenariosScenarioIdStatePutMutationResult = NonNullable<Awaited<ReturnType<typeof setScenarioStateScenariosScenarioIdStatePut>>>
-    export type SetScenarioStateScenariosScenarioIdStatePutMutationBody = SetScenarioStateRequest
-    export type SetScenarioStateScenariosScenarioIdStatePutMutationError = HTTPValidationError
-
-    /**
- * @summary Set Scenario State
- */
-export const useSetScenarioStateScenariosScenarioIdStatePut = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setScenarioStateScenariosScenarioIdStatePut>>, TError,{scenarioId: string;data: SetScenarioStateRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof setScenarioStateScenariosScenarioIdStatePut>>,
-        TError,
-        {scenarioId: string;data: SetScenarioStateRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getSetScenarioStateScenariosScenarioIdStatePutMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 获取场景状态
- * @summary Get Scenario Status
- */
-export const getScenarioStatusScenariosScenarioIdStatusGet = (
-    scenarioId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseScenarioStatusResponse>(
-      {url: `/scenarios/${scenarioId}/status`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetScenarioStatusScenariosScenarioIdStatusGetQueryKey = (scenarioId: string,) => {
-    return [`/scenarios/${scenarioId}/status`] as const;
-    }
-
-    
-export const getGetScenarioStatusScenariosScenarioIdStatusGetQueryOptions = <TData = Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError = HTTPValidationError>(scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetScenarioStatusScenariosScenarioIdStatusGetQueryKey(scenarioId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>> = ({ signal }) => getScenarioStatusScenariosScenarioIdStatusGet(scenarioId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(scenarioId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetScenarioStatusScenariosScenarioIdStatusGetQueryResult = NonNullable<Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>>
-export type GetScenarioStatusScenariosScenarioIdStatusGetQueryError = HTTPValidationError
-
-
-export function useGetScenarioStatusScenariosScenarioIdStatusGet<TData = Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError = HTTPValidationError>(
- scenarioId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenarioStatusScenariosScenarioIdStatusGet<TData = Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenarioStatusScenariosScenarioIdStatusGet<TData = Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Scenario Status
- */
-
-export function useGetScenarioStatusScenariosScenarioIdStatusGet<TData = Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioStatusScenariosScenarioIdStatusGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetScenarioStatusScenariosScenarioIdStatusGetQueryOptions(scenarioId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 获取场景中的所有容器
- * @summary Get Scenario Containers
- */
-export const getScenarioContainersScenariosScenarioIdContainersGet = (
-    scenarioId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseListContainerStatusResponse>(
-      {url: `/scenarios/${scenarioId}/containers`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetScenarioContainersScenariosScenarioIdContainersGetQueryKey = (scenarioId: string,) => {
-    return [`/scenarios/${scenarioId}/containers`] as const;
-    }
-
-    
-export const getGetScenarioContainersScenariosScenarioIdContainersGetQueryOptions = <TData = Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError = HTTPValidationError>(scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetScenarioContainersScenariosScenarioIdContainersGetQueryKey(scenarioId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>> = ({ signal }) => getScenarioContainersScenariosScenarioIdContainersGet(scenarioId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(scenarioId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetScenarioContainersScenariosScenarioIdContainersGetQueryResult = NonNullable<Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>>
-export type GetScenarioContainersScenariosScenarioIdContainersGetQueryError = HTTPValidationError
-
-
-export function useGetScenarioContainersScenariosScenarioIdContainersGet<TData = Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError = HTTPValidationError>(
- scenarioId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenarioContainersScenariosScenarioIdContainersGet<TData = Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenarioContainersScenariosScenarioIdContainersGet<TData = Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Scenario Containers
- */
-
-export function useGetScenarioContainersScenariosScenarioIdContainersGet<TData = Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioContainersScenariosScenarioIdContainersGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetScenarioContainersScenariosScenarioIdContainersGetQueryOptions(scenarioId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 流式获取服务器日志
- * @summary Stream Server Logs
- */
-export const streamServerLogsLogsStreamServerGet = (
-    
+export const streamModelBuildLogsLogsStreamModelModelIdBuildGet = (
+    modelId: string,
  signal?: AbortSignal
 ) => {
       
       
       return docker_manager_api<unknown>(
-      {url: `/logs/stream/server`, method: 'GET', signal
+      {url: `/logs/stream/model/${modelId}/build`, method: 'GET', signal
     },
       );
     }
   
 
-export const getStreamServerLogsLogsStreamServerGetQueryKey = () => {
-    return [`/logs/stream/server`] as const;
+export const getStreamModelBuildLogsLogsStreamModelModelIdBuildGetQueryKey = (modelId: string,) => {
+    return [`/logs/stream/model/${modelId}/build`] as const;
     }
 
     
-export const getStreamServerLogsLogsStreamServerGetQueryOptions = <TData = Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError, TData>>, }
+export const getStreamModelBuildLogsLogsStreamModelModelIdBuildGetQueryOptions = <TData = Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getStreamServerLogsLogsStreamServerGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getStreamModelBuildLogsLogsStreamModelModelIdBuildGetQueryKey(modelId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>> = ({ signal }) => streamServerLogsLogsStreamServerGet(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>> = ({ signal }) => streamModelBuildLogsLogsStreamModelModelIdBuildGet(modelId, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type StreamServerLogsLogsStreamServerGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>>
-export type StreamServerLogsLogsStreamServerGetQueryError = unknown
+export type StreamModelBuildLogsLogsStreamModelModelIdBuildGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>>
+export type StreamModelBuildLogsLogsStreamModelModelIdBuildGetQueryError = HTTPValidationError
 
 
-export function useStreamServerLogsLogsStreamServerGet<TData = Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError, TData>> & Pick<
+export function useStreamModelBuildLogsLogsStreamModelModelIdBuildGet<TData = Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>,
+          Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>,
           TError,
-          Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>
+          Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamServerLogsLogsStreamServerGet<TData = Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError, TData>> & Pick<
+export function useStreamModelBuildLogsLogsStreamModelModelIdBuildGet<TData = Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>,
+          Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>,
           TError,
-          Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>
+          Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamServerLogsLogsStreamServerGet<TData = Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError, TData>>, }
+export function useStreamModelBuildLogsLogsStreamModelModelIdBuildGet<TData = Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Stream Server Logs
+ * @summary Stream Model Build Logs
  */
 
-export function useStreamServerLogsLogsStreamServerGet<TData = Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamServerLogsLogsStreamServerGet>>, TError, TData>>, }
+export function useStreamModelBuildLogsLogsStreamModelModelIdBuildGet<TData = Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamModelBuildLogsLogsStreamModelModelIdBuildGet>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getStreamServerLogsLogsStreamServerGetQueryOptions(options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 流式获取场景构建日志
- * @summary Stream Scenario Build Logs
- */
-export const streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet = (
-    scenarioId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<unknown>(
-      {url: `/logs/stream/scenario/${scenarioId}/build`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getStreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGetQueryKey = (scenarioId: string,) => {
-    return [`/logs/stream/scenario/${scenarioId}/build`] as const;
-    }
-
-    
-export const getStreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGetQueryOptions = <TData = Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError = HTTPValidationError>(scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getStreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGetQueryKey(scenarioId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>> = ({ signal }) => streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet(scenarioId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(scenarioId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type StreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>>
-export type StreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGetQueryError = HTTPValidationError
-
-
-export function useStreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet<TData = Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError = HTTPValidationError>(
- scenarioId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet<TData = Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet<TData = Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Stream Scenario Build Logs
- */
-
-export function useStreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet<TData = Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getStreamScenarioBuildLogsLogsStreamScenarioScenarioIdBuildGetQueryOptions(scenarioId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 流式获取场景容器日志
- * @summary Stream Scenario Container Logs
- */
-export const streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet = (
-    scenarioId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<unknown>(
-      {url: `/logs/stream/scenario/${scenarioId}/containers`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getStreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGetQueryKey = (scenarioId: string,) => {
-    return [`/logs/stream/scenario/${scenarioId}/containers`] as const;
-    }
-
-    
-export const getStreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGetQueryOptions = <TData = Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError = HTTPValidationError>(scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getStreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGetQueryKey(scenarioId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>> = ({ signal }) => streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet(scenarioId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(scenarioId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type StreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>>
-export type StreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGetQueryError = HTTPValidationError
-
-
-export function useStreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet<TData = Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError = HTTPValidationError>(
- scenarioId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet<TData = Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet<TData = Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Stream Scenario Container Logs
- */
-
-export function useStreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet<TData = Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getStreamScenarioContainerLogsLogsStreamScenarioScenarioIdContainersGetQueryOptions(scenarioId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 流式获取场景日志
- * @summary Stream Scenario Logs
- */
-export const streamScenarioLogsLogsStreamScenarioScenarioIdGet = (
-    scenarioId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<unknown>(
-      {url: `/logs/stream/scenario/${scenarioId}`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getStreamScenarioLogsLogsStreamScenarioScenarioIdGetQueryKey = (scenarioId: string,) => {
-    return [`/logs/stream/scenario/${scenarioId}`] as const;
-    }
-
-    
-export const getStreamScenarioLogsLogsStreamScenarioScenarioIdGetQueryOptions = <TData = Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError = HTTPValidationError>(scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getStreamScenarioLogsLogsStreamScenarioScenarioIdGetQueryKey(scenarioId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>> = ({ signal }) => streamScenarioLogsLogsStreamScenarioScenarioIdGet(scenarioId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(scenarioId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type StreamScenarioLogsLogsStreamScenarioScenarioIdGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>>
-export type StreamScenarioLogsLogsStreamScenarioScenarioIdGetQueryError = HTTPValidationError
-
-
-export function useStreamScenarioLogsLogsStreamScenarioScenarioIdGet<TData = Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError = HTTPValidationError>(
- scenarioId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamScenarioLogsLogsStreamScenarioScenarioIdGet<TData = Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamScenarioLogsLogsStreamScenarioScenarioIdGet<TData = Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Stream Scenario Logs
- */
-
-export function useStreamScenarioLogsLogsStreamScenarioScenarioIdGet<TData = Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamScenarioLogsLogsStreamScenarioScenarioIdGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getStreamScenarioLogsLogsStreamScenarioScenarioIdGetQueryOptions(scenarioId,options)
+  const queryOptions = getStreamModelBuildLogsLogsStreamModelModelIdBuildGetQueryOptions(modelId,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -2078,2025 +2273,87 @@ export function useStreamScenarioLogsLogsStreamScenarioScenarioIdGet<TData = Awa
  * 流式获取指定容器的日志
  * @summary Stream Container Logs
  */
-export const streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet = (
-    scenarioId: string,
+export const streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet = (
+    modelId: string,
     containerName: string,
  signal?: AbortSignal
 ) => {
       
       
       return docker_manager_api<unknown>(
-      {url: `/logs/stream/scenario/${scenarioId}/container/${containerName}`, method: 'GET', signal
+      {url: `/logs/stream/model/${modelId}/container/${containerName}`, method: 'GET', signal
     },
       );
     }
   
 
-export const getStreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGetQueryKey = (scenarioId: string,
+export const getStreamContainerLogsLogsStreamModelModelIdContainerContainerNameGetQueryKey = (modelId: string,
     containerName: string,) => {
-    return [`/logs/stream/scenario/${scenarioId}/container/${containerName}`] as const;
+    return [`/logs/stream/model/${modelId}/container/${containerName}`] as const;
     }
 
     
-export const getStreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGetQueryOptions = <TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError = HTTPValidationError>(scenarioId: string,
-    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError, TData>>, }
+export const getStreamContainerLogsLogsStreamModelModelIdContainerContainerNameGetQueryOptions = <TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError = HTTPValidationError>(modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getStreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGetQueryKey(scenarioId,containerName);
+  const queryKey =  queryOptions?.queryKey ?? getStreamContainerLogsLogsStreamModelModelIdContainerContainerNameGetQueryKey(modelId,containerName);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>> = ({ signal }) => streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet(scenarioId,containerName, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>> = ({ signal }) => streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet(modelId,containerName, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(scenarioId && containerName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(modelId && containerName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type StreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>>
-export type StreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGetQueryError = HTTPValidationError
+export type StreamContainerLogsLogsStreamModelModelIdContainerContainerNameGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>>
+export type StreamContainerLogsLogsStreamModelModelIdContainerContainerNameGetQueryError = HTTPValidationError
 
 
-export function useStreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet<TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError = HTTPValidationError>(
- scenarioId: string,
-    containerName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError, TData>> & Pick<
+export function useStreamContainerLogsLogsStreamModelModelIdContainerContainerNameGet<TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>,
+          Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>,
           TError,
-          Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>
+          Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet<TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError = HTTPValidationError>(
- scenarioId: string,
-    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError, TData>> & Pick<
+export function useStreamContainerLogsLogsStreamModelModelIdContainerContainerNameGet<TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>,
+          Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>,
           TError,
-          Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>
+          Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet<TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError = HTTPValidationError>(
- scenarioId: string,
-    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError, TData>>, }
+export function useStreamContainerLogsLogsStreamModelModelIdContainerContainerNameGet<TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Stream Container Logs
  */
 
-export function useStreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet<TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError = HTTPValidationError>(
- scenarioId: string,
-    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGet>>, TError, TData>>, }
+export function useStreamContainerLogsLogsStreamModelModelIdContainerContainerNameGet<TData = Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamContainerLogsLogsStreamModelModelIdContainerContainerNameGet>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getStreamContainerLogsLogsStreamScenarioScenarioIdContainerContainerNameGetQueryOptions(scenarioId,containerName,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 获取场景数据文件树
- * @summary Get Scenario File Tree
- */
-export const getScenarioFileTreeScenariosScenarioIdFilesGet = (
-    scenarioId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseGetScenarioDataFileTreeResponse>(
-      {url: `/scenarios/${scenarioId}/files`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryKey = (scenarioId: string,) => {
-    return [`/scenarios/${scenarioId}/files`] as const;
-    }
-
-    
-export const getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryOptions = <TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryKey(scenarioId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>> = ({ signal }) => getScenarioFileTreeScenariosScenarioIdFilesGet(scenarioId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(scenarioId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetScenarioFileTreeScenariosScenarioIdFilesGetQueryResult = NonNullable<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>>
-export type GetScenarioFileTreeScenariosScenarioIdFilesGetQueryError = HTTPValidationError
-
-
-export function useGetScenarioFileTreeScenariosScenarioIdFilesGet<TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(
- scenarioId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenarioFileTreeScenariosScenarioIdFilesGet<TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>,
-          TError,
-          Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetScenarioFileTreeScenariosScenarioIdFilesGet<TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Scenario File Tree
- */
-
-export function useGetScenarioFileTreeScenariosScenarioIdFilesGet<TData = Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError = HTTPValidationError>(
- scenarioId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getScenarioFileTreeScenariosScenarioIdFilesGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryOptions(scenarioId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 更新场景数据文件内容
- * @summary Update Scenario File Content
- */
-export const updateScenarioFileContentScenariosScenarioIdFilesPut = (
-    scenarioId: string,
-    updateScenarioDataFileRequest: UpdateScenarioDataFileRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/scenarios/${scenarioId}/files`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: updateScenarioDataFileRequest
-    },
-      );
-    }
-  
-
-
-export const getUpdateScenarioFileContentScenariosScenarioIdFilesPutMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>, TError,{scenarioId: string;data: UpdateScenarioDataFileRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>, TError,{scenarioId: string;data: UpdateScenarioDataFileRequest}, TContext> => {
-
-const mutationKey = ['updateScenarioFileContentScenariosScenarioIdFilesPut'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>, {scenarioId: string;data: UpdateScenarioDataFileRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  updateScenarioFileContentScenariosScenarioIdFilesPut(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateScenarioFileContentScenariosScenarioIdFilesPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>>
-    export type UpdateScenarioFileContentScenariosScenarioIdFilesPutMutationBody = UpdateScenarioDataFileRequest
-    export type UpdateScenarioFileContentScenariosScenarioIdFilesPutMutationError = HTTPValidationError
-
-    /**
- * @summary Update Scenario File Content
- */
-export const useUpdateScenarioFileContentScenariosScenarioIdFilesPut = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>, TError,{scenarioId: string;data: UpdateScenarioDataFileRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateScenarioFileContentScenariosScenarioIdFilesPut>>,
-        TError,
-        {scenarioId: string;data: UpdateScenarioDataFileRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdateScenarioFileContentScenariosScenarioIdFilesPutMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 创建场景数据文件
- * @summary Create Scenario File
- */
-export const createScenarioFileScenariosScenarioIdFilesPost = (
-    scenarioId: string,
-    createScenarioDataFileRequest: CreateScenarioDataFileRequest,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/scenarios/${scenarioId}/files`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createScenarioDataFileRequest, signal
-    },
-      );
-    }
-  
-
-
-export const getCreateScenarioFileScenariosScenarioIdFilesPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>, TError,{scenarioId: string;data: CreateScenarioDataFileRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>, TError,{scenarioId: string;data: CreateScenarioDataFileRequest}, TContext> => {
-
-const mutationKey = ['createScenarioFileScenariosScenarioIdFilesPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>, {scenarioId: string;data: CreateScenarioDataFileRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  createScenarioFileScenariosScenarioIdFilesPost(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateScenarioFileScenariosScenarioIdFilesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>>
-    export type CreateScenarioFileScenariosScenarioIdFilesPostMutationBody = CreateScenarioDataFileRequest
-    export type CreateScenarioFileScenariosScenarioIdFilesPostMutationError = HTTPValidationError
-
-    /**
- * @summary Create Scenario File
- */
-export const useCreateScenarioFileScenariosScenarioIdFilesPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>, TError,{scenarioId: string;data: CreateScenarioDataFileRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createScenarioFileScenariosScenarioIdFilesPost>>,
-        TError,
-        {scenarioId: string;data: CreateScenarioDataFileRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getCreateScenarioFileScenariosScenarioIdFilesPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 删除场景数据文件或目录
- * @summary Delete Scenario File
- */
-export const deleteScenarioFileScenariosScenarioIdFilesDelete = (
-    scenarioId: string,
-    deleteScenarioDataFileRequest: DeleteScenarioDataFileRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/scenarios/${scenarioId}/files`, method: 'DELETE',
-      headers: {'Content-Type': 'application/json', },
-      data: deleteScenarioDataFileRequest
-    },
-      );
-    }
-  
-
-
-export const getDeleteScenarioFileScenariosScenarioIdFilesDeleteMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>, TError,{scenarioId: string;data: DeleteScenarioDataFileRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>, TError,{scenarioId: string;data: DeleteScenarioDataFileRequest}, TContext> => {
-
-const mutationKey = ['deleteScenarioFileScenariosScenarioIdFilesDelete'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>, {scenarioId: string;data: DeleteScenarioDataFileRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  deleteScenarioFileScenariosScenarioIdFilesDelete(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteScenarioFileScenariosScenarioIdFilesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>>
-    export type DeleteScenarioFileScenariosScenarioIdFilesDeleteMutationBody = DeleteScenarioDataFileRequest
-    export type DeleteScenarioFileScenariosScenarioIdFilesDeleteMutationError = HTTPValidationError
-
-    /**
- * @summary Delete Scenario File
- */
-export const useDeleteScenarioFileScenariosScenarioIdFilesDelete = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>, TError,{scenarioId: string;data: DeleteScenarioDataFileRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteScenarioFileScenariosScenarioIdFilesDelete>>,
-        TError,
-        {scenarioId: string;data: DeleteScenarioDataFileRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getDeleteScenarioFileScenariosScenarioIdFilesDeleteMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 获取场景数据文件内容
- * @summary Get Scenario File Content
- */
-export const getScenarioFileContentScenariosScenarioIdFilesContentPost = (
-    scenarioId: string,
-    getScenarioDataFileContentRequest: GetScenarioDataFileContentRequest,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseGetScenarioDataFileContentResponse>(
-      {url: `/scenarios/${scenarioId}/files/content`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: getScenarioDataFileContentRequest, signal
-    },
-      );
-    }
-  
-
-
-export const getGetScenarioFileContentScenariosScenarioIdFilesContentPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>, TError,{scenarioId: string;data: GetScenarioDataFileContentRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>, TError,{scenarioId: string;data: GetScenarioDataFileContentRequest}, TContext> => {
-
-const mutationKey = ['getScenarioFileContentScenariosScenarioIdFilesContentPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>, {scenarioId: string;data: GetScenarioDataFileContentRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  getScenarioFileContentScenariosScenarioIdFilesContentPost(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GetScenarioFileContentScenariosScenarioIdFilesContentPostMutationResult = NonNullable<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>>
-    export type GetScenarioFileContentScenariosScenarioIdFilesContentPostMutationBody = GetScenarioDataFileContentRequest
-    export type GetScenarioFileContentScenariosScenarioIdFilesContentPostMutationError = HTTPValidationError
-
-    /**
- * @summary Get Scenario File Content
- */
-export const useGetScenarioFileContentScenariosScenarioIdFilesContentPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>, TError,{scenarioId: string;data: GetScenarioDataFileContentRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof getScenarioFileContentScenariosScenarioIdFilesContentPost>>,
-        TError,
-        {scenarioId: string;data: GetScenarioDataFileContentRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getGetScenarioFileContentScenariosScenarioIdFilesContentPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 创建场景数据目录
- * @summary Create Scenario Directory
- */
-export const createScenarioDirectoryScenariosScenarioIdDirectoriesPost = (
-    scenarioId: string,
-    createScenarioDataDirectoryRequest: CreateScenarioDataDirectoryRequest,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/scenarios/${scenarioId}/directories`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createScenarioDataDirectoryRequest, signal
-    },
-      );
-    }
-  
-
-
-export const getCreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>, TError,{scenarioId: string;data: CreateScenarioDataDirectoryRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>, TError,{scenarioId: string;data: CreateScenarioDataDirectoryRequest}, TContext> => {
-
-const mutationKey = ['createScenarioDirectoryScenariosScenarioIdDirectoriesPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>, {scenarioId: string;data: CreateScenarioDataDirectoryRequest}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  createScenarioDirectoryScenariosScenarioIdDirectoriesPost(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>>
-    export type CreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationBody = CreateScenarioDataDirectoryRequest
-    export type CreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationError = HTTPValidationError
-
-    /**
- * @summary Create Scenario Directory
- */
-export const useCreateScenarioDirectoryScenariosScenarioIdDirectoriesPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>, TError,{scenarioId: string;data: CreateScenarioDataDirectoryRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createScenarioDirectoryScenariosScenarioIdDirectoriesPost>>,
-        TError,
-        {scenarioId: string;data: CreateScenarioDataDirectoryRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getCreateScenarioDirectoryScenariosScenarioIdDirectoriesPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 上传文件到场景目录
- * @summary Upload Scenario File
- */
-export const uploadScenarioFileScenariosScenarioIdFilesUploadPost = (
-    scenarioId: string,
-    bodyUploadScenarioFileScenariosScenarioIdFilesUploadPost: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost,
- signal?: AbortSignal
-) => {
-      
-      const formData = new FormData();
-formData.append(`file`, bodyUploadScenarioFileScenariosScenarioIdFilesUploadPost.file)
-formData.append(`file_path`, bodyUploadScenarioFileScenariosScenarioIdFilesUploadPost.file_path)
-
-      return docker_manager_api<ApiResponse>(
-      {url: `/scenarios/${scenarioId}/files/upload`, method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data', },
-       data: formData, signal
-    },
-      );
-    }
-  
-
-
-export const getUploadScenarioFileScenariosScenarioIdFilesUploadPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>, TError,{scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>, TError,{scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost}, TContext> => {
-
-const mutationKey = ['uploadScenarioFileScenariosScenarioIdFilesUploadPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>, {scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost}> = (props) => {
-          const {scenarioId,data} = props ?? {};
-
-          return  uploadScenarioFileScenariosScenarioIdFilesUploadPost(scenarioId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UploadScenarioFileScenariosScenarioIdFilesUploadPostMutationResult = NonNullable<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>>
-    export type UploadScenarioFileScenariosScenarioIdFilesUploadPostMutationBody = BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost
-    export type UploadScenarioFileScenariosScenarioIdFilesUploadPostMutationError = HTTPValidationError
-
-    /**
- * @summary Upload Scenario File
- */
-export const useUploadScenarioFileScenariosScenarioIdFilesUploadPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>, TError,{scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof uploadScenarioFileScenariosScenarioIdFilesUploadPost>>,
-        TError,
-        {scenarioId: string;data: BodyUploadScenarioFileScenariosScenarioIdFilesUploadPost},
-        TContext
-      > => {
-
-      const mutationOptions = getUploadScenarioFileScenariosScenarioIdFilesUploadPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 获取所有练习列表
- * @summary Get Exercises
- */
-export const getExercisesExercisesGet = (
-    
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseListExerciseResponse>(
-      {url: `/exercises`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetExercisesExercisesGetQueryKey = () => {
-    return [`/exercises`] as const;
-    }
-
-    
-export const getGetExercisesExercisesGetQueryOptions = <TData = Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetExercisesExercisesGetQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExercisesExercisesGet>>> = ({ signal }) => getExercisesExercisesGet(signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetExercisesExercisesGetQueryResult = NonNullable<Awaited<ReturnType<typeof getExercisesExercisesGet>>>
-export type GetExercisesExercisesGetQueryError = unknown
-
-
-export function useGetExercisesExercisesGet<TData = Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExercisesExercisesGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExercisesExercisesGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExercisesExercisesGet<TData = Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExercisesExercisesGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExercisesExercisesGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExercisesExercisesGet<TData = Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Exercises
- */
-
-export function useGetExercisesExercisesGet<TData = Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExercisesExercisesGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetExercisesExercisesGetQueryOptions(options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 创建新练习
- * @summary Create Exercise
- */
-export const createExerciseExercisesPost = (
-    bodyCreateExerciseExercisesPost: BodyCreateExerciseExercisesPost,
- signal?: AbortSignal
-) => {
-      
-      const formData = new FormData();
-formData.append(`name`, bodyCreateExerciseExercisesPost.name)
-formData.append(`description`, bodyCreateExerciseExercisesPost.description)
-formData.append(`target_file`, bodyCreateExerciseExercisesPost.target_file)
-
-      return docker_manager_api<ApiResponseCreateExerciseWithFilesResponse>(
-      {url: `/exercises`, method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data', },
-       data: formData, signal
-    },
-      );
-    }
-  
-
-
-export const getCreateExerciseExercisesPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseExercisesPost>>, TError,{data: BodyCreateExerciseExercisesPost}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof createExerciseExercisesPost>>, TError,{data: BodyCreateExerciseExercisesPost}, TContext> => {
-
-const mutationKey = ['createExerciseExercisesPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createExerciseExercisesPost>>, {data: BodyCreateExerciseExercisesPost}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createExerciseExercisesPost(data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateExerciseExercisesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createExerciseExercisesPost>>>
-    export type CreateExerciseExercisesPostMutationBody = BodyCreateExerciseExercisesPost
-    export type CreateExerciseExercisesPostMutationError = HTTPValidationError
-
-    /**
- * @summary Create Exercise
- */
-export const useCreateExerciseExercisesPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseExercisesPost>>, TError,{data: BodyCreateExerciseExercisesPost}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createExerciseExercisesPost>>,
-        TError,
-        {data: BodyCreateExerciseExercisesPost},
-        TContext
-      > => {
-
-      const mutationOptions = getCreateExerciseExercisesPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 获取指定练习详情
- * @summary Get Exercise
- */
-export const getExerciseExercisesExerciseIdGet = (
-    exerciseId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseExerciseResponse>(
-      {url: `/exercises/${exerciseId}`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetExerciseExercisesExerciseIdGetQueryKey = (exerciseId: string,) => {
-    return [`/exercises/${exerciseId}`] as const;
-    }
-
-    
-export const getGetExerciseExercisesExerciseIdGetQueryOptions = <TData = Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError = HTTPValidationError>(exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetExerciseExercisesExerciseIdGetQueryKey(exerciseId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>> = ({ signal }) => getExerciseExercisesExerciseIdGet(exerciseId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(exerciseId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetExerciseExercisesExerciseIdGetQueryResult = NonNullable<Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>>
-export type GetExerciseExercisesExerciseIdGetQueryError = HTTPValidationError
-
-
-export function useGetExerciseExercisesExerciseIdGet<TData = Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError = HTTPValidationError>(
- exerciseId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExerciseExercisesExerciseIdGet<TData = Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExerciseExercisesExerciseIdGet<TData = Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Exercise
- */
-
-export function useGetExerciseExercisesExerciseIdGet<TData = Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseExercisesExerciseIdGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetExerciseExercisesExerciseIdGetQueryOptions(exerciseId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 删除练习
- * @summary Delete Exercise
- */
-export const deleteExerciseExercisesExerciseIdDelete = (
-    exerciseId: string,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/exercises/${exerciseId}`, method: 'DELETE'
-    },
-      );
-    }
-  
-
-
-export const getDeleteExerciseExercisesExerciseIdDeleteMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseExercisesExerciseIdDelete>>, TError,{exerciseId: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseExercisesExerciseIdDelete>>, TError,{exerciseId: string}, TContext> => {
-
-const mutationKey = ['deleteExerciseExercisesExerciseIdDelete'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteExerciseExercisesExerciseIdDelete>>, {exerciseId: string}> = (props) => {
-          const {exerciseId} = props ?? {};
-
-          return  deleteExerciseExercisesExerciseIdDelete(exerciseId,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteExerciseExercisesExerciseIdDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteExerciseExercisesExerciseIdDelete>>>
-    
-    export type DeleteExerciseExercisesExerciseIdDeleteMutationError = HTTPValidationError
-
-    /**
- * @summary Delete Exercise
- */
-export const useDeleteExerciseExercisesExerciseIdDelete = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseExercisesExerciseIdDelete>>, TError,{exerciseId: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteExerciseExercisesExerciseIdDelete>>,
-        TError,
-        {exerciseId: string},
-        TContext
-      > => {
-
-      const mutationOptions = getDeleteExerciseExercisesExerciseIdDeleteMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 完整更新练习信息
- * @summary Update Exercise
- */
-export const updateExerciseExercisesExerciseIdPut = (
-    exerciseId: string,
-    updateExerciseRequest: UpdateExerciseRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponseExerciseResponse>(
-      {url: `/exercises/${exerciseId}`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: updateExerciseRequest
-    },
-      );
-    }
-  
-
-
-export const getUpdateExerciseExercisesExerciseIdPutMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateExerciseExercisesExerciseIdPut>>, TError,{exerciseId: string;data: UpdateExerciseRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof updateExerciseExercisesExerciseIdPut>>, TError,{exerciseId: string;data: UpdateExerciseRequest}, TContext> => {
-
-const mutationKey = ['updateExerciseExercisesExerciseIdPut'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateExerciseExercisesExerciseIdPut>>, {exerciseId: string;data: UpdateExerciseRequest}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  updateExerciseExercisesExerciseIdPut(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateExerciseExercisesExerciseIdPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateExerciseExercisesExerciseIdPut>>>
-    export type UpdateExerciseExercisesExerciseIdPutMutationBody = UpdateExerciseRequest
-    export type UpdateExerciseExercisesExerciseIdPutMutationError = HTTPValidationError
-
-    /**
- * @summary Update Exercise
- */
-export const useUpdateExerciseExercisesExerciseIdPut = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateExerciseExercisesExerciseIdPut>>, TError,{exerciseId: string;data: UpdateExerciseRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateExerciseExercisesExerciseIdPut>>,
-        TError,
-        {exerciseId: string;data: UpdateExerciseRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdateExerciseExercisesExerciseIdPutMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 更新练习状态
- * @summary Update Exercise State
- */
-export const updateExerciseStateExercisesExerciseIdPatch = (
-    exerciseId: string,
-    updateExerciseStateRequest: UpdateExerciseStateRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/exercises/${exerciseId}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: updateExerciseStateRequest
-    },
-      );
-    }
-  
-
-
-export const getUpdateExerciseStateExercisesExerciseIdPatchMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateExerciseStateExercisesExerciseIdPatch>>, TError,{exerciseId: string;data: UpdateExerciseStateRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof updateExerciseStateExercisesExerciseIdPatch>>, TError,{exerciseId: string;data: UpdateExerciseStateRequest}, TContext> => {
-
-const mutationKey = ['updateExerciseStateExercisesExerciseIdPatch'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateExerciseStateExercisesExerciseIdPatch>>, {exerciseId: string;data: UpdateExerciseStateRequest}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  updateExerciseStateExercisesExerciseIdPatch(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateExerciseStateExercisesExerciseIdPatchMutationResult = NonNullable<Awaited<ReturnType<typeof updateExerciseStateExercisesExerciseIdPatch>>>
-    export type UpdateExerciseStateExercisesExerciseIdPatchMutationBody = UpdateExerciseStateRequest
-    export type UpdateExerciseStateExercisesExerciseIdPatchMutationError = HTTPValidationError
-
-    /**
- * @summary Update Exercise State
- */
-export const useUpdateExerciseStateExercisesExerciseIdPatch = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateExerciseStateExercisesExerciseIdPatch>>, TError,{exerciseId: string;data: UpdateExerciseStateRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateExerciseStateExercisesExerciseIdPatch>>,
-        TError,
-        {exerciseId: string;data: UpdateExerciseStateRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdateExerciseStateExercisesExerciseIdPatchMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 部分更新练习信息
- * @summary Partial Update Exercise
- */
-export const partialUpdateExerciseExercisesExerciseIdInfoPatch = (
-    exerciseId: string,
-    partialUpdateExerciseRequest: PartialUpdateExerciseRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponseExerciseResponse>(
-      {url: `/exercises/${exerciseId}/info`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: partialUpdateExerciseRequest
-    },
-      );
-    }
-  
-
-
-export const getPartialUpdateExerciseExercisesExerciseIdInfoPatchMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof partialUpdateExerciseExercisesExerciseIdInfoPatch>>, TError,{exerciseId: string;data: PartialUpdateExerciseRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof partialUpdateExerciseExercisesExerciseIdInfoPatch>>, TError,{exerciseId: string;data: PartialUpdateExerciseRequest}, TContext> => {
-
-const mutationKey = ['partialUpdateExerciseExercisesExerciseIdInfoPatch'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof partialUpdateExerciseExercisesExerciseIdInfoPatch>>, {exerciseId: string;data: PartialUpdateExerciseRequest}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  partialUpdateExerciseExercisesExerciseIdInfoPatch(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PartialUpdateExerciseExercisesExerciseIdInfoPatchMutationResult = NonNullable<Awaited<ReturnType<typeof partialUpdateExerciseExercisesExerciseIdInfoPatch>>>
-    export type PartialUpdateExerciseExercisesExerciseIdInfoPatchMutationBody = PartialUpdateExerciseRequest
-    export type PartialUpdateExerciseExercisesExerciseIdInfoPatchMutationError = HTTPValidationError
-
-    /**
- * @summary Partial Update Exercise
- */
-export const usePartialUpdateExerciseExercisesExerciseIdInfoPatch = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof partialUpdateExerciseExercisesExerciseIdInfoPatch>>, TError,{exerciseId: string;data: PartialUpdateExerciseRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof partialUpdateExerciseExercisesExerciseIdInfoPatch>>,
-        TError,
-        {exerciseId: string;data: PartialUpdateExerciseRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getPartialUpdateExerciseExercisesExerciseIdInfoPatchMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 获取练习状态
- * @summary Get Exercise Status
- */
-export const getExerciseStatusExercisesExerciseIdStatusGet = (
-    exerciseId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseExerciseStatusResponse>(
-      {url: `/exercises/${exerciseId}/status`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetExerciseStatusExercisesExerciseIdStatusGetQueryKey = (exerciseId: string,) => {
-    return [`/exercises/${exerciseId}/status`] as const;
-    }
-
-    
-export const getGetExerciseStatusExercisesExerciseIdStatusGetQueryOptions = <TData = Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError = HTTPValidationError>(exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetExerciseStatusExercisesExerciseIdStatusGetQueryKey(exerciseId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>> = ({ signal }) => getExerciseStatusExercisesExerciseIdStatusGet(exerciseId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(exerciseId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetExerciseStatusExercisesExerciseIdStatusGetQueryResult = NonNullable<Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>>
-export type GetExerciseStatusExercisesExerciseIdStatusGetQueryError = HTTPValidationError
-
-
-export function useGetExerciseStatusExercisesExerciseIdStatusGet<TData = Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError = HTTPValidationError>(
- exerciseId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExerciseStatusExercisesExerciseIdStatusGet<TData = Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExerciseStatusExercisesExerciseIdStatusGet<TData = Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Exercise Status
- */
-
-export function useGetExerciseStatusExercisesExerciseIdStatusGet<TData = Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseStatusExercisesExerciseIdStatusGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetExerciseStatusExercisesExerciseIdStatusGetQueryOptions(exerciseId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 获取练习容器信息
- * @summary Get Exercise Containers
- */
-export const getExerciseContainersExercisesExerciseIdContainersGet = (
-    exerciseId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseListContainerStatusResponse>(
-      {url: `/exercises/${exerciseId}/containers`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetExerciseContainersExercisesExerciseIdContainersGetQueryKey = (exerciseId: string,) => {
-    return [`/exercises/${exerciseId}/containers`] as const;
-    }
-
-    
-export const getGetExerciseContainersExercisesExerciseIdContainersGetQueryOptions = <TData = Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError = HTTPValidationError>(exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetExerciseContainersExercisesExerciseIdContainersGetQueryKey(exerciseId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>> = ({ signal }) => getExerciseContainersExercisesExerciseIdContainersGet(exerciseId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(exerciseId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetExerciseContainersExercisesExerciseIdContainersGetQueryResult = NonNullable<Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>>
-export type GetExerciseContainersExercisesExerciseIdContainersGetQueryError = HTTPValidationError
-
-
-export function useGetExerciseContainersExercisesExerciseIdContainersGet<TData = Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError = HTTPValidationError>(
- exerciseId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExerciseContainersExercisesExerciseIdContainersGet<TData = Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExerciseContainersExercisesExerciseIdContainersGet<TData = Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Exercise Containers
- */
-
-export function useGetExerciseContainersExercisesExerciseIdContainersGet<TData = Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseContainersExercisesExerciseIdContainersGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetExerciseContainersExercisesExerciseIdContainersGetQueryOptions(exerciseId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 获取练习数据文件树
- * @summary Get Exercise File Tree
- */
-export const getExerciseFileTreeExercisesExerciseIdFilesGet = (
-    exerciseId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseGetExerciseDataFileTreeResponse>(
-      {url: `/exercises/${exerciseId}/files`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetExerciseFileTreeExercisesExerciseIdFilesGetQueryKey = (exerciseId: string,) => {
-    return [`/exercises/${exerciseId}/files`] as const;
-    }
-
-    
-export const getGetExerciseFileTreeExercisesExerciseIdFilesGetQueryOptions = <TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetExerciseFileTreeExercisesExerciseIdFilesGetQueryKey(exerciseId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>> = ({ signal }) => getExerciseFileTreeExercisesExerciseIdFilesGet(exerciseId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(exerciseId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetExerciseFileTreeExercisesExerciseIdFilesGetQueryResult = NonNullable<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>>
-export type GetExerciseFileTreeExercisesExerciseIdFilesGetQueryError = HTTPValidationError
-
-
-export function useGetExerciseFileTreeExercisesExerciseIdFilesGet<TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(
- exerciseId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExerciseFileTreeExercisesExerciseIdFilesGet<TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>,
-          TError,
-          Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetExerciseFileTreeExercisesExerciseIdFilesGet<TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get Exercise File Tree
- */
-
-export function useGetExerciseFileTreeExercisesExerciseIdFilesGet<TData = Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExerciseFileTreeExercisesExerciseIdFilesGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetExerciseFileTreeExercisesExerciseIdFilesGetQueryOptions(exerciseId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 更新练习数据文件内容
- * @summary Update Exercise File Content
- */
-export const updateExerciseFileContentExercisesExerciseIdFilesPut = (
-    exerciseId: string,
-    updateExerciseDataFileRequest: UpdateExerciseDataFileRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/exercises/${exerciseId}/files`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: updateExerciseDataFileRequest
-    },
-      );
-    }
-  
-
-
-export const getUpdateExerciseFileContentExercisesExerciseIdFilesPutMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>, TError,{exerciseId: string;data: UpdateExerciseDataFileRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>, TError,{exerciseId: string;data: UpdateExerciseDataFileRequest}, TContext> => {
-
-const mutationKey = ['updateExerciseFileContentExercisesExerciseIdFilesPut'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>, {exerciseId: string;data: UpdateExerciseDataFileRequest}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  updateExerciseFileContentExercisesExerciseIdFilesPut(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateExerciseFileContentExercisesExerciseIdFilesPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>>
-    export type UpdateExerciseFileContentExercisesExerciseIdFilesPutMutationBody = UpdateExerciseDataFileRequest
-    export type UpdateExerciseFileContentExercisesExerciseIdFilesPutMutationError = HTTPValidationError
-
-    /**
- * @summary Update Exercise File Content
- */
-export const useUpdateExerciseFileContentExercisesExerciseIdFilesPut = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>, TError,{exerciseId: string;data: UpdateExerciseDataFileRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateExerciseFileContentExercisesExerciseIdFilesPut>>,
-        TError,
-        {exerciseId: string;data: UpdateExerciseDataFileRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdateExerciseFileContentExercisesExerciseIdFilesPutMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 创建练习数据文件
- * @summary Create Exercise File
- */
-export const createExerciseFileExercisesExerciseIdFilesPost = (
-    exerciseId: string,
-    createExerciseDataFileRequest: CreateExerciseDataFileRequest,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/exercises/${exerciseId}/files`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createExerciseDataFileRequest, signal
-    },
-      );
-    }
-  
-
-
-export const getCreateExerciseFileExercisesExerciseIdFilesPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>, TError,{exerciseId: string;data: CreateExerciseDataFileRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>, TError,{exerciseId: string;data: CreateExerciseDataFileRequest}, TContext> => {
-
-const mutationKey = ['createExerciseFileExercisesExerciseIdFilesPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>, {exerciseId: string;data: CreateExerciseDataFileRequest}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  createExerciseFileExercisesExerciseIdFilesPost(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateExerciseFileExercisesExerciseIdFilesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>>
-    export type CreateExerciseFileExercisesExerciseIdFilesPostMutationBody = CreateExerciseDataFileRequest
-    export type CreateExerciseFileExercisesExerciseIdFilesPostMutationError = HTTPValidationError
-
-    /**
- * @summary Create Exercise File
- */
-export const useCreateExerciseFileExercisesExerciseIdFilesPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>, TError,{exerciseId: string;data: CreateExerciseDataFileRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createExerciseFileExercisesExerciseIdFilesPost>>,
-        TError,
-        {exerciseId: string;data: CreateExerciseDataFileRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getCreateExerciseFileExercisesExerciseIdFilesPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 删除练习数据文件或目录
- * @summary Delete Exercise File
- */
-export const deleteExerciseFileExercisesExerciseIdFilesDelete = (
-    exerciseId: string,
-    deleteExerciseDataFileRequest: DeleteExerciseDataFileRequest,
- ) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/exercises/${exerciseId}/files`, method: 'DELETE',
-      headers: {'Content-Type': 'application/json', },
-      data: deleteExerciseDataFileRequest
-    },
-      );
-    }
-  
-
-
-export const getDeleteExerciseFileExercisesExerciseIdFilesDeleteMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>, TError,{exerciseId: string;data: DeleteExerciseDataFileRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>, TError,{exerciseId: string;data: DeleteExerciseDataFileRequest}, TContext> => {
-
-const mutationKey = ['deleteExerciseFileExercisesExerciseIdFilesDelete'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>, {exerciseId: string;data: DeleteExerciseDataFileRequest}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  deleteExerciseFileExercisesExerciseIdFilesDelete(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteExerciseFileExercisesExerciseIdFilesDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>>
-    export type DeleteExerciseFileExercisesExerciseIdFilesDeleteMutationBody = DeleteExerciseDataFileRequest
-    export type DeleteExerciseFileExercisesExerciseIdFilesDeleteMutationError = HTTPValidationError
-
-    /**
- * @summary Delete Exercise File
- */
-export const useDeleteExerciseFileExercisesExerciseIdFilesDelete = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>, TError,{exerciseId: string;data: DeleteExerciseDataFileRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteExerciseFileExercisesExerciseIdFilesDelete>>,
-        TError,
-        {exerciseId: string;data: DeleteExerciseDataFileRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getDeleteExerciseFileExercisesExerciseIdFilesDeleteMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 获取练习数据文件内容
- * @summary Get Exercise File Content
- */
-export const getExerciseFileContentExercisesExerciseIdFilesContentPost = (
-    exerciseId: string,
-    getExerciseDataFileContentRequest: GetExerciseDataFileContentRequest,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponseGetExerciseDataFileContentResponse>(
-      {url: `/exercises/${exerciseId}/files/content`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: getExerciseDataFileContentRequest, signal
-    },
-      );
-    }
-  
-
-
-export const getGetExerciseFileContentExercisesExerciseIdFilesContentPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>, TError,{exerciseId: string;data: GetExerciseDataFileContentRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>, TError,{exerciseId: string;data: GetExerciseDataFileContentRequest}, TContext> => {
-
-const mutationKey = ['getExerciseFileContentExercisesExerciseIdFilesContentPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>, {exerciseId: string;data: GetExerciseDataFileContentRequest}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  getExerciseFileContentExercisesExerciseIdFilesContentPost(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GetExerciseFileContentExercisesExerciseIdFilesContentPostMutationResult = NonNullable<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>>
-    export type GetExerciseFileContentExercisesExerciseIdFilesContentPostMutationBody = GetExerciseDataFileContentRequest
-    export type GetExerciseFileContentExercisesExerciseIdFilesContentPostMutationError = HTTPValidationError
-
-    /**
- * @summary Get Exercise File Content
- */
-export const useGetExerciseFileContentExercisesExerciseIdFilesContentPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>, TError,{exerciseId: string;data: GetExerciseDataFileContentRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof getExerciseFileContentExercisesExerciseIdFilesContentPost>>,
-        TError,
-        {exerciseId: string;data: GetExerciseDataFileContentRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getGetExerciseFileContentExercisesExerciseIdFilesContentPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 创建练习数据目录
- * @summary Create Exercise Directory
- */
-export const createExerciseDirectoryExercisesExerciseIdDirectoriesPost = (
-    exerciseId: string,
-    createExerciseDataDirectoryRequest: CreateExerciseDataDirectoryRequest,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<ApiResponse>(
-      {url: `/exercises/${exerciseId}/directories`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createExerciseDataDirectoryRequest, signal
-    },
-      );
-    }
-  
-
-
-export const getCreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>, TError,{exerciseId: string;data: CreateExerciseDataDirectoryRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>, TError,{exerciseId: string;data: CreateExerciseDataDirectoryRequest}, TContext> => {
-
-const mutationKey = ['createExerciseDirectoryExercisesExerciseIdDirectoriesPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>, {exerciseId: string;data: CreateExerciseDataDirectoryRequest}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  createExerciseDirectoryExercisesExerciseIdDirectoriesPost(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>>
-    export type CreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationBody = CreateExerciseDataDirectoryRequest
-    export type CreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationError = HTTPValidationError
-
-    /**
- * @summary Create Exercise Directory
- */
-export const useCreateExerciseDirectoryExercisesExerciseIdDirectoriesPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>, TError,{exerciseId: string;data: CreateExerciseDataDirectoryRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createExerciseDirectoryExercisesExerciseIdDirectoriesPost>>,
-        TError,
-        {exerciseId: string;data: CreateExerciseDataDirectoryRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getCreateExerciseDirectoryExercisesExerciseIdDirectoriesPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 上传文件到练习目录
- * @summary Upload Exercise File
- */
-export const uploadExerciseFileExercisesExerciseIdFilesUploadPost = (
-    exerciseId: string,
-    bodyUploadExerciseFileExercisesExerciseIdFilesUploadPost: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost,
- signal?: AbortSignal
-) => {
-      
-      const formData = new FormData();
-formData.append(`file`, bodyUploadExerciseFileExercisesExerciseIdFilesUploadPost.file)
-formData.append(`file_path`, bodyUploadExerciseFileExercisesExerciseIdFilesUploadPost.file_path)
-
-      return docker_manager_api<ApiResponse>(
-      {url: `/exercises/${exerciseId}/files/upload`, method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data', },
-       data: formData, signal
-    },
-      );
-    }
-  
-
-
-export const getUploadExerciseFileExercisesExerciseIdFilesUploadPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>, TError,{exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>, TError,{exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost}, TContext> => {
-
-const mutationKey = ['uploadExerciseFileExercisesExerciseIdFilesUploadPost'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>, {exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost}> = (props) => {
-          const {exerciseId,data} = props ?? {};
-
-          return  uploadExerciseFileExercisesExerciseIdFilesUploadPost(exerciseId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UploadExerciseFileExercisesExerciseIdFilesUploadPostMutationResult = NonNullable<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>>
-    export type UploadExerciseFileExercisesExerciseIdFilesUploadPostMutationBody = BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost
-    export type UploadExerciseFileExercisesExerciseIdFilesUploadPostMutationError = HTTPValidationError
-
-    /**
- * @summary Upload Exercise File
- */
-export const useUploadExerciseFileExercisesExerciseIdFilesUploadPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>, TError,{exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof uploadExerciseFileExercisesExerciseIdFilesUploadPost>>,
-        TError,
-        {exerciseId: string;data: BodyUploadExerciseFileExercisesExerciseIdFilesUploadPost},
-        TContext
-      > => {
-
-      const mutationOptions = getUploadExerciseFileExercisesExerciseIdFilesUploadPostMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
-/**
- * 流式获取练习构建日志
- * @summary Stream Exercise Build Logs
- */
-export const streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet = (
-    exerciseId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<unknown>(
-      {url: `/logs/stream/exercise/${exerciseId}/build`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getStreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGetQueryKey = (exerciseId: string,) => {
-    return [`/logs/stream/exercise/${exerciseId}/build`] as const;
-    }
-
-    
-export const getStreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGetQueryOptions = <TData = Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError = HTTPValidationError>(exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getStreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGetQueryKey(exerciseId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>> = ({ signal }) => streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet(exerciseId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(exerciseId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type StreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>>
-export type StreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGetQueryError = HTTPValidationError
-
-
-export function useStreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet<TData = Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError = HTTPValidationError>(
- exerciseId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet<TData = Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet<TData = Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Stream Exercise Build Logs
- */
-
-export function useStreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet<TData = Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getStreamExerciseBuildLogsLogsStreamExerciseExerciseIdBuildGetQueryOptions(exerciseId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 流式获取练习容器日志
- * @summary Stream Exercise Container Logs
- */
-export const streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet = (
-    exerciseId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<unknown>(
-      {url: `/logs/stream/exercise/${exerciseId}/container`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getStreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGetQueryKey = (exerciseId: string,) => {
-    return [`/logs/stream/exercise/${exerciseId}/container`] as const;
-    }
-
-    
-export const getStreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGetQueryOptions = <TData = Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError = HTTPValidationError>(exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getStreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGetQueryKey(exerciseId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>> = ({ signal }) => streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet(exerciseId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(exerciseId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type StreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>>
-export type StreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGetQueryError = HTTPValidationError
-
-
-export function useStreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet<TData = Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError = HTTPValidationError>(
- exerciseId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet<TData = Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet<TData = Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Stream Exercise Container Logs
- */
-
-export function useStreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet<TData = Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getStreamExerciseContainerLogsLogsStreamExerciseExerciseIdContainerGetQueryOptions(exerciseId,options)
-
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * 流式获取练习日志
- * @summary Stream Exercise Logs
- */
-export const streamExerciseLogsLogsStreamExerciseExerciseIdGet = (
-    exerciseId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return docker_manager_api<unknown>(
-      {url: `/logs/stream/exercise/${exerciseId}`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getStreamExerciseLogsLogsStreamExerciseExerciseIdGetQueryKey = (exerciseId: string,) => {
-    return [`/logs/stream/exercise/${exerciseId}`] as const;
-    }
-
-    
-export const getStreamExerciseLogsLogsStreamExerciseExerciseIdGetQueryOptions = <TData = Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError = HTTPValidationError>(exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getStreamExerciseLogsLogsStreamExerciseExerciseIdGetQueryKey(exerciseId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>> = ({ signal }) => streamExerciseLogsLogsStreamExerciseExerciseIdGet(exerciseId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(exerciseId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type StreamExerciseLogsLogsStreamExerciseExerciseIdGetQueryResult = NonNullable<Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>>
-export type StreamExerciseLogsLogsStreamExerciseExerciseIdGetQueryError = HTTPValidationError
-
-
-export function useStreamExerciseLogsLogsStreamExerciseExerciseIdGet<TData = Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError = HTTPValidationError>(
- exerciseId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamExerciseLogsLogsStreamExerciseExerciseIdGet<TData = Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>,
-          TError,
-          Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useStreamExerciseLogsLogsStreamExerciseExerciseIdGet<TData = Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Stream Exercise Logs
- */
-
-export function useStreamExerciseLogsLogsStreamExerciseExerciseIdGet<TData = Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError = HTTPValidationError>(
- exerciseId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof streamExerciseLogsLogsStreamExerciseExerciseIdGet>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getStreamExerciseLogsLogsStreamExerciseExerciseIdGetQueryOptions(exerciseId,options)
+  const queryOptions = getStreamContainerLogsLogsStreamModelModelIdContainerContainerNameGetQueryOptions(modelId,containerName,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

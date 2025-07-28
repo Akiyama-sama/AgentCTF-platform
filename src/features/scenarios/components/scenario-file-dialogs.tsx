@@ -67,7 +67,7 @@ export function ScenarioFileDialogs() {
           }, 500)
           showSubmittedData(filePath, '以下文件已删除:')
           deleteFile({ 
-            scenarioId: scenarioId,
+            modelId: scenarioId,
             data: {
               file_path: filePath
             }

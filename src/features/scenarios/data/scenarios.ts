@@ -1,6 +1,5 @@
-import { ScenarioResponse } from '@/types/docker-manager'
 
-export const scenarios: ScenarioResponse[] = [
+/* export const scenarios: ModelResponse[] = [
   {
     uuid: 'c4a2b8e3-5f0c-4e8a-9d6f-3b7c8e5a2d1f',
     name: 'Log4Shell (CVE-2021-44228) 漏洞利用与防御',
@@ -134,7 +133,7 @@ export const scenarios: ScenarioResponse[] = [
     state: 'removing',
     file_path: '/data/scenarios/c0d1e2f3-a4b5-4cf6-8e7f-8a9b0c1d2e3f/',
   },
-];
+]; */
 
 export const testScenarioGraph1 = {
   "sceneId": "devops-pipeline-uuid",

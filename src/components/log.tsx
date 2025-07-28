@@ -1,9 +1,10 @@
 import { cn } from '@/lib/utils'
-import { type LogEntry } from '@/types/api'
+import { type LogDisplayItem } from '@/types/sse'
 import { useEffect, useRef } from 'react'
+import { ScrollArea } from './ui/scroll-area'
 
 type LogProps = {
-  logs: LogEntry[]
+  logs: LogDisplayItem[]
   className?: string
 }
 
@@ -34,9 +35,9 @@ const Log = ({ logs, className }: LogProps) => {
   }
 
   return (
-    <div
+    <ScrollArea
       className={cn(
-        'bg-card text-foreground font-inter text-xs p-4 rounded-lg overflow-y-auto no-scrollbar h-full',
+        'bg-card text-foreground font-inter text-sm p-4 rounded-lg overflow-y-auto  min-h-0 ',
         className
       )}
     >
@@ -47,12 +48,7 @@ const Log = ({ logs, className }: LogProps) => {
             className="grid grid-cols-[auto_auto_auto_1fr] items-baseline gap-x-2"
           >
             <span className="text-muted-foreground/70 select-none">
-              {new Date(log.timestamp).toLocaleTimeString([], {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-              })}
+              {log.timestamp}
             </span>
             <span className={cn('font-bold', getLevelColor(log.level))}>
               [{log.level?.toUpperCase()}]
@@ -68,7 +64,7 @@ const Log = ({ logs, className }: LogProps) => {
         <div className="w-2 h-3 bg-primary animate-pulse" />
       </div>
       <div ref={endOfLogsRef} />
-    </div>
+    </ScrollArea>
   )
 }
 

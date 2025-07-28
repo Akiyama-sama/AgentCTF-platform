@@ -1,61 +1,74 @@
 import { useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { FileTreeNode, LogEntry } from '@/types/api'
+import {
+  ContainerInspect,
+  FileTreeNode,
+  GetModelAllContainerInspectResponseContainers,
+  LogEntry,
+} from '@/types/api'
 import {
   // 导入所有需要的 orval 生成的 Hooks
-  useCreateScenarioScenariosPost,
-  useDeleteScenarioScenariosScenarioIdDelete,
-  useGetScenarioContainersScenariosScenarioIdContainersGet,
-  useGetScenarioScenariosScenarioIdGet,
-  useGetScenarioStatusScenariosScenarioIdStatusGet,
-  useGetScenariosScenariosGet,
-  usePartialUpdateScenarioScenariosScenarioIdInfoPatch,
-  useUpdateScenarioScenariosScenarioIdPut,
-  useUpdateScenarioStateScenariosScenarioIdPatch,
+  useCreateModelsModelsPost,
+  useDeleteModelModelsModelIdDelete,
+  useGetModelModelsModelIdGet,
+  useGetModelStateModelsModelIdStateGet,
+  useGetModelsModelsGet,
+  useUpdateModelModelsModelIdPut,
+  useUpdateModelStateModelsModelIdPatch,
   // 新增：文件管理相关的 Hooks
-  useGetScenarioFileTreeScenariosScenarioIdFilesGet,
-  useGetScenarioFileContentScenariosScenarioIdFilesContentPost,
-  useCreateScenarioFileScenariosScenarioIdFilesPost,
-  useUpdateScenarioFileContentScenariosScenarioIdFilesPut,
-  useDeleteScenarioFileScenariosScenarioIdFilesDelete,
-  useCreateScenarioDirectoryScenariosScenarioIdDirectoriesPost,
-  useUploadScenarioFileScenariosScenarioIdFilesUploadPost,
+  useGetModelFileTreeModelsModelIdFilesGet,
+  useGetModelFileContentModelsModelIdFilesContentPost,
+  useCreateModelFileModelsModelIdFilesPost,
+  useUpdateModelFileContentModelsModelIdFilesPut,
+  useDeleteModelFileModelsModelIdFilesDelete,
+  useCreateModelDirectoryModelsModelIdDirectoriesPost,
+  useUploadModelFileModelsModelIdFilesUploadPost,
   // 导入所有需要的 Query Key 工厂函数
-  getGetScenariosScenariosGetQueryKey,
-  getGetScenarioScenariosScenarioIdGetQueryKey,
-  getGetScenarioStatusScenariosScenarioIdStatusGetQueryKey,
-  getGetScenarioContainersScenariosScenarioIdContainersGetQueryKey,
-  getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryKey,
+  getGetModelsModelsGetQueryKey,
+  getGetModelModelsModelIdGetQueryKey,
+  getGetModelStateModelsModelIdStateGetQueryKey,
+  getGetModelFileTreeModelsModelIdFilesGetQueryKey,
   // 导入核心类型，增强代码可读性和类型安全
-  type ScenarioResponse,
-  type ScenarioStatusResponse,
-  type ContainerStatusResponse,
-  type GetScenarioDataFileTreeResponseFileTree,
+  type ModelResponse,
+  type ModelDetailResponse,
+  type ModelStateResponse,
+  type GetDataFileTreeResponseFileTree,
+  type ApiResponseListModelResponse,
+  type ApiResponseModelDetailResponse,
+  type ApiResponseModelStateResponse,
+  type ApiResponseGetDataFileTreeResponse,
+  type BodyCreateModelsModelsPost,
+  useGetModelAllContainerInspectModelsModelIdInspectGet,
+
 } from '@/types/docker-manager'
 
 const dockerManagerURL = import.meta.env.VITE_BASE_URL
 
 /**
  * Hook 用于获取所有场景列表，并提供创建新场景的方法。
- * 它将 API 响应自动解包，直接返回场景数组。
+ * 它会从所有模型中筛选出 model_type 为 'scenario' 的项。
  */
 export const useScenarios = () => {
   const queryClient = useQueryClient()
 
-  const { data: scenarios, ...rest } = useGetScenariosScenariosGet({
+  const { data: scenarios, ...rest } = useGetModelsModelsGet({
     query: {
-      select: (response): ScenarioResponse[] => {
-        return response.data ?? []
+      select: (response: ApiResponseListModelResponse): ModelResponse[] => {
+        // 筛选出所有场景
+        return (
+          response.data?.filter((model) => model.model_type === 'scenario') ??
+          []
+        )
       },
     },
   })
 
-  const createScenarioMutation = useCreateScenarioScenariosPost({
+  const createScenarioMutation = useCreateModelsModelsPost({
     mutation: {
       onSuccess: () => {
-        // 创建成功后，让场景列表的 query 失效，以触发自动刷新
+        // 创建成功后，让模型列表的 query 失效，以触发自动刷新
         queryClient.invalidateQueries({
-          queryKey: getGetScenariosScenariosGetQueryKey(),
+          queryKey: getGetModelsModelsGetQueryKey(),
         })
       },
     },
@@ -63,108 +76,96 @@ export const useScenarios = () => {
 
   return {
     scenarios,
-    createScenario: createScenarioMutation.mutate,
-    createScenarioAsync: createScenarioMutation.mutateAsync,
+    // 对外暴露的创建函数自动注入 model_type
+    createScenario: (
+      variables: Omit<BodyCreateModelsModelsPost, 'model_type'>
+    ) =>
+      createScenarioMutation.mutate({
+        data: { ...variables, model_type: 'scenario' },
+      }),
+    createScenarioAsync: (
+      variables: Omit<BodyCreateModelsModelsPost, 'model_type'>
+    ) =>
+      createScenarioMutation.mutateAsync({
+        data: { ...variables, model_type: 'scenario' },
+      }),
     ...rest,
   }
 }
 
 /**
  * Hook 用于处理单个场景相关的所有操作。
- * @param scenarioId - 要操作的场景的UUID
+ * @param scenarioId - 要操作的场景的UUID (现在是 model_id)
  */
 export const useScenario = (
   scenarioId: string | null,
   options?: {
     refetchStatus?: boolean
-    fetchContainers?: boolean
   }
 ) => {
   const queryClient = useQueryClient()
-  const { refetchStatus = true, fetchContainers = false } = options ?? {}
+  const { refetchStatus = true } = options ?? {}
 
-  // 当 scenarioId 为 null 时，禁用所有查询
   const isEnabled = !!scenarioId
 
-  const { data: scenario, ...scenarioQuery } =
-    useGetScenarioScenariosScenarioIdGet(scenarioId!, {
+  const { data: scenario, ...scenarioQuery } = useGetModelModelsModelIdGet(
+    scenarioId!,
+    {
       query: {
         enabled: isEnabled,
-        select: (response): ScenarioResponse | null => {
+        select: (
+          response: ApiResponseModelDetailResponse
+        ): ModelDetailResponse | null => {
           return response.data ?? null
         },
       },
-    })
+    }
+  )
 
   const { data: status, ...statusQuery } =
-    useGetScenarioStatusScenariosScenarioIdStatusGet(scenarioId!, {
+    useGetModelStateModelsModelIdStateGet(scenarioId!, {
       query: {
         enabled: isEnabled,
         refetchInterval: refetchStatus ? 10000 : false,
-        select: (response): ScenarioStatusResponse | null => {
+        select: (
+          response: ApiResponseModelStateResponse
+        ): ModelStateResponse | null => {
           return response.data ?? null
-        },
-      },
-    })
-
-  const { data: containers, ...containersQuery } =
-    useGetScenarioContainersScenariosScenarioIdContainersGet(scenarioId!, {
-      query: {
-        enabled: isEnabled && fetchContainers,
-        select: (response): ContainerStatusResponse[] => {
-          return response.data ?? []
         },
       },
     })
 
   const invalidateScenarioQueries = () => {
-    if (!scenarioId) return // 如果没有ID，不执行任何操作
+    if (!scenarioId) return
     queryClient.invalidateQueries({
-      queryKey: getGetScenariosScenariosGetQueryKey(),
+      queryKey: getGetModelsModelsGetQueryKey(),
     })
     queryClient.invalidateQueries({
-      queryKey: getGetScenarioScenariosScenarioIdGetQueryKey(scenarioId),
+      queryKey: getGetModelModelsModelIdGetQueryKey(scenarioId),
     })
     queryClient.invalidateQueries({
-      queryKey:
-        getGetScenarioStatusScenariosScenarioIdStatusGetQueryKey(scenarioId),
-    })
-    queryClient.invalidateQueries({
-      queryKey:
-        getGetScenarioContainersScenariosScenarioIdContainersGetQueryKey(
-          scenarioId
-        ),
+      queryKey: getGetModelStateModelsModelIdStateGetQueryKey(scenarioId),
     })
   }
 
-  // --- 以下所有 Mutation 逻辑保持不变，因为它们依赖 invalidateScenarioQueries ---
-
-  const deleteMutation = useDeleteScenarioScenariosScenarioIdDelete({
+  const deleteMutation = useDeleteModelModelsModelIdDelete({
     mutation: {
       onSuccess: invalidateScenarioQueries,
     },
   })
 
-  const updateMutation = useUpdateScenarioScenariosScenarioIdPut({
+  const updateMutation = useUpdateModelModelsModelIdPut({
     mutation: {
       onSuccess: invalidateScenarioQueries,
     },
   })
 
-  const partialUpdateMutation =
-    usePartialUpdateScenarioScenariosScenarioIdInfoPatch({
-      mutation: {
-        onSuccess: invalidateScenarioQueries,
-      },
-    })
-
-  const updateStateMutation = useUpdateScenarioStateScenariosScenarioIdPatch({
+  const updateStateMutation = useUpdateModelStateModelsModelIdPatch({
     mutation: {
       onSuccess: invalidateScenarioQueries,
     },
   })
 
-  // 如果 scenarioId 为 null，返回一组空的、安全的函数
   if (!scenarioId) {
     const noOpAsync = async () => Promise.resolve(new Response())
     const noOp = () => {}
@@ -172,16 +173,15 @@ export const useScenario = (
     return {
       scenario: null,
       status: null,
-      containers: [],
+      containers: null, // 当没有ID时，容器信息也为null
       scenarioQuery: { isInitialLoading: false },
       statusQuery: { isInitialLoading: false },
-      containersQuery: { isInitialLoading: false },
-      isUpdatingState: false, // 当没有场景ID时，状态更新总是不在进行中
+      isUpdatingState: false,
       deleteScenario: noOp,
       deleteScenarioAsync: noOpAsync,
       updateScenario: noOp,
       updateScenarioAsync: noOpAsync,
-      partialUpdateScenario: noOp,
+      partialUpdateScenario: noOp, // 保持API兼容性
       partialUpdateScenarioAsync: noOpAsync,
       updateState: noOp,
       updateStateAsync: noOpAsync,
@@ -189,24 +189,19 @@ export const useScenario = (
   }
 
   return {
-    scenario, // 类型: ScenarioResponse | null
-    status, // 类型: ScenarioStatusResponse | null
-    containers, // 类型: ContainerStatusResponse[]
-
-    // 同时返回各个 query 的完整状态，以便在UI中处理加载、错误等
+    scenario,
+    status,
+    containers: scenario?.compose_info ?? null, // 从模型详情中直接获取容器信息
     scenarioQuery,
     statusQuery,
-    containersQuery,
-
-    isUpdatingState: updateStateMutation.isPending, // 暴露状态更新的加载状态
-
-    // 返回所有 mutation 方法
-    deleteScenario: deleteMutation.mutate,
+    isUpdatingState: updateStateMutation.isPending,
+    deleteScenario: (vars: { modelId: string }) => deleteMutation.mutate(vars),
     deleteScenarioAsync: deleteMutation.mutateAsync,
     updateScenario: updateMutation.mutate,
     updateScenarioAsync: updateMutation.mutateAsync,
-    partialUpdateScenario: partialUpdateMutation.mutate,
-    partialUpdateScenarioAsync: partialUpdateMutation.mutateAsync,
+    // 注意：PATCH API已移除，此处为保持兼容性，使用PUT代替
+    partialUpdateScenario: updateMutation.mutate,
+    partialUpdateScenarioAsync: updateMutation.mutateAsync,
     updateState: updateStateMutation.mutate,
     updateStateAsync: updateStateMutation.mutateAsync,
   }
@@ -214,7 +209,6 @@ export const useScenario = (
 
 /**
  * Hook 用于获取和处理场景构建日志。
- * @param scenarioId - 要获取日志的场景的UUID
  * @returns 包含日志、构建状态和相关操作的钩子对象
  */
 export const useScenarioBuildLogs = (): {
@@ -233,7 +227,7 @@ export const useScenarioBuildLogs = (): {
       buildSourceRef.current.close()
     }
     setIsBuilding(true)
-    const url = `${dockerManagerURL}/logs/stream/scenario/${scenarioId}/build`
+    const url = `${dockerManagerURL}/logs/stream/model/${scenarioId}/build`
     const es = new EventSource(url)
     es.onmessage = (e) => {
       try {
@@ -336,34 +330,34 @@ export const useScenarioBuildLogs = (): {
  * @param scenarioId - 要获取日志的场景的UUID
  * @returns 包含日志相关操作的钩子对象
  */
-export const useContainerLogs = (
+/* export const useContainerLogs = (
   scenarioId: string | null,
-  containerName: string | null
+  containerName: string | null,
 ) => {
-  const url = `${dockerManagerURL}/logs/stream/${scenarioId}/container/${containerName}`
-  const es = new EventSource(url)
-  const [containerLogs, setContainerLogs] = useState<LogEntry[]>([])
-  const [isGenerating, setIsGenerating] = useState<boolean>(false)
-  const esRef = useRef<EventSource | null>(null)
+  const [containerLogs, setContainerLogs] = useState<LogEntry[]>([]);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const esRef = useRef<EventSource | null>(null);
 
   const startLogs = () => {
-    if (!scenarioId || !containerName) return
+    if (!scenarioId || !containerName) return;
     if (esRef.current) {
-      esRef.current.close()
+      esRef.current.close();
     }
-    setContainerLogs([])
-    setIsGenerating(true)
+    setContainerLogs([]);
+    setIsGenerating(true);
+    const url = `${dockerManagerURL}/logs/stream/model/${scenarioId}/container/${containerName}`;
+    const es = new EventSource(url);
     es.onmessage = (e) => {
       try {
-        const logEntry: LogEntry = JSON.parse(e.data)
+        const logEntry: LogEntry = JSON.parse(e.data);
 
         switch (logEntry.type) {
           case 'history':
             setContainerLogs((prev) => [
               ...prev,
               { ...logEntry, type: 'history' },
-            ])
-            break
+            ]);
+            break;
           case 'history_end':
             setContainerLogs((prev) => [
               ...prev,
@@ -374,13 +368,13 @@ export const useContainerLogs = (
                 logger_name: 'system',
                 type: 'history_end',
               },
-            ])
-            break
+            ]);
+            break;
           case 'log':
-            setContainerLogs((prev) => [...prev, logEntry])
-            break
+            setContainerLogs((prev) => [...prev, logEntry]);
+            break;
           case 'end':
-            setIsGenerating(false)
+            setIsGenerating(false);
             setContainerLogs((prev) => [
               ...prev,
               {
@@ -390,22 +384,22 @@ export const useContainerLogs = (
                 logger_name: 'system',
                 type: 'end',
               },
-            ])
-            es.close()
-            break
+            ]);
+            es.close();
+            break;
           case 'error':
-            setContainerLogs((prev) => [...prev, logEntry])
-            es.close()
-            break
+            setContainerLogs((prev) => [...prev, logEntry]);
+            es.close();
+            break;
           case 'heartbeat':
             // 心跳，不处理
-            break
+            break;
           default:
-            setContainerLogs((prev) => [...prev, logEntry])
+            setContainerLogs((prev) => [...prev, logEntry]);
         }
       } catch (error) {
         //eslint-disable-next-line no-console
-        console.error('解析日志失败:', error, '原始数据:', e.data)
+        console.error('解析日志失败:', error, '原始数据:', e.data);
         setContainerLogs((prev) => [
           ...prev,
           {
@@ -415,56 +409,88 @@ export const useContainerLogs = (
             logger_name: 'unknown',
             type: 'log',
           },
-        ])
+        ]);
       }
-    }
+    };
 
     es.onerror = (error) => {
       //eslint-disable-next-line no-console
-      console.error(`容器${containerName}日志流连接错误:`, error)
-      es.close()
+      console.error(`容器${containerName}日志流连接错误:`, error);
+      es.close();
 
       // 如果日志仍在生成状态，尝试重连
       if (isGenerating) {
         setTimeout(() => {
           if (isGenerating) {
-            startLogs()
+            startLogs();
           }
-        }, 3000)
+        }, 3000);
       }
-    }
-    esRef.current = es
-  }
+    };
+    esRef.current = es;
+  };
   const stopLogs = () => {
     if (esRef.current) {
-      esRef.current.close()
+      esRef.current.close();
     }
-    setIsGenerating(false)
-  }
+    setIsGenerating(false);
+  };
 
   return {
     containerLogs,
     isGenerating,
     startLogs,
     stopLogs,
-  }
-}
+  };
+}; */
 
-export const useContainers=(scenarioId:string)=>{
-  const isEnabled = !!scenarioId
-  const {data:containers,isLoading}=useGetScenarioContainersScenariosScenarioIdContainersGet(
-    scenarioId!, {
-      query: {
-        enabled: isEnabled,
-        select: (response): ContainerStatusResponse[] | null => {
-          return response.data ?? null
-        },
-      },
-    }
-  )
-  return {
-    containers,
+export const useScenarioContainers = (scenarioId: string) => {
+  const {
+    data: containers,
     isLoading,
+    error,
+  } = useGetModelAllContainerInspectModelsModelIdInspectGet(scenarioId, {
+    query: {
+      select: (response) => {
+        return response.data?.containers ?? {}
+      }
+    },
+  })
+  let attackerContainer={}
+  let defenderContainer={}
+  let targetContainer={}
+  if(!containers){
+    console.log('container不存在')
+  }else{
+    // 遍历 containers 对象的所有键（即容器ID）
+    for (const containerId in containers) {
+      // 确保属性是对象自身的，而不是原型链上的
+      if (Object.prototype.hasOwnProperty.call(containers, containerId)) {
+          const container = containers[containerId];
+          if (container && container.Config && container.Config.Labels) {
+              const serviceName = container.Config.Labels['com.docker.compose.service'];
+              if (serviceName === 'attacker') {
+                  attackerContainer=container
+              }else if(serviceName==='defender'){
+                defenderContainer=container
+              }else if(serviceName==='target'){
+                targetContainer=container
+              }
+          }
+      }
+  }
+  }
+  
+
+  return {
+    attackerContainer,
+    attackerContainerName: attackerContainer?.Name?.slice(1),
+    defenderContainer,
+    defenderContainerName: defenderContainer?.Name?.slice(1),
+    targetContainer,
+    targetContainerName: targetContainer?.Name?.slice(1),
+    isLoading,
+    error,
   }
 }
 
@@ -481,8 +507,7 @@ export const useScenarioFile = (scenarioId: string | null) => {
   const invalidateFileTree = () => {
     if (!scenarioId) return
     queryClient.invalidateQueries({
-      queryKey:
-        getGetScenarioFileTreeScenariosScenarioIdFilesGetQueryKey(scenarioId),
+      queryKey: getGetModelFileTreeModelsModelIdFilesGetQueryKey(scenarioId),
     })
   }
 
@@ -495,7 +520,7 @@ export const useScenarioFile = (scenarioId: string | null) => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
-  const transformFileTree = (tree: GetScenarioDataFileTreeResponseFileTree) => {
+  const transformFileTree = (tree: GetDataFileTreeResponseFileTree) => {
     const items: Record<string, { name: string; children?: string[] }> = {}
 
     function sortChildren(children: Record<string, FileTreeNode>): string[] {
@@ -559,10 +584,12 @@ export const useScenarioFile = (scenarioId: string | null) => {
 
   // --- Queries ---
   const { data: fileTree, ...fileTreeQuery } =
-    useGetScenarioFileTreeScenariosScenarioIdFilesGet(scenarioId!, {
+    useGetModelFileTreeModelsModelIdFilesGet(scenarioId!, {
       query: {
         enabled: isEnabled,
-        select: (response): GetScenarioDataFileTreeResponseFileTree | null => {
+        select: (
+          response: ApiResponseGetDataFileTreeResponse
+        ): GetDataFileTreeResponseFileTree | null => {
           return response.data?.file_tree ?? null
         },
       },
@@ -575,46 +602,43 @@ export const useScenarioFile = (scenarioId: string | null) => {
 
   // 获取文件内容（使用 POST，所以是 mutation）
   const getFileContentMutation =
-    useGetScenarioFileContentScenariosScenarioIdFilesContentPost()
+    useGetModelFileContentModelsModelIdFilesContentPost()
 
   // 创建文件
-  const createFileMutation = useCreateScenarioFileScenariosScenarioIdFilesPost({
+  const createFileMutation = useCreateModelFileModelsModelIdFilesPost({
     mutation: {
       onSuccess: invalidateFileTree,
     },
   })
 
   // 更新文件
-  const updateFileMutation =
-    useUpdateScenarioFileContentScenariosScenarioIdFilesPut({
-      mutation: {
-        onSuccess: invalidateFileTree,
-      },
-    })
+  const updateFileMutation = useUpdateModelFileContentModelsModelIdFilesPut({
+    mutation: {
+      onSuccess: invalidateFileTree,
+    },
+  })
 
   // 删除文件或目录
-  const deleteFileMutation =
-    useDeleteScenarioFileScenariosScenarioIdFilesDelete({
-      mutation: {
-        onSuccess: invalidateFileTree,
-      },
-    })
+  const deleteFileMutation = useDeleteModelFileModelsModelIdFilesDelete({
+    mutation: {
+      onSuccess: invalidateFileTree,
+    },
+  })
 
   // 创建目录
   const createDirectoryMutation =
-    useCreateScenarioDirectoryScenariosScenarioIdDirectoriesPost({
+    useCreateModelDirectoryModelsModelIdDirectoriesPost({
       mutation: {
         onSuccess: invalidateFileTree,
       },
     })
 
   // 上传文件
-  const uploadFileMutation =
-    useUploadScenarioFileScenariosScenarioIdFilesUploadPost({
-      mutation: {
-        onSuccess: invalidateFileTree,
-      },
-    })
+  const uploadFileMutation = useUploadModelFileModelsModelIdFilesUploadPost({
+    mutation: {
+      onSuccess: invalidateFileTree,
+    },
+  })
 
   // 如果 scenarioId 为 null，返回一组空的、安全的函数
   if (!scenarioId) {
@@ -678,5 +702,3 @@ export const useScenarioFile = (scenarioId: string | null) => {
     isUploadingFile: uploadFileMutation.isPending,
   }
 }
-
-

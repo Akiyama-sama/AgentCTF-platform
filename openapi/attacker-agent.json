@@ -1,293 +1,46 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-      "title": "Agent Attacker API",
-      "description": "网络安全渗透测试Agent API",
-      "version": "1.0.0"
-    },
-    "paths": {
-      "/v1/user/init": {
-        "post": {
-          "tags": [
-            "聊天和用户管理"
-          ],
-          "summary": "初始化用户会话",
-          "description": "为用户分配独立的Agent资源并初始化会话",
-          "operationId": "init_user_v1_user_init_post",
-          "requestBody": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserInitRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ApiResponse_UserInitResponse_"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/v1/user/status": {
-        "get": {
-          "tags": [
-            "聊天和用户管理"
-          ],
-          "summary": "检查用户会话状态",
-          "description": "检查指定用户的Agent会话是否已初始化",
-          "operationId": "get_user_status_v1_user_status_get",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "query",
-              "required": true,
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Agent Attacker API",
+    "description": "网络安全渗透测试Agent API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/user/init": {
+      "post": {
+        "tags": [
+          "聊天和用户管理"
+        ],
+        "summary": "初始化用户会话",
+        "description": "为用户分配独立的Agent资源并初始化会话",
+        "operationId": "init_user_v1_user_init_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
               "schema": {
-                "type": "string",
-                "description": "用户ID",
-                "title": "User Id"
-              },
-              "description": "用户ID"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ApiResponse_UserStatusResponse_"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
+                "$ref": "#/components/schemas/UserInitRequest"
               }
             }
-          }
-        }
-      },
-      "/v1/user/cleanup": {
-        "delete": {
-          "tags": [
-            "聊天和用户管理"
-          ],
-          "summary": "清理用户会话资源",
-          "description": "清理指定用户的会话资源，释放Agent实例",
-          "operationId": "cleanup_user_v1_user_cleanup_delete",
-          "parameters": [
-            {
-              "name": "user_id",
-              "in": "query",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "description": "用户ID",
-                "title": "User Id"
-              },
-              "description": "用户ID"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ApiResponse_UserCleanupResponse_"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/v1/chat/completions": {
-        "post": {
-          "tags": [
-            "聊天和用户管理"
-          ],
-          "summary": "发送消息给指定用户的Agent",
-          "description": "发送消息给指定用户的Agent并获取流式响应，符合Server-Sent Events标准",
-          "operationId": "chat_completions_v1_chat_completions_post",
-          "requestBody": {
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChatRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "流式事件响应，每个事件对应如下结构",
-              "content": {
-                "text/event-stream": {
-                  "examples": {
-                    "message": {
-                      "summary": "消息内容块",
-                      "value": "event: message\ndata: {\n  \"session_id\": \"chatcmpl-12345678\",\n  \"message\": \"你好，我是AI助手\",\n  \"finished_reason\": null,\n  \"timestamp\": \"2025-07-19T20:00:00\"\n}\n\n"
-                    },
-                    "start": {
-                      "summary": "连接开始事件",
-                      "value": "event: start\ndata: {\n  \"status\": \"connected\",\n  \"timestamp\": \"2025-07-19T20:00:00\"\n}\n\n"
-                    },
-                    "ping": {
-                      "summary": "心跳事件",
-                      "value": "event: ping\ndata: {\n  \"status\": \"ping\",\n  \"timestamp\": \"2025-07-19T20:00:05\"\n}\n\n"
-                    },
-                    "end": {
-                      "summary": "结束事件",
-                      "value": "event: end\ndata: {\n  \"status\": \"completed\",\n  \"timestamp\": \"2025-07-19T20:01:00\"\n}\n\n"
-                    },
-                    "error": {
-                      "summary": "错误事件",
-                      "value": "event: error\ndata: {\n  \"code\": 1004,\n  \"message\": \"系统内部错误\",\n  \"timestamp\": \"2025-07-19T20:01:30\"\n}\n\n"
-                    }
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
+                  "$ref": "#/components/schemas/ApiResponse_UserInitResponse_"
                 }
               }
             }
-          }
-        }
-      },
-      "/v1/logs/log/completions": {
-        "post": {
-          "tags": [
-            "日志"
-          ],
-          "summary": "获取指定用户的日志信息",
-          "description": "获取指定用户的日志信息并返回流式响应，符合Server-Sent Events标准",
-          "operationId": "get_user_logs_v1_logs_log_completions_post",
-          "requestBody": {
+          },
+          "422": {
+            "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LogRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "流式事件响应，每个事件对应如下结构",
-              "content": {
-                "text/event-stream": {
-                  "examples": {
-                    "message": {
-                      "summary": "日志内容块",
-                      "value": "event: message\ndata: {\n  \"session_id\": \"log-12345678\",\n  \"message\": \"用户操作记录\",\n  \"finished_reason\": null,\n  \"timestamp\": \"2025-07-20T12:00:00\"\n}\n\n"
-                    },
-                    "start": {
-                      "summary": "连接开始事件",
-                      "value": "event: start\ndata: {\n  \"status\": \"connected\",\n  \"timestamp\": \"2025-07-20T12:00:00\"\n}\n\n"
-                    },
-                    "ping": {
-                      "summary": "心跳事件",
-                      "value": "event: ping\ndata: {\n  \"status\": \"ping\",\n  \"timestamp\": \"2025-07-20T12:00:05\"\n}\n\n"
-                    },
-                    "end": {
-                      "summary": "结束事件",
-                      "value": "event: end\ndata: {\n  \"status\": \"completed\",\n  \"timestamp\": \"2025-07-20T12:01:00\"\n}\n\n"
-                    },
-                    "error": {
-                      "summary": "错误事件",
-                      "value": "event: error\ndata: {\n  \"code\": 1004,\n  \"message\": \"日志服务内部错误\",\n  \"timestamp\": \"2025-07-20T12:01:30\"\n}\n\n"
-                    }
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/": {
-        "get": {
-          "summary": "Root",
-          "description": "根路径",
-          "operationId": "root__get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {}
-                }
-              }
-            }
-          }
-        }
-      },
-      "/health": {
-        "get": {
-          "summary": "Health",
-          "description": "健康检查",
-          "operationId": "health_health_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {}
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -295,292 +48,539 @@
         }
       }
     },
-    "components": {
-      "schemas": {
-        "ApiResponse_UserCleanupResponse_": {
-          "properties": {
-            "code": {
-              "type": "integer",
-              "title": "Code",
-              "description": "业务状态码，非HTTP状态码",
-              "default": 200
-            },
-            "message": {
+    "/v1/user/status": {
+      "get": {
+        "tags": [
+          "聊天和用户管理"
+        ],
+        "summary": "检查用户会话状态",
+        "description": "检查指定用户的Agent会话是否已初始化",
+        "operationId": "get_user_status_v1_user_status_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
               "type": "string",
-              "title": "Message",
-              "description": "响应消息",
-              "default": "success"
+              "description": "用户ID",
+              "title": "User Id"
             },
-            "data": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/UserCleanupResponse"
-                },
-                {
-                  "type": "null"
+            "description": "用户ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_UserStatusResponse_"
                 }
-              ],
-              "description": "响应数据"
+              }
             }
           },
-          "type": "object",
-          "title": "ApiResponse[UserCleanupResponse]"
-        },
-        "ApiResponse_UserInitResponse_": {
-          "properties": {
-            "code": {
-              "type": "integer",
-              "title": "Code",
-              "description": "业务状态码，非HTTP状态码",
-              "default": 200
-            },
-            "message": {
-              "type": "string",
-              "title": "Message",
-              "description": "响应消息",
-              "default": "success"
-            },
-            "data": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/UserInitResponse"
-                },
-                {
-                  "type": "null"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "description": "响应数据"
+              }
             }
-          },
-          "type": "object",
-          "title": "ApiResponse[UserInitResponse]"
-        },
-        "ApiResponse_UserStatusResponse_": {
-          "properties": {
-            "code": {
-              "type": "integer",
-              "title": "Code",
-              "description": "业务状态码，非HTTP状态码",
-              "default": 200
-            },
-            "message": {
+          }
+        }
+      }
+    },
+    "/v1/user/cleanup": {
+      "delete": {
+        "tags": [
+          "聊天和用户管理"
+        ],
+        "summary": "清理用户会话资源",
+        "description": "清理指定用户的会话资源，释放Agent实例",
+        "operationId": "cleanup_user_v1_user_cleanup_delete",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
               "type": "string",
-              "title": "Message",
-              "description": "响应消息",
-              "default": "success"
+              "description": "用户ID",
+              "title": "User Id"
             },
-            "data": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/UserStatusResponse"
-                },
-                {
-                  "type": "null"
+            "description": "用户ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_UserCleanupResponse_"
                 }
-              ],
-              "description": "响应数据"
+              }
             }
           },
-          "type": "object",
-          "title": "ApiResponse[UserStatusResponse]"
-        },
-        "ChatRequest": {
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "title": "User Id",
-              "description": "用户ID"
-            },
-            "message": {
-              "type": "string",
-              "title": "Message",
-              "description": "消息内容"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/chat/completions": {
+      "post": {
+        "tags": [
+          "聊天和用户管理"
+        ],
+        "summary": "发送消息给指定用户的Agent",
+        "description": "发送消息给指定用户的Agent并获取流式响应，符合Server-Sent Events标准",
+        "operationId": "chat_completions_v1_chat_completions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "user_id",
-            "message"
-          ],
-          "title": "ChatRequest"
+          "required": true
         },
-        "HTTPValidationError": {
-          "properties": {
-            "detail": {
-              "items": {
-                "$ref": "#/components/schemas/ValidationError"
+        "responses": {
+          "200": {
+            "description": "流式事件响应，每个事件对应如下结构",
+            "content": {
+              "text/event-stream": {
+                "examples": {
+                  "message": {
+                    "summary": "消息内容块",
+                    "value": "event: message\ndata: {\n  \"session_id\": \"chatcmpl-12345678\",\n  \"message\": \"你好，我是AI助手\",\n  \"finished_reason\": null,\n  \"timestamp\": \"2025-07-19T20:00:00\"\n}\n\n"
+                  },
+                  "start": {
+                    "summary": "连接开始事件",
+                    "value": "event: start\ndata: {\n  \"status\": \"connected\",\n  \"timestamp\": \"2025-07-19T20:00:00\"\n}\n\n"
+                  },
+                  "ping": {
+                    "summary": "心跳事件",
+                    "value": "event: ping\ndata: {\n  \"status\": \"ping\",\n  \"timestamp\": \"2025-07-19T20:00:05\"\n}\n\n"
+                  },
+                  "end": {
+                    "summary": "结束事件",
+                    "value": "event: end\ndata: {\n  \"status\": \"completed\",\n  \"timestamp\": \"2025-07-19T20:01:00\"\n}\n\n"
+                  },
+                  "error": {
+                    "summary": "错误事件",
+                    "value": "event: error\ndata: {\n  \"code\": 1004,\n  \"message\": \"系统内部错误\",\n  \"timestamp\": \"2025-07-19T20:01:30\"\n}\n\n"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/logs/log/completions": {
+      "post": {
+        "tags": [
+          "日志"
+        ],
+        "summary": "获取指定用户的日志信息",
+        "description": "获取指定用户的日志信息并返回流式响应，符合Server-Sent Events标准",
+        "operationId": "get_user_logs_v1_logs_log_completions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "流式事件响应，每个事件对应如下结构",
+            "content": {
+              "text/event-stream": {
+                "examples": {
+                  "message": {
+                    "summary": "日志内容块",
+                    "value": "event: message\ndata: {\n  \"session_id\": \"log-12345678\",\n  \"message\": \"用户操作记录\",\n  \"finished_reason\": null,\n  \"timestamp\": \"2025-07-20T12:00:00\"\n}\n\n"
+                  },
+                  "start": {
+                    "summary": "连接开始事件",
+                    "value": "event: start\ndata: {\n  \"status\": \"connected\",\n  \"timestamp\": \"2025-07-20T12:00:00\"\n}\n\n"
+                  },
+                  "ping": {
+                    "summary": "心跳事件",
+                    "value": "event: ping\ndata: {\n  \"status\": \"ping\",\n  \"timestamp\": \"2025-07-20T12:00:05\"\n}\n\n"
+                  },
+                  "end": {
+                    "summary": "结束事件",
+                    "value": "event: end\ndata: {\n  \"status\": \"completed\",\n  \"timestamp\": \"2025-07-20T12:01:00\"\n}\n\n"
+                  },
+                  "error": {
+                    "summary": "错误事件",
+                    "value": "event: error\ndata: {\n  \"code\": 1004,\n  \"message\": \"日志服务内部错误\",\n  \"timestamp\": \"2025-07-20T12:01:30\"\n}\n\n"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "description": "根路径",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "description": "健康检查",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiResponse_UserCleanupResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserCleanupResponse"
               },
-              "type": "array",
-              "title": "Detail"
-            }
-          },
-          "type": "object",
-          "title": "HTTPValidationError"
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
         },
-        "LogRequest": {
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "title": "User Id",
-              "description": "用户ID"
-            }
+        "type": "object",
+        "title": "ApiResponse[UserCleanupResponse]"
+      },
+      "ApiResponse_UserInitResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
           },
-          "type": "object",
-          "required": [
-            "user_id"
-          ],
-          "title": "LogRequest"
-        },
-        "UserCleanupResponse": {
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "title": "User Id",
-              "description": "用户ID"
-            },
-            "status": {
-              "type": "string",
-              "title": "Status",
-              "description": "清理状态"
-            },
-            "cleaned_at": {
-              "type": "string",
-              "title": "Cleaned At",
-              "description": "清理时间"
-            }
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
           },
-          "type": "object",
-          "required": [
-            "user_id",
-            "status",
-            "cleaned_at"
-          ],
-          "title": "UserCleanupResponse"
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserInitResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
         },
-        "UserInitRequest": {
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "title": "User Id",
-              "description": "用户ID"
-            },
-            "api_key": {
-              "type": "string",
-              "title": "Api Key",
-              "description": "API密钥"
-            },
-            "custom_info": {
-              "anyOf": [
-                {
-                  "additionalProperties": true,
-                  "type": "object"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Custom Info",
-              "description": "用户自定义信息，前端可自行填写任意键值对"
-            }
+        "type": "object",
+        "title": "ApiResponse[UserInitResponse]"
+      },
+      "ApiResponse_UserStatusResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
           },
-          "type": "object",
-          "required": [
-            "user_id",
-            "api_key"
-          ],
-          "title": "UserInitRequest"
-        },
-        "UserInitResponse": {
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "title": "User Id",
-              "description": "用户ID"
-            },
-            "status": {
-              "type": "string",
-              "title": "Status",
-              "description": "初始化状态"
-            },
-            "created_at": {
-              "type": "string",
-              "title": "Created At",
-              "description": "创建时间"
-            }
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
           },
-          "type": "object",
-          "required": [
-            "user_id",
-            "status",
-            "created_at"
-          ],
-          "title": "UserInitResponse"
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserStatusResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
         },
-        "UserStatusResponse": {
-          "properties": {
-            "user_id": {
-              "type": "string",
-              "title": "User Id",
-              "description": "用户ID"
+        "type": "object",
+        "title": "ApiResponse[UserStatusResponse]"
+      },
+      "ChatRequest": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "用户ID"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "消息内容"
+          },
+          "custom_info": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Custom Info",
+            "description": "用户自定义信息，前端可自行填写任意键值对"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "message"
+        ],
+        "title": "ChatRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
             },
-            "initialized": {
-              "type": "boolean",
-              "title": "Initialized",
-              "description": "是否已初始化"
-            },
-            "last_activity": {
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LogRequest": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "用户ID"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "title": "LogRequest"
+      },
+      "UserCleanupResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "用户ID"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "清理状态"
+          },
+          "cleaned_at": {
+            "type": "string",
+            "title": "Cleaned At",
+            "description": "清理时间"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "cleaned_at"
+        ],
+        "title": "UserCleanupResponse"
+      },
+      "UserInitRequest": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "用户ID"
+          },
+          "api_key": {
+            "type": "string",
+            "title": "Api Key",
+            "description": "API密钥"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "api_key"
+        ],
+        "title": "UserInitRequest"
+      },
+      "UserInitResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "用户ID"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "初始化状态"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At",
+            "description": "创建时间"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "status",
+          "created_at"
+        ],
+        "title": "UserInitResponse"
+      },
+      "UserStatusResponse": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "用户ID"
+          },
+          "initialized": {
+            "type": "boolean",
+            "title": "Initialized",
+            "description": "是否已初始化"
+          },
+          "last_activity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Activity",
+            "description": "最后活动时间"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "initialized"
+        ],
+        "title": "UserStatusResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
               "anyOf": [
                 {
                   "type": "string"
                 },
                 {
-                  "type": "null"
+                  "type": "integer"
                 }
-              ],
-              "title": "Last Activity",
-              "description": "最后活动时间"
-            }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
           },
-          "type": "object",
-          "required": [
-            "user_id",
-            "initialized"
-          ],
-          "title": "UserStatusResponse"
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
         },
-        "ValidationError": {
-          "properties": {
-            "loc": {
-              "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "integer"
-                  }
-                ]
-              },
-              "type": "array",
-              "title": "Location"
-            },
-            "msg": {
-              "type": "string",
-              "title": "Message"
-            },
-            "type": {
-              "type": "string",
-              "title": "Error Type"
-            }
-          },
-          "type": "object",
-          "required": [
-            "loc",
-            "msg",
-            "type"
-          ],
-          "title": "ValidationError"
-        }
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
       }
     }
   }
+}

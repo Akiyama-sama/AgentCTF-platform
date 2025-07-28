@@ -28,3 +28,16 @@ export interface LogEntry {
     logger_name: string;
     type: 'log' | 'history' | 'heartbeat' | 'error' | 'end' | 'history_end';
 }
+
+export type GetModelAllContainerInspectResponseContainers = Record<string, ContainerInspect>;
+
+export interface ContainerInspect {
+  Id: string;
+  Name: string;
+  Config?: {
+    Labels?: {
+      [key: string]: string;
+    };
+  };
+  // Add other properties as needed based on your usage
+}

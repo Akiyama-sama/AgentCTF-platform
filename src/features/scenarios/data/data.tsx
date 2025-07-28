@@ -2,7 +2,6 @@ import {
   Circle,
   CircleDot,
   HardHat,
-  Hourglass,
   Info,
   Play,
   StopCircle,
@@ -11,9 +10,9 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import React from 'react'
-import { ScenarioAction, ScenarioState } from '../../../types/docker-manager'
+import { BaseState, ModelAction } from '../../../types/docker-manager'
 
-export type ActionType = ScenarioAction | 'delete' | 'view_details'|'enter'
+export type ActionType = ModelAction | 'delete' | 'view_details'|'enter'
 
 export interface StateAction {
   label: string
@@ -30,7 +29,7 @@ export interface StateConfig {
   actions?: StateAction[]
 }
 
-export const scenarioStateConfig: Record<ScenarioState, StateConfig> = {
+export const scenarioStateConfig: Record<BaseState, StateConfig> = {
   running: {
     label: '运行中',
     icon: CircleDot,
@@ -65,18 +64,12 @@ export const scenarioStateConfig: Record<ScenarioState, StateConfig> = {
     iconClassName: 'text-blue-500',
     component: () => <p className="text-sm text-muted-foreground">正在构建环境...</p>,
   },
-  removing: {
-    label: '删除中',
-    icon: Hourglass,
-    iconClassName: 'text-gray-500',
-    component: () => <p className="text-sm text-muted-foreground">正在删除...</p>,
-  },
   pending: {
     label: '待处理',
     icon: Circle,
     iconClassName: 'text-yellow-500',
     actions: [
-      { label: '开始构建', icon: Play,variant:'secondary', actionType: 'build' },
+      { label: '构建', icon: Play,variant:'secondary', actionType: 'build' },
       { label: '详细信息', icon: Info, variant: 'outline', actionType: 'view_details' },
       { label: '删除', icon: Trash2, variant: 'destructive', actionType: 'delete' },
     ],

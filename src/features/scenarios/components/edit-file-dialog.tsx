@@ -11,7 +11,7 @@ import {
   import { useEffect, useState } from 'react'
   import { Button } from '@/components/ui/button'
 
-import { ApiResponseGetScenarioDataFileContentResponse } from '@/types/docker-manager'
+import { ApiResponseGetDataFileContentResponse } from '@/types/docker-manager'
 import Loading from '@/components/Loading'
 import { useTheme } from '@/context/theme-context'
 
@@ -40,9 +40,9 @@ import { useTheme } from '@/context/theme-context'
           
           try {
             const response = await getFileContentAsync({
-              scenarioId,
+              modelId: scenarioId,
               data: { file_path: basePath }
-            }) as ApiResponseGetScenarioDataFileContentResponse 
+            }) as ApiResponseGetDataFileContentResponse 
             const fileContent = await response.data?.content
             if(fileContent) {
                 setContent(fileContent)
@@ -58,7 +58,7 @@ import { useTheme } from '@/context/theme-context'
     const handleSave = () => {
       updateFile(
         {
-          scenarioId,
+          modelId: scenarioId,
           data: {
             file_path: basePath,
             content: content,

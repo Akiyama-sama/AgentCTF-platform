@@ -33,7 +33,6 @@ export const TextScroll: React.FC<TextScrollProps> = ({
   text,
   default_velocity = 5,
   className,
-  children
 }) => {
   const ParallaxText: React.FC<ParallaxProps> = ({
     children,
@@ -106,22 +105,11 @@ export const TextScroll: React.FC<TextScrollProps> = ({
   }
 
   return (
-    <section className="relative w-full">
+    <section className=" w-full">
       <ParallaxText baseVelocity={default_velocity} className={className}>
         {text}
       </ParallaxText>
-      <ParallaxText baseVelocity={-default_velocity} className={className}>
-        {text}
-      </ParallaxText>
-      <ParallaxText baseVelocity={default_velocity} className={className}>
-        {text}
-      </ParallaxText>
-      <ParallaxText baseVelocity={-default_velocity} className={className}>
-        {text}
-      </ParallaxText>
-      <div>
-        {children}
-      </div>
+
     </section>
   )
 }

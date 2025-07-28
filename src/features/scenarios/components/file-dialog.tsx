@@ -60,7 +60,7 @@ const getParentDirectory = (path: string) => {
       // Ensure root path is handled correctly
       const newPath = parentDir === '.' ? values.name : `${parentDir}/${values.name}`
       createFile({
-          scenarioId,
+          modelId: scenarioId,
           data: { file_path: newPath, content: '', file_type: 'text' }
         })
       showSuccessMessage(`创建文件成功: ${newPath}`)
@@ -133,7 +133,7 @@ const getParentDirectory = (path: string) => {
       const parentDir = isFileNode ? getParentDirectory(basePath) : basePath
       // Ensure root path is handled correctly
       const newPath = parentDir === '.' ? values.name : `${parentDir}/${values.name}`
-      createDirectory({ scenarioId, data: { dir_path: newPath } })
+      createDirectory({ modelId: scenarioId, data: { dir_path: newPath } })
       showSuccessMessage(`创建文件夹成功: ${newPath}`)
       onOpenChange(false)
       form.reset()
@@ -202,7 +202,7 @@ const getParentDirectory = (path: string) => {
 
     const onSubmit = (values: UploadFileDialogForm) => {
       const newPath=isFileNode?getParentDirectory(basePath):basePath
-      uploadFile({ scenarioId, data: { file: values.file, file_path: newPath } })
+      uploadFile({ modelId: scenarioId, data: { file: values.file, file_path: newPath } })
       showSuccessMessage(`在此目录下: ${newPath}上传文件成功`)
       onOpenChange(false)
       form.reset()

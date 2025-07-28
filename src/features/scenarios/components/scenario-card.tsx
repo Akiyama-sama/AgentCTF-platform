@@ -2,17 +2,17 @@ import ButtonWithLoading from '@/components/loading-button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { scenarioStateConfig, type ActionType } from '../data/data'
 import { cn } from '@/lib/utils'
-import { ScenarioState } from '@/types/docker-manager'
+import { BaseState } from '@/types/docker-manager'
 
 interface Props {
     name: string
     description: string
-    state: ScenarioState
+    state: BaseState
     pendingAction: ActionType | null // 新增 pendingAction
     onAction: (action: ActionType) => void
 }
 
-function StatusIndicator({ state }: { state: ScenarioState }) {
+function StatusIndicator({ state }: { state: BaseState }) {
   const config = scenarioStateConfig[state]
   const Icon = config.icon
 
@@ -24,7 +24,7 @@ function StatusIndicator({ state }: { state: ScenarioState }) {
   )
 }
 interface ScenarioCardActionsProps {  
-    state: ScenarioState
+    state: BaseState
     pendingAction: ActionType | null
     onAction: (action: ActionType) => void
 }

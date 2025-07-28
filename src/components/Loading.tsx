@@ -6,7 +6,7 @@ type Props={
 }
 export default function Loading( {className}:Props) {
   return (
-        <div className={cn(className,"absolute inset-0 flex items-center justify-center ")}>
+        <div className={cn(className,"inset-0 flex items-center justify-center ")}>
           <LoaderCircleIcon
             className="animate-spin"
             size={16}

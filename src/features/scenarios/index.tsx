@@ -24,30 +24,29 @@ import { ThemeSwitch } from '@/components/theme-switch'
 
 import { scenarioStateConfig } from './data/data'
 import { ScenarioCard } from './components/scenario-card'
-import { ScenarioState, type ScenarioResponse } from '@/types/docker-manager'
+import { BaseState, type ModelResponse } from '@/types/docker-manager'
 import { ScenariosPrimaryButtons } from './components/scenarios-primary-buttons'
-import { useScenarios, useScenarioBuildLogs, useScenario } from '@/hooks/use-scenario'
+import { useScenarios, useScenario } from '@/hooks/use-scenario'
 import ScenariosDialogProvider from './context/scenarios-context'
 import { ScenariosDialogs } from './components/scenarios-dialogs'
 import { useScenarioActions } from './hooks/useScenarioActions'
-import Log from '@/components/log'
 import { ScenarioFileDialogs } from './components/scenario-file-dialogs'
-import Loading from '@/components/Loading'
+import { BuildLog } from './components/build-log'
+import { useScenarioBuildLogs } from '@/hooks/use-log'
+
+
 
 export default function Scenarios() {
-  const { scenarios, isLoading } = useScenarios()
-  
-  const { logs, isBuilding, startBuild, stopBuild } = useScenarioBuildLogs()
+  const { scenarios } = useScenarios()
+
   const [sort, setSort] = useState('ascending')
   const [scenarioFilterStatus, setScenarioFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
-  const [isLogVisible, setIsLogVisible] = useState(false);
-
-  if (isLoading) return <Loading/>
-  if (!scenarios) return <div>No scenarios found</div>
-  if(logs.length>0) setIsLogVisible(true)
-  const filteredScenarios = scenarios
-    .sort((a, b) =>
+  const {logs,isBuilding,createBuildConnection,closeBuildConnection,isLogVisible,setIsLogVisible} = useScenarioBuildLogs()
+  
+  
+  const filteredScenarios = scenarios?
+    (scenarios.sort((a, b) =>
       sort === 'ascending'
         ? a.name.localeCompare(b.name)
         : b.name.localeCompare(a.name),
@@ -58,7 +57,7 @@ export default function Scenarios() {
     })
     .filter((scenario) =>
       scenario.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
+    )):[]
 
   return (
     <ScenariosDialogProvider>
@@ -100,7 +99,7 @@ export default function Scenarios() {
                 <SelectValue>
                   {scenarioFilterStatus === 'all'
                     ? '所有场景容器'
-                    : scenarioStateConfig[scenarioFilterStatus as ScenarioState]
+                    : scenarioStateConfig[scenarioFilterStatus as BaseState]
                         .label}
                 </SelectValue>
               </SelectTrigger>
@@ -145,27 +144,26 @@ export default function Scenarios() {
         </div>
         <Separator className='shadow-sm' />
         
-        <div className='flex flex-col gap-4 py-4'>
+        <div className='flex flex-1 flex-col gap-4 py-4'>
           {isLogVisible && (
-            <div className='rounded-lg border bg-card p-4 shadow-sm'>
-              <h3 className='mb-2 flex items-center text-lg font-semibold'>
-                <IconTerminal2 className='mr-2' />
-                构建日志
-                {isBuilding && <span className='ml-3 animate-pulse text-sm text-primary'>正在构建...</span>}
-              </h3>
-              <Log logs={logs} className='w-full h-64' />
-            </div>
+            <BuildLog 
+              logs={logs} 
+              isBuilding={isBuilding}/>
           )}
-          <ul className='  grid gap-4 overflow-auto pb-16 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
+          {filteredScenarios.length>0?
+          (<ul className='  grid gap-4 overflow-auto pb-16 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
             {filteredScenarios.map((scenario) => (
               <li key={scenario.uuid}>
                 <ScenarioCardWrapper
                   scenario={scenario}
-                  buildActions={{ startBuild, stopBuild }}
+                  createBuildConnection={createBuildConnection}
+                  closeBuildConnection={closeBuildConnection}
                 />
               </li>
             ))}
-          </ul>
+          </ul>)
+          :
+          <div className=' text-muted-foreground'>没有找到创建好的场景，请点击右上角创建场景</div>}
         </div>
       </Main>
       <ScenariosDialogs />
@@ -176,17 +174,17 @@ export default function Scenarios() {
 
 function ScenarioCardWrapper({
   scenario,
-  buildActions,
+  createBuildConnection,
+  closeBuildConnection,
 }: {
-  scenario: ScenarioResponse
-  buildActions: {
-    startBuild: (scenarioId: string) => void
-    stopBuild: () => void
-  }
+  scenario: ModelResponse
+  createBuildConnection: (scenarioId: string) => void
+  closeBuildConnection: () => void
 }) {
+ 
   const { status } = useScenario(scenario.uuid)
-  const { handleAction,pendingAction } = useScenarioActions(scenario.uuid, buildActions)
-  if(status) scenario.state=status.state as ScenarioState
+  const { handleAction,pendingAction } = useScenarioActions(scenario.uuid,createBuildConnection,closeBuildConnection)
+  if(status) scenario.state=status.state as BaseState
   
-  return <ScenarioCard {...scenario} onAction={handleAction} pendingAction={pendingAction}  />
+  return <ScenarioCard {...scenario} onAction={handleAction} pendingAction={pendingAction} />
 }

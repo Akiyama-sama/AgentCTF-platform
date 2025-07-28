@@ -13,23 +13,19 @@ import { useNavigate } from '@tanstack/react-router';
  */
 export const useScenarioActions = (
   scenarioId: string,
-  buildActions: {
-    startBuild: (scenarioId: string) => void;
-    stopBuild: () => void;
-  },
+  createBuildConnection: (scenarioId: string) => void,
+  closeBuildConnection: () => void
 ) => {
   const { scenario, updateState, isUpdatingState } = useScenario(scenarioId);
   const { setOpen, setCurrentRow } = useScenariosDialog();
-  const { startBuild, stopBuild } = buildActions;
   const navigate = useNavigate();
 
   // 新增一个 state 来追踪正在进行中的 action
   const [pendingAction, setPendingAction] = useState<ActionType | null>(null);
 
-  // 当 updateState 的 isPending 状态从未决（true）变到已决（false）时，
-  // 我们知道异步操作已完成，可以清除 pendingAction 状态。
   useEffect(() => {
     if (!isUpdatingState) {
+      
       setPendingAction(null);
     }
   }, [isUpdatingState]);
@@ -44,21 +40,29 @@ export const useScenarioActions = (
         });
         break
       case 'build':
+        setCurrentRow(scenario)
         setPendingAction('build'); 
-        updateState({ scenarioId, data: { action } });
-        startBuild(scenarioId);
+        updateState({ modelId: scenarioId, data: { action } });
+        createBuildConnection(scenarioId)
+        break;
+      case 'force_stop_build':
+        setCurrentRow(scenario)
+        setPendingAction('force_stop_build'); 
+        updateState({ modelId: scenarioId, data: { action } });
         break;
       case 'start':
+        setCurrentRow(scenario)
         setPendingAction('start'); 
-        stopBuild();
-        updateState({ scenarioId, data: { action } });
+        updateState({ modelId: scenarioId, data: { action } });
         break;
       case 'stop':
+        setCurrentRow(scenario)
         setPendingAction('stop'); 
-        updateState({ scenarioId, data: { action } });
+        updateState({ modelId: scenarioId, data: { action } });
         break;
       case 'delete':
         setCurrentRow(scenario)
+        closeBuildConnection()
         setOpen('delete');
         break;
       case 'view_details':
@@ -66,7 +70,7 @@ export const useScenarioActions = (
         setOpen('update');
         break;
     }
-  }, [scenarioId, updateState, setOpen, startBuild, stopBuild, scenario, setCurrentRow, navigate]);
+  }, [scenarioId, updateState, setOpen, scenario, setCurrentRow, navigate,createBuildConnection,closeBuildConnection]);
 
   return { handleAction, pendingAction };
 }; 
