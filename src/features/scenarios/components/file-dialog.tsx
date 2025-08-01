@@ -181,6 +181,7 @@ const getParentDirectory = (path: string) => {
   }
   
   const uploadFileSchema = z.object({
+    file_name: z.string().min(1, '上传文件名不能为空'),
     file: z
     .instanceof(Blob, { message: '请上传文件' })
     .refine(file => file.size > 0, '请上传文件'),
@@ -197,12 +198,12 @@ const getParentDirectory = (path: string) => {
       resolver: zodResolver(uploadFileSchema),
     })
     const { uploadFile } = useScenarioFile(scenarioId)
-
     const dialogTitle = '上传文件'
 
     const onSubmit = (values: UploadFileDialogForm) => {
       const newPath=isFileNode?getParentDirectory(basePath):basePath
-      uploadFile({ modelId: scenarioId, data: { file: values.file, file_path: newPath } })
+      const file_path=newPath+'/'+values.file_name
+      uploadFile({ modelId: scenarioId, data: { file: values.file, file_path: file_path } })
       showSuccessMessage(`在此目录下: ${newPath}上传文件成功`)
       onOpenChange(false)
       form.reset()
@@ -210,12 +211,27 @@ const getParentDirectory = (path: string) => {
 
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='sm:max-w-[425px]'>
+        <DialogContent className='sm:max-w-[425px] gap-5'>
           <DialogHeader>
             <DialogTitle>{dialogTitle}</DialogTitle>
           </DialogHeader>
-          <Form {...form}>
-            <form id='create-file-form' onSubmit={form.handleSubmit(onSubmit)}>
+          <Form {...form} >
+            <form id='create-file-form'
+            className='space-y-5'
+            onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name='file_name'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>文件名</FormLabel>
+                    <FormControl>
+                      <Input placeholder={ '请输入新的上传文件名'} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                   control={form.control}
                   name='file'
@@ -238,7 +254,7 @@ const getParentDirectory = (path: string) => {
           </Form>
           <DialogFooter>
             <Button type='submit' form='create-file-form'>
-              创建
+              上传
             </Button>
           </DialogFooter>
         </DialogContent>

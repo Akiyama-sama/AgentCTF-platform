@@ -21,6 +21,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/attacker': {
+        target: 'http://localhost:18888',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/attacker/, ''),
+      },
     },
   },
   resolve: {

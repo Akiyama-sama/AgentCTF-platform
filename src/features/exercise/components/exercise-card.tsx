@@ -1,6 +1,6 @@
 import ButtonWithLoading from '@/components/loading-button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { scenarioStateConfig, type ActionType } from '../data/data'
+import { exerciseStateConfig, type ActionType } from '../data/data'
 import { cn } from '@/lib/utils'
 import { BaseState } from '@/types/docker-manager'
 
@@ -14,7 +14,7 @@ interface Props {
 }
 
 function StatusIndicator({ state }: { state: BaseState }) {
-  const config = scenarioStateConfig[state]
+    const config = exerciseStateConfig[state]
   const Icon = config.icon
 
   return (
@@ -24,14 +24,14 @@ function StatusIndicator({ state }: { state: BaseState }) {
     </div>
   )
 }
-interface ScenarioCardActionsProps {  
+interface ExerciseCardActionsProps {  
     state: BaseState
     pendingAction: ActionType | null
     onAction: (action: ActionType) => void
 }
 
-function ScenarioCardActions({ state, onAction, pendingAction }: ScenarioCardActionsProps) {
-    const config = scenarioStateConfig[state]
+function ExerciseCardActions({ state, onAction, pendingAction }: ExerciseCardActionsProps) {
+    const config = exerciseStateConfig[state]
 
     if (config.component) {
         const Component = config.component
@@ -63,7 +63,7 @@ function ScenarioCardActions({ state, onAction, pendingAction }: ScenarioCardAct
 }
 
 
-export function ScenarioCard({ name, description, state, onAction, pendingAction,uuid }: Props) {
+export function ExerciseCard({ name, description, state, onAction, pendingAction,uuid }: Props) {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="">
@@ -77,7 +77,7 @@ export function ScenarioCard({ name, description, state, onAction, pendingAction
         <p className='text-sm text-muted-foreground line-clamp-3'>UUID:{uuid}</p>
       </CardContent>
       <CardFooter className='pt-2 mt-auto'>
-        <ScenarioCardActions state={state} onAction={onAction} pendingAction={pendingAction} />
+        <ExerciseCardActions state={state} onAction={onAction} pendingAction={pendingAction} />
       </CardFooter>
     </Card>
   )

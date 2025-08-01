@@ -1,4 +1,4 @@
-import { showSubmittedData } from '@/utils/show-submitted-data'
+import {  showSuccessMessage } from '@/utils/show-submitted-data'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import {
   useScenariosDialog,
@@ -43,7 +43,7 @@ function ScenarioDialogsInner({
           setTimeout(() => {
             setCurrentRow(null)
           }, 500)
-          showSubmittedData(currentRow, '以下场景已删除:')
+          showSuccessMessage(`场景${currentRow.name}已删除`)
           deleteScenarioAsync({ modelId: currentRow.uuid })
         }}
         className='max-w-md'

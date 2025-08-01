@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
-import { useScenario } from '@/hooks/use-scenario';
-import { type ActionType } from '@/features/scenarios/data/data';
-import { useScenariosDialog } from '../context/scenarios-context';
+import { useExercise } from '@/hooks/use-exercise';
+import { type ActionType } from '@/features/exercise/data/data';
+import { useExercisesDialog } from '../context/exercises-context';
 import { useNavigate } from '@tanstack/react-router';
 
 /**
@@ -11,13 +11,13 @@ import { useNavigate } from '@tanstack/react-router';
  * @param buildActions - 从父组件传入的构建操作
  * @returns 返回一个 handleAction 函数，用于处理所有来自 UI 的操作。
  */
-export const useScenarioActions = (
-  scenarioId: string,
-  createBuildConnection: (scenarioId: string) => void,
+export const useExerciseActions = (
+  exerciseId: string,
+  createBuildConnection: (exerciseId: string) => void,
   closeBuildConnection: () => void
 ) => {
-  const { scenario, updateState, isUpdatingState } = useScenario(scenarioId);
-  const { setOpen, setCurrentRow } = useScenariosDialog();
+  const { exercise, updateState,isUpdatingState  } = useExercise(exerciseId);
+  const { setOpen, setCurrentRow } = useExercisesDialog();
   const navigate = useNavigate();
 
   // 新增一个 state 来追踪正在进行中的 action
@@ -31,47 +31,42 @@ export const useScenarioActions = (
   }, [isUpdatingState]);
   
   const handleAction = useCallback((action: ActionType) => {
-    if (!scenario) return
+    if (!exercise) return
     switch (action) {
-      case 'enter':
-        navigate({
-          to: '/scenarios/$scenarioId',
-          params: { scenarioId },
-        });
-        break
+      case 'submit_flag':
+        break;
       case 'build':
-        setCurrentRow(scenario)
+        setCurrentRow(exercise)
         setPendingAction('build'); 
-        updateState({ modelId: scenarioId, data: { action } });
-        createBuildConnection(scenarioId)
+        updateState({ modelId: exerciseId, data: { action } });
+        createBuildConnection(exerciseId)
         break;
       case 'force_stop_build':
-        setCurrentRow(scenario)
+        setCurrentRow(exercise)
         setPendingAction('force_stop_build'); 
-        updateState({ modelId: scenarioId, data: { action } });
+        updateState({ modelId: exerciseId, data: { action } });
         break;
       case 'start':
-        setCurrentRow(scenario)
+        setCurrentRow(exercise)
         setPendingAction('start'); 
-        updateState({ modelId: scenarioId, data: { action } });
+        updateState({ modelId: exerciseId, data: { action } });
         break;
       case 'stop':
-        setCurrentRow(scenario)
+        setCurrentRow(exercise)
         setPendingAction('stop'); 
-        updateState({ modelId: scenarioId, data: { action } });
+        updateState({ modelId: exerciseId, data: { action } });
         break;
       case 'delete':
-        setCurrentRow(scenario)
+        setCurrentRow(exercise)
         closeBuildConnection()
-        localStorage.removeItem(`attacker-agent-${scenarioId}`)
         setOpen('delete');
         break;
       case 'view_details':
-        setCurrentRow(scenario)
+        setCurrentRow(exercise)
         setOpen('update');
         break;
     }
-  }, [scenarioId, updateState, setOpen, scenario, setCurrentRow, navigate,createBuildConnection,closeBuildConnection]);
+  }, [exerciseId, updateState, setOpen, exercise, setCurrentRow, navigate,createBuildConnection,closeBuildConnection]);
 
   return { handleAction, pendingAction };
 }; 

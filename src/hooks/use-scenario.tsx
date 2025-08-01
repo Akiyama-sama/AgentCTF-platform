@@ -1,10 +1,7 @@
-import { useRef, useState } from 'react'
+
 import { useQueryClient } from '@tanstack/react-query'
 import {
-  ContainerInspect,
   FileTreeNode,
-  GetModelAllContainerInspectResponseContainers,
-  LogEntry,
 } from '@/types/api'
 import {
   // 导入所有需要的 orval 生成的 Hooks
@@ -41,8 +38,27 @@ import {
   useGetModelAllContainerInspectModelsModelIdInspectGet,
 
 } from '@/types/docker-manager'
+import { showErrorMessage, showSuccessMessage } from '@/utils/show-submitted-data'
 
-const dockerManagerURL = import.meta.env.VITE_BASE_URL
+// 根据容器检查结果的结构，仅包含当前使用的字段。
+type ContainerInspectDetail = {
+  Name: string
+  Config: {
+    Labels: {
+      'com.docker.compose.service': string
+    }
+  }
+  HostConfig?: {
+    PortBindings?: {
+      '8000/tcp'?: { HostPort: string }[]
+      '2222/tcp'?: { HostPort: string }[]
+    }
+  }
+}
+
+type ContainersInspectMap = Record<string, ContainerInspectDetail>
+
+
 
 /**
  * Hook 用于获取所有场景列表，并提供创建新场景的方法。
@@ -65,11 +81,15 @@ export const useScenarios = () => {
 
   const createScenarioMutation = useCreateModelsModelsPost({
     mutation: {
-      onSuccess: () => {
+      onSuccess: (res) => {
         // 创建成功后，让模型列表的 query 失效，以触发自动刷新
         queryClient.invalidateQueries({
           queryKey: getGetModelsModelsGetQueryKey(),
         })
+        showSuccessMessage(res.message??'创建场景成功')
+      },
+      onError: (error) => {
+        showErrorMessage('创建场景失败',error.detail)
       },
     },
   })
@@ -207,242 +227,14 @@ export const useScenario = (
   }
 }
 
-/**
- * Hook 用于获取和处理场景构建日志。
- * @returns 包含日志、构建状态和相关操作的钩子对象
- */
-export const useScenarioBuildLogs = (): {
-  logs: LogEntry[]
-  isBuilding: boolean
-  startBuild: (scenarioId: string) => void
-  stopBuild: () => void
-} => {
-  const [buildLogs, setBuildLogs] = useState<LogEntry[]>([])
 
-  const [isBuilding, setIsBuilding] = useState<boolean>(false)
-  const buildSourceRef = useRef<EventSource | null>(null)
 
-  const startBuild = (scenarioId: string) => {
-    if (buildSourceRef.current) {
-      buildSourceRef.current.close()
-    }
-    setIsBuilding(true)
-    const url = `${dockerManagerURL}/logs/stream/model/${scenarioId}/build`
-    const es = new EventSource(url)
-    es.onmessage = (e) => {
-      try {
-        const logEntry: LogEntry = JSON.parse(e.data)
 
-        switch (logEntry.type) {
-          case 'history':
-            setBuildLogs((prev) => [...prev, { ...logEntry, type: 'history' }])
-            break
-          case 'history_end':
-            setBuildLogs((prev) => [
-              ...prev,
-              {
-                timestamp: new Date().toISOString(),
-                level: 'INFO',
-                message: '构建日志历史加载完成',
-                logger_name: 'system',
-                type: 'history_end',
-              },
-            ])
-            break
-          case 'log':
-            setBuildLogs((prev) => [...prev, logEntry])
-            break
-          case 'end':
-            setIsBuilding(false)
-            setBuildLogs((prev) => [
-              ...prev,
-              {
-                timestamp: new Date().toISOString(),
-                level: 'INFO',
-                message: '构建日志流结束',
-                logger_name: 'system',
-                type: 'end',
-              },
-            ])
-            es.close()
-            break
-          case 'error':
-            setBuildLogs((prev) => [...prev, logEntry])
-            es.close()
-            break
-          case 'heartbeat':
-            // 心跳，不处理
-            break
-          default:
-            setBuildLogs((prev) => [...prev, logEntry])
-        }
-      } catch (error) {
-        //eslint-disable-next-line no-console
-        console.error('解析日志失败:', error, '原始数据:', e.data)
-        setBuildLogs((prev) => [
-          ...prev,
-          {
-            timestamp: new Date().toISOString(),
-            level: 'INFO',
-            message: e.data,
-            logger_name: 'unknown',
-            type: 'log',
-          },
-        ])
-      }
-    }
 
-    es.onerror = (error) => {
-      //eslint-disable-next-line no-console
-      console.error('构建日志流连接错误:', error)
-      es.close()
-
-      // 如果场景还在构建状态，尝试重连
-      if (isBuilding) {
-        setTimeout(() => {
-          if (isBuilding) {
-            startBuild(scenarioId)
-          }
-        }, 3000)
-      }
-    }
-
-    buildSourceRef.current = es
-  }
-
-  const stopBuild = () => {
-    if (buildSourceRef.current) {
-      buildSourceRef.current.close()
-    }
-    setIsBuilding(false)
-  }
-
-  return {
-    logs: buildLogs,
-    isBuilding,
-    startBuild,
-    stopBuild,
-  }
+type Port = {
+  mcpPort?: number
+  sshPort?: number
 }
-
-/**
- * HOOK 用于获取场景中指定容器的日志。
- * @param scenarioId - 要获取日志的场景的UUID
- * @returns 包含日志相关操作的钩子对象
- */
-/* export const useContainerLogs = (
-  scenarioId: string | null,
-  containerName: string | null,
-) => {
-  const [containerLogs, setContainerLogs] = useState<LogEntry[]>([]);
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const esRef = useRef<EventSource | null>(null);
-
-  const startLogs = () => {
-    if (!scenarioId || !containerName) return;
-    if (esRef.current) {
-      esRef.current.close();
-    }
-    setContainerLogs([]);
-    setIsGenerating(true);
-    const url = `${dockerManagerURL}/logs/stream/model/${scenarioId}/container/${containerName}`;
-    const es = new EventSource(url);
-    es.onmessage = (e) => {
-      try {
-        const logEntry: LogEntry = JSON.parse(e.data);
-
-        switch (logEntry.type) {
-          case 'history':
-            setContainerLogs((prev) => [
-              ...prev,
-              { ...logEntry, type: 'history' },
-            ]);
-            break;
-          case 'history_end':
-            setContainerLogs((prev) => [
-              ...prev,
-              {
-                timestamp: new Date().toISOString(),
-                level: 'INFO',
-                message: `容器${containerName}日志历史加载完成`,
-                logger_name: 'system',
-                type: 'history_end',
-              },
-            ]);
-            break;
-          case 'log':
-            setContainerLogs((prev) => [...prev, logEntry]);
-            break;
-          case 'end':
-            setIsGenerating(false);
-            setContainerLogs((prev) => [
-              ...prev,
-              {
-                timestamp: new Date().toISOString(),
-                level: 'INFO',
-                message: `容器${containerName}日志流结束`,
-                logger_name: 'system',
-                type: 'end',
-              },
-            ]);
-            es.close();
-            break;
-          case 'error':
-            setContainerLogs((prev) => [...prev, logEntry]);
-            es.close();
-            break;
-          case 'heartbeat':
-            // 心跳，不处理
-            break;
-          default:
-            setContainerLogs((prev) => [...prev, logEntry]);
-        }
-      } catch (error) {
-        //eslint-disable-next-line no-console
-        console.error('解析日志失败:', error, '原始数据:', e.data);
-        setContainerLogs((prev) => [
-          ...prev,
-          {
-            timestamp: new Date().toISOString(),
-            level: 'INFO',
-            message: e.data,
-            logger_name: 'unknown',
-            type: 'log',
-          },
-        ]);
-      }
-    };
-
-    es.onerror = (error) => {
-      //eslint-disable-next-line no-console
-      console.error(`容器${containerName}日志流连接错误:`, error);
-      es.close();
-
-      // 如果日志仍在生成状态，尝试重连
-      if (isGenerating) {
-        setTimeout(() => {
-          if (isGenerating) {
-            startLogs();
-          }
-        }, 3000);
-      }
-    };
-    esRef.current = es;
-  };
-  const stopLogs = () => {
-    if (esRef.current) {
-      esRef.current.close();
-    }
-    setIsGenerating(false);
-  };
-
-  return {
-    containerLogs,
-    isGenerating,
-    startLogs,
-    stopLogs,
-  };
-}; */
 
 export const useScenarioContainers = (scenarioId: string) => {
   const {
@@ -451,38 +243,50 @@ export const useScenarioContainers = (scenarioId: string) => {
     error,
   } = useGetModelAllContainerInspectModelsModelIdInspectGet(scenarioId, {
     query: {
-      select: (response) => {
-        return response.data?.containers ?? {}
-      }
+      select: (response) =>
+        (response.data?.containers as ContainersInspectMap) ?? {},
     },
   })
-  let attackerContainer={}
-  let defenderContainer={}
-  let targetContainer={}
-  if(!containers){
-    console.log('container不存在')
-  }else{
+  let attackerContainer: ContainerInspectDetail | undefined
+  let defenderContainer: ContainerInspectDetail | undefined
+  let targetContainer: ContainerInspectDetail | undefined
+  const portMap = new Map<string, Port>()
+
+  if (containers) {
     // 遍历 containers 对象的所有键（即容器ID）
     for (const containerId in containers) {
       // 确保属性是对象自身的，而不是原型链上的
       if (Object.prototype.hasOwnProperty.call(containers, containerId)) {
-          const container = containers[containerId];
-          if (container && container.Config && container.Config.Labels) {
-              const serviceName = container.Config.Labels['com.docker.compose.service'];
-              if (serviceName === 'attacker') {
-                  attackerContainer=container
-              }else if(serviceName==='defender'){
-                defenderContainer=container
-              }else if(serviceName==='target'){
-                targetContainer=container
-              }
+        const container = containers[containerId]
+        if (container && container.Config && container.Config.Labels) {
+          const serviceName =
+            container.Config.Labels['com.docker.compose.service']
+          const mcpPortStr =
+            container.HostConfig?.PortBindings?.['8000/tcp']?.[0]?.HostPort
+          const sshPortStr =
+            container.HostConfig?.PortBindings?.['2222/tcp']?.[0]?.HostPort
+
+          const mcpPort = mcpPortStr ? parseInt(mcpPortStr, 10) : undefined
+          const sshPort = sshPortStr ? parseInt(sshPortStr, 10) : undefined
+
+          if (serviceName === 'attacker') {
+            attackerContainer = container
+          } else if (serviceName === 'defender') {
+            defenderContainer = container
+          } else if (serviceName === 'target') {
+            targetContainer = container
           }
+          portMap.set(containerId, {
+            mcpPort: mcpPort && !isNaN(mcpPort) ? mcpPort : undefined,
+            sshPort: sshPort && !isNaN(sshPort) ? sshPort : undefined,
+          })
+        }
       }
+    }
   }
-  }
-  
 
   return {
+    portMap,
     attackerContainer,
     attackerContainerName: attackerContainer?.Name?.slice(1),
     defenderContainer,

@@ -62,7 +62,9 @@ export const scenarioStateConfig: Record<BaseState, StateConfig> = {
     label: '构建中',
     icon: HardHat,
     iconClassName: 'text-blue-500',
-    component: () => <p className="text-sm text-muted-foreground">正在构建环境...</p>,
+    actions: [
+      { label: '停止构建', icon: StopCircle, variant: 'outline', actionType: 'force_stop_build' },
+    ],
   },
   pending: {
     label: '待处理',

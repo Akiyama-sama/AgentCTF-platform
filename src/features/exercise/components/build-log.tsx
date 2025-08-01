@@ -25,7 +25,7 @@ export function BuildLog({
         构建日志
         {isBuilding && (
           <span className='ml-3 animate-pulse text-sm text-primary'>
-            正在构建场景镜像...
+            正在构建演练镜像...
           </span>
         )}
       </h3>

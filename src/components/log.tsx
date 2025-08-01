@@ -10,10 +10,13 @@ type LogProps = {
 
 const Log = ({ logs, className }: LogProps) => {
   const endOfLogsRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     if (endOfLogsRef.current) {
-      endOfLogsRef.current.scrollIntoView({ behavior: 'smooth' })
+      endOfLogsRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'end',
+        inline: 'center'
+      })
     }
   }, [logs])
 
@@ -37,7 +40,7 @@ const Log = ({ logs, className }: LogProps) => {
   return (
     <ScrollArea
       className={cn(
-        'bg-card text-foreground font-inter text-sm p-4 rounded-lg overflow-y-auto  min-h-0 ',
+        'bg-card text-foreground font-inter text-sm p-4 rounded-lg ',
         className
       )}
     >
@@ -45,11 +48,8 @@ const Log = ({ logs, className }: LogProps) => {
         {logs.map((log, index) => (
           <div
             key={index}
-            className="grid grid-cols-[auto_auto_auto_1fr] items-baseline gap-x-2"
+            className="grid grid-cols-[auto_auto_1fr] items-baseline gap-x-2"
           >
-            <span className="text-muted-foreground/70 select-none">
-              {log.timestamp}
-            </span>
             <span className={cn('font-bold', getLevelColor(log.level))}>
               [{log.level?.toUpperCase()}]
             </span>

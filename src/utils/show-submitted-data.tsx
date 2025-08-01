@@ -22,3 +22,15 @@ export function showSuccessMessage(message: string) {
     {duration:3000}
   )
 }
+export function showErrorMessage(
+  message: string,
+  data?: unknown
+) {
+  toast.error(
+    <pre className='mt-2 w-full overflow-x-auto rounded-md bg-red-950 p-4'>
+        <code className='text-white'>{message}</code>
+        {data?<code className='text-white'>{JSON.stringify(data, null, 2)}</code>:null}
+    </pre>,
+    {duration:3000}
+  )
+}

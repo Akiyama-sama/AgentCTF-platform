@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>演练评估报告 - AI攻防推演靶场平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f0f2f5; margin: 0; color: #333; }
+        .header { background-color: #001529; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 1.5em; }
+        .user-profile { font-size: 0.9em; }
+        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-item { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.09); }
+        .full-width { grid-column: 1 / -1; } /* 占满整行 */
+        .two-thirds-width { grid-column: 1 / 3; }
+        h2 { font-size: 1.5em; border-bottom: 2px solid #e8e8e8; padding-bottom: 10px; margin-top: 0; }
+        
+        /* 第一部分: 概要 */
+        .summary-card { text-align: center; }
+        .summary-card .score { font-size: 3.5em; font-weight: bold; color: #1890ff; margin: 10px 0; }
+        .summary-card .title { font-size: 1em; color: #555; }
+        .ai-comment { font-size: 1.1em; font-style: italic; color: #333; background-color: #e6f7ff; border-left: 5px solid #1890ff; padding: 15px; margin-top: 20px; }
+
+        /* 第二部分: 攻击复盘 */
+        .timeline { position: relative; list-style: none; padding: 0; }
+        .timeline:before { content: ''; position: absolute; top: 0; bottom: 0; width: 4px; background: #e8e8e8; left: 20px; margin: 0; }
+        .timeline-item { margin-bottom: 25px; position: relative; padding-left: 50px; }
+        .timeline-icon { position: absolute; left: 0; top: 0; width: 44px; height: 44px; border-radius: 50%; background: #1890ff; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2em; border: 3px solid white; box-shadow: 0 0 0 4px #1890ff; }
+        .timeline-content { background: white; border: 1px solid #e8e8e8; border-radius: 6px; padding: 15px; position: relative; }
+        .timeline-content h4 { margin: 0 0 10px 0; }
+        .timeline-content .timestamp { font-size: 0.8em; color: #888; margin-bottom: 10px; }
+        .comparison { border-top: 1px dashed #ccc; margin-top: 15px; padding-top: 15px; }
+        .comparison .apt-path { background-color: #fffbe6; border-left: 3px solid #faad14; padding: 10px; font-size: 0.9em; }
+        .comparison .missing-step { background-color: #fff1f0; border-left: 3px solid #f5222d; padding: 10px; font-size: 0.9em; margin-top:10px; }
+
+        /* 第三部分: 防御分析 */
+        .insight-card { background-color: #fafafa; border: 1px solid #d9d9d9; padding: 15px; margin-top: 15px; border-radius: 4px; }
+        
+        /* 第四部分: 提升计划 */
+        .plan-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .plan-column h4 { color: #1890ff; }
+        .plan-column ul { list-style: none; padding: 0; }
+        .plan-column li { background-color: #fafafa; border: 1px solid #e8e8e8; padding: 12px; margin-bottom: 10px; border-radius: 4px; transition: all 0.2s ease; }
+        .plan-column li:hover { background-color: #e6f7ff; }
+        .plan-column a { text-decoration: none; color: inherit; font-weight: 500; }
+        
+        /* 可解释性图标 */
+        .info-tip { position: relative; display: inline-block; cursor: pointer; margin-left: 5px; }
+        .info-tip .tooltip-text { visibility: hidden; width: 220px; background-color: #555; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 0.85em; font-weight: normal; }
+        .info-tip:hover .tooltip-text { visibility: visible; opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>演练评估报告</h1>
+        <div class="user-profile">用户：小张</div>
+    </header>
+
+    <main class="container">
+        <section class="grid-container">
+            <div class="grid-item summary-card">
+                <div class="title">攻击拟真度评分 <div class="info-tip"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text">综合评估您的攻击行为与真实高级攻击者的相似程度。</span></div></div>
+                <div class="score">82</div>
+            </div>
+            <div class="grid-item summary-card">
+                <div class="title">防御有效性指数(模拟) <div class="info-tip"><i class="fa-solid fa-circle-info"></i><span class="tooltip-text">通过您的攻击反向评估当前防御策略的有效性。</span></div></div>
+                <div class="score">65</div>
+            </div>
+            <div class="grid-item">
+                <canvas id="skillRadarChart"></canvas>
+            </div>
+            <blockquote class="ai-comment full-width">
+                <i class="fa-solid fa-lightbulb"></i> <strong>AI智能评语:</strong> 本次演练中，您在Web漏洞利用阶段表现出色，但横向移动思路略显单一，且操作隐蔽性有待加强。
+            </blockquote>
+        </section>
+        
+        <br>
+
+        <div class="grid-container">
+            <section class="grid-item two-thirds-width">
+                <h2><i class="fa-solid fa-timeline"></i> 攻击行为深度复盘</h2>
+                <ul class="timeline">
+                    <li class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <div class="timeline-content">
+                            <div class="timestamp">10:15 - 信息收集</div>
+                            <h4>使用 Nmap 进行端口扫描</h4>
+                            <p>执行了 <code>nmap -sT 10.10.10.5</code>，发现了80、22、3306端口开放。</p>
+                            <div class="comparison">
+                                <div class="apt-path"><strong><i class="fa-solid fa-user-secret"></i> 真实攻击对比:</strong> 真实APT攻击者倾向于使用 <code>nmap -sS -T2</code> 进行更隐蔽的SYN扫描，以规避IDS检测。</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-bug"></i></div>
+                        <div class="timeline-content">
+                            <div class="timestamp">10:45 - 漏洞利用</div>
+                            <h4>获取 Webshell</h4>
+                            <p>通过对Web应用的SQL注入漏洞写入一句话木马，成功获取了Webshell权限。</p>
+                            <div class="comparison">
+                                <div class="missing-step"><strong><i class="fa-solid fa-exclamation-triangle"></i> 缺失项识别:</strong> 与真实攻击相比，您在此环节缺少了“本地权限维持”（如创建反向shell）和“初始痕迹清理”的关键步骤。</div>
+                            </div>
+                        </div>
+                    </li>
+                     <li class="timeline-item">
+                        <div class="timeline-icon"><i class="fa-solid fa-network-wired"></i></div>
+                        <div class="timeline-content">
+                            <div class="timestamp">11:05 - 横向移动</div>
+                            <h4>内网扫描</h4>
+                            <p>在Web服务器上直接使用netcat进行内网存活主机探测。</p>
+                             <div class="comparison">
+                                <div class="apt-path"><strong><i class="fa-solid fa-user-secret"></i> 真实攻击对比:</strong> 真实攻击者会优先利用代理工具（如frp, reGeorg）建立隐蔽隧道，再进行内网探测，避免直接在边界服务器上产生大量网络流量。</div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="grid-item">
+                <h2><i class="fa-solid fa-shield-halved"></i> 防御视角分析</h2>
+                <div class="insight-card">
+                    <h4>防御盲点发现</h4>
+                    <p>您在 `11:05` 使用的DNS隧道进行通信的行为，成功绕过了（模拟的）网络流量检测，这是一个值得关注的<strong>防御盲点</strong>。</p>
+                </div>
+                <div class="insight-card">
+                    <h4>响应时效性分析</h4>
+                    <p>从您植入Webshell到防御方（模拟）采取阻断措施，共耗时12分钟，<strong>响应决策速度较慢</strong>。</p>
+                </div>
+                 <div class="insight-card">
+                    <h4>策略有效性评估</h4>
+                    <p>您有超过30分钟的时间在内网自由活动，表明现有的<strong>防御策略对横向移动的检测能力不足</strong>。</p>
+                </div>
+            </section>
+        </div>
+
+        <br>
+        
+        <section class="grid-item full-width">
+            <h2><i class="fa-solid fa-chart-line"></i> 个性化能力提升方案</h2>
+            <p><strong><i class="fa-solid fa-bullseye"></i> 差距分析:</strong> 基于本次演练，您的核心能力短板在于 <strong>后渗透技术</strong> 与 <strong>攻击隐蔽性</strong>。</p>
+            <div class="plan-grid">
+                <div class="plan-column">
+                    <h4><i class="fa-solid fa-book"></i> 理论知识补强</h4>
+                    <ul>
+                        <li><a href="#" title="点击学习">《内网渗透攻防：从入门到实践》第四、五章</a></li>
+                        <li><a href="#" title="点击学习">视频课程：ATT&CK框架下的权限维持技术详解</a></li>
+                    </ul>
+                </div>
+                <div class="plan-column">
+                    <h4><i class="fa-solid-laptop-code"></i> 专项技能提升</h4>
+                    <ul>
+                        <li><a href="drill_selection_page.html" title="点击跳转"><strong>推荐靶场：</strong>高级横向移动专项训练 (B-07)</a></li>
+                        <li><a href="#" title="点击学习">能力训练：学习并实践“威胁狩猎”技能</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // 使用 Chart.js 渲染雷达图
+        const ctx = document.getElementById('skillRadarChart');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['信息收集', '漏洞利用', '权限提升', '横向移动', '响应时效', '攻击隐蔽性'],
+                datasets: [{
+                    label: '我的能力画像',
+                    // 这是根据用例中的百分比数据生成的
+                    data: [75, 90, 60, 45, 80, 55],
+                    fill: true,
+                    backgroundColor: 'rgba(24, 144, 255, 0.2)',
+                    borderColor: 'rgb(24, 144, 255)',
+                    pointBackgroundColor: 'rgb(24, 144, 255)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(24, 144, 255)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: '个人能力雷达图'
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

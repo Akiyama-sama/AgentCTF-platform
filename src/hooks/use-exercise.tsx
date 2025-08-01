@@ -1,23 +1,26 @@
 import {
   // 导入所有需要的 orval 生成的 Hooks
-  useCreateExerciseExercisesPost,
-  useDeleteExerciseExercisesExerciseIdDelete,
-  useGetExerciseContainersExercisesExerciseIdContainersGet,
-  useGetExerciseExercisesExerciseIdGet,
-  useGetExerciseStatusExercisesExerciseIdStatusGet,
-  useGetExercisesExercisesGet,
-  usePartialUpdateExerciseExercisesExerciseIdInfoPatch,
-  useUpdateExerciseExercisesExerciseIdPut,
-  useUpdateExerciseStateExercisesExerciseIdPatch,
+  
   // 导入所有需要的 Query Key 工厂函数
-  getGetExercisesExercisesGetQueryKey,
-  getGetExerciseExercisesExerciseIdGetQueryKey,
-  getGetExerciseStatusExercisesExerciseIdStatusGetQueryKey,
-  getGetExerciseContainersExercisesExerciseIdContainersGetQueryKey,
+  getGetModelsModelsGetQueryKey,
+  getGetModelModelsModelIdGetQueryKey,
+  getGetModelStateModelsModelIdStateGetQueryKey,
+  getGetModelFileTreeModelsModelIdFilesGetQueryKey,
   // 导入核心类型，增强代码可读性和类型安全
-  type ExerciseResponse,
-  type ComposeStatusResponse,
-  type ContainerStatusResponse,
+  type ModelResponse,
+  useGetModelsModelsGet,
+  ApiResponseListModelResponse,
+  BodyCreateModelsModelsPost,
+  ModelDetailResponse,
+  ApiResponseModelStateResponse,
+  ModelStateResponse,
+  ApiResponseModelDetailResponse,
+  useDeleteModelModelsModelIdDelete,
+  useUpdateModelModelsModelIdPut,
+  useUpdateModelStateModelsModelIdPatch,
+  useCreateModelsModelsPost,
+  useGetModelModelsModelIdGet,
+  useGetModelStateModelsModelIdStateGet,
 } from '@/types/docker-manager';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -28,33 +31,46 @@ import { useQueryClient } from '@tanstack/react-query';
 export const useExercises = () => {
   const queryClient = useQueryClient();
 
-  const { data: exercises, ...rest } = useGetExercisesExercisesGet({
+  const { data: exercises, ...rest } = useGetModelsModelsGet({
     query: {
-      select: (response): ExerciseResponse[] => {
-        return response.data ?? [];
+      select: (response: ApiResponseListModelResponse): ModelResponse[] => {
+        // 筛选出所有场景
+        return (
+          response.data?.filter((model) => model.model_type === 'exercise') ??
+          []
+        )
       },
     },
-  });
+  })
 
-  const createExerciseMutation = useCreateExerciseExercisesPost({
+  const createExerciseMutation = useCreateModelsModelsPost({
     mutation: {
       onSuccess: () => {
         // 创建成功后，让练习列表的 query 失效，以触发自动刷新
         queryClient.invalidateQueries({
-          queryKey: getGetExercisesExercisesGetQueryKey(),
+          queryKey: getGetModelsModelsGetQueryKey(),
         });
       },
     },
   });
 
   return {
-    // `exercises` 的类型现在被正确推断为 ExerciseResponse[]
     exercises,
-    createExercise: createExerciseMutation.mutate,
-    createExerciseAsync: createExerciseMutation.mutateAsync,
-    // 返回剩余的 query 状态 (isLoading, isError, etc.)
+    // 对外暴露的创建函数自动注入 model_type
+    createExercise: (
+      variables: Omit<BodyCreateModelsModelsPost, 'model_type'>
+    ) =>
+      createExerciseMutation.mutate({
+        data: { ...variables, model_type: 'exercise' },
+      }),
+    createExerciseAsync: (
+      variables: Omit<BodyCreateModelsModelsPost, 'model_type'>
+    ) =>
+      createExerciseMutation.mutateAsync({
+        data: { ...variables, model_type: 'exercise' },
+      }),
     ...rest,
-  };
+  }
 };
 
 /**
@@ -65,50 +81,41 @@ export const useExercise = (exerciseId: string) => {
   const queryClient = useQueryClient();
 
   const { data: exercise, ...exerciseQuery } =
-    useGetExerciseExercisesExerciseIdGet(exerciseId, {
+  useGetModelModelsModelIdGet(exerciseId, {
       query: {
         enabled: !!exerciseId,
-        select: (response): ExerciseResponse | null => {
+        select: (response: ApiResponseModelDetailResponse): ModelDetailResponse | null => {
           return response.data ?? null;
         },
       },
     });
 
   const { data: status, ...statusQuery } =
-    useGetExerciseStatusExercisesExerciseIdStatusGet(exerciseId, {
+  useGetModelStateModelsModelIdStateGet(exerciseId, {
       query: {
         enabled: !!exerciseId,
         refetchInterval: 2000,
-        select: (response): ComposeStatusResponse | null => {
+        select: (response: ApiResponseModelStateResponse): ModelStateResponse | null => {
           return response.data ?? null;
         },
       },
     });
 
-  const { data: containers, ...containersQuery } =
-    useGetExerciseContainersExercisesExerciseIdContainersGet(exerciseId, {
-      query: {
-        enabled: !!exerciseId,
-        select: (response): ContainerStatusResponse[] => {
-          return response.data ?? [];
-        },
-      },
-    });
 
   const invalidateExerciseQueries = () => {
     queryClient.invalidateQueries({
-      queryKey: getGetExercisesExercisesGetQueryKey(),
+      queryKey: getGetModelsModelsGetQueryKey(),
     });
     queryClient.invalidateQueries({
-      queryKey: getGetExerciseExercisesExerciseIdGetQueryKey(exerciseId),
+      queryKey: getGetModelModelsModelIdGetQueryKey(exerciseId),
     });
     queryClient.invalidateQueries({
-      queryKey: getGetExerciseStatusExercisesExerciseIdStatusGetQueryKey(
+      queryKey: getGetModelStateModelsModelIdStateGetQueryKey(
         exerciseId,
       ),
     });
     queryClient.invalidateQueries({
-      queryKey: getGetExerciseContainersExercisesExerciseIdContainersGetQueryKey(
+      queryKey: getGetModelFileTreeModelsModelIdFilesGetQueryKey(
         exerciseId,
       ),
     });
@@ -116,48 +123,37 @@ export const useExercise = (exerciseId: string) => {
 
   // --- 以下所有 Mutation 逻辑保持不变，因为它们依赖 invalidateExerciseQueries ---
 
-  const deleteMutation = useDeleteExerciseExercisesExerciseIdDelete({
+  const deleteMutation = useDeleteModelModelsModelIdDelete({
     mutation: {
       onSuccess: invalidateExerciseQueries,
     },
-  });
+  })
 
-  const updateMutation = useUpdateExerciseExercisesExerciseIdPut({
+  const updateMutation = useUpdateModelModelsModelIdPut({
     mutation: {
       onSuccess: invalidateExerciseQueries,
     },
-  });
+  })
 
-  const partialUpdateMutation =
-    usePartialUpdateExerciseExercisesExerciseIdInfoPatch({
-      mutation: {
-        onSuccess: invalidateExerciseQueries,
-      },
-    });
-
-  const updateStateMutation = useUpdateExerciseStateExercisesExerciseIdPatch({
+  const updateStateMutation = useUpdateModelStateModelsModelIdPatch({
     mutation: {
       onSuccess: invalidateExerciseQueries,
     },
-  });
+  })
 
   return {
-    exercise, // 类型: ExerciseResponse | null
-    status, // 类型: ComposeStatusResponse | null
-    containers, // 类型: ContainerStatusResponse[]
+    exercise, 
+    status, 
 
     // 同时返回各个 query 的完整状态，以便在UI中处理加载、错误等
     exerciseQuery,
     statusQuery,
-    containersQuery,
-
+    isUpdatingState: updateStateMutation.isPending,
     // 返回所有 mutation 方法
     deleteExercise: deleteMutation.mutate,
     deleteExerciseAsync: deleteMutation.mutateAsync,
     updateExercise: updateMutation.mutate,
     updateExerciseAsync: updateMutation.mutateAsync,
-    partialUpdateExercise: partialUpdateMutation.mutate,
-    partialUpdateExerciseAsync: partialUpdateMutation.mutateAsync,
     updateState: updateStateMutation.mutate,
     updateStateAsync: updateStateMutation.mutateAsync,
   };

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择演练 - AI攻防推演靶场平台</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            color: #333;
+        }
+        .header {
+            background-color: #001529;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .user-profile {
+            font-size: 0.9em;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .page-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e8e8e8;
+            padding-bottom: 10px;
+        }
+        .drill-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        .drill-card {
+            background-color: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .drill-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+        .drill-card h3 {
+            margin-top: 0;
+            font-size: 1.3em;
+            color: #1890ff;
+        }
+        .drill-card p {
+            font-size: 0.95em;
+            line-height: 1.6;
+            flex-grow: 1; /* Pushes the button to the bottom */
+        }
+        .drill-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .difficulty {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        .difficulty.easy { background-color: #e6f7ff; color: #1890ff; border: 1px solid #91d5ff; }
+        .difficulty.medium { background-color: #fffbe6; color: #faad14; border: 1px solid #ffe58f; }
+        .difficulty.hard { background-color: #fff1f0; color: #f5222d; border: 1px solid #ffa39e; }
+        .tags span {
+            background-color: #fafafa;
+            border: 1px solid #d9d9d9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .start-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            text-align: center;
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .start-btn:hover {
+            background-color: #40a9ff;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>AI攻防推演靶场平台</h1>
+        <div class="user-profile">用户：小张</div>
+    </header>
+
+    <main class="container">
+        <h2 class="page-title">演练中心</h2>
+        <div class="drill-list">
+            <article class="drill-card">
+                <h3>Web应用至内网渗透</h3>
+                <div class="drill-meta">
+                    <span class="difficulty medium">中等</span>
+                    <div class="tags">
+                        <span>Web安全</span>
+                        <span>内网渗透</span>
+                    </div>
+                </div>
+                <p>模拟一次经典的攻击路径。您需要利用Web服务器上的已知漏洞获取立足点，并以此为跳板，逐步渗透至内网，最终获取核心数据库的控制权。</p>
+                <a href="evaluation_report.html" class="start-btn">开始演练</a>
+            </article>
+
+            <article class="drill-card">
+                <h3>域控权限提升专项训练</h3>
+                <div class="drill-meta">
+                    <span class="difficulty hard">困难</span>
+                    <div class="tags">
+                        <span>域渗透</span>
+                        <span>权限提升</span>
+                    </div>
+                </div>
+                <p>您已身处一个配置不当的域环境中，拥有一个普通域用户权限。您的目标是利用各种技术手段，最终获取域管理员权限。</p>
+                <a href="#" class="start-btn">开始演练</a>
+            </article>
+
+            <article class="drill-card">
+                <h3>Log4Shell漏洞复现</h3>
+                <div class="drill-meta">
+                    <span class="difficulty easy">简单</span>
+                    <div class="tags">
+                        <span>漏洞复现</span>
+                        <span>Java安全</span>
+                    </div>
+                </div>
+                <p>一个简单的场景，旨在帮助您理解和复现著名的Log4Shell (CVE-2021-44228) 漏洞，并尝试利用其执行远程命令。</p>
+                <a href="#" class="start-btn">开始演练</a>
+            </article>
+            
+            </div>
+    </main>
+
+</body>
+</html>

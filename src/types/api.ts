@@ -29,6 +29,21 @@ export interface LogEntry {
     type: 'log' | 'history' | 'heartbeat' | 'error' | 'end' | 'history_end';
 }
 
+//攻击agent日志相关类型
+export interface AttackerAgentLogEntry {
+    event: 'message' | 'start' | 'end' | 'ping' | 'error';
+    data: AttackerMessageData;
+}
+
+
+export interface AttackerMessageData {
+    message?: string;
+    timestamp: string;
+    status?: string;
+    // 允许其他任意键
+    [key: string]: unknown;
+}
+
 export type GetModelAllContainerInspectResponseContainers = Record<string, ContainerInspect>;
 
 export interface ContainerInspect {

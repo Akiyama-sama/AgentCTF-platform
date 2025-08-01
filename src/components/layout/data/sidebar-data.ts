@@ -12,8 +12,10 @@ import {
   IconNotification,
   IconPackages,
   IconPalette,
+  IconPencil,
   IconServerOff,
   IconSettings,
+  IconShieldCode,
   IconTool,
   IconUserCog,
   IconUserOff,
@@ -60,9 +62,14 @@ export const sidebarData: SidebarData = {
           url:'/lab'
         },
         {
-          title: 'Agent攻防场景',
+          title: 'Agent攻防',
           url: '/scenarios',
-          icon: IconChecklist,
+          icon: IconShieldCode,
+        },
+        {
+          title: '演练',
+          url: '/exercises',
+          icon: IconPencil ,
         },
         {
           title: 'Tasks',

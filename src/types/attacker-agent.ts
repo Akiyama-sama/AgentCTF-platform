@@ -67,11 +67,20 @@ export interface ApiResponseUserStatusResponse {
   data?: ApiResponseUserStatusResponseData;
 }
 
+export type ChatRequestCustomInfoAnyOf = { [key: string]: unknown };
+
+/**
+ * 用户自定义信息，前端可自行填写任意键值对
+ */
+export type ChatRequestCustomInfo = ChatRequestCustomInfoAnyOf | null;
+
 export interface ChatRequest {
   /** 用户ID */
   user_id: string;
   /** 消息内容 */
   message: string;
+  /** 用户自定义信息，前端可自行填写任意键值对 */
+  custom_info?: ChatRequestCustomInfo;
 }
 
 export interface HTTPValidationError {
@@ -92,20 +101,11 @@ export interface UserCleanupResponse {
   cleaned_at: string;
 }
 
-export type UserInitRequestCustomInfoAnyOf = { [key: string]: unknown };
-
-/**
- * 用户自定义信息，前端可自行填写任意键值对
- */
-export type UserInitRequestCustomInfo = UserInitRequestCustomInfoAnyOf | null;
-
 export interface UserInitRequest {
   /** 用户ID */
   user_id: string;
   /** API密钥 */
   api_key: string;
-  /** 用户自定义信息，前端可自行填写任意键值对 */
-  custom_info?: UserInitRequestCustomInfo;
 }
 
 export interface UserInitResponse {

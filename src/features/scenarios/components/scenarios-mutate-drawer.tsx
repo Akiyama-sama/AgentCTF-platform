@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { showSubmittedData } from '@/utils/show-submitted-data'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -26,6 +25,7 @@ import { useScenario, useScenarioFile, useScenarios } from '@/hooks/use-scenario
 import { ScenarioFileTree } from './scenario-file-tree'
 import { Label } from '@/components/ui/label'
 import { ModelResponse } from '@/types/docker-manager'
+
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -77,7 +77,7 @@ export function ScenariosMutateDrawer({
         }
   })
 
-  const onSubmit = (data: ScenariosCreateForm | ScenariosUpdateForm) => {
+  const onSubmit =  (data: ScenariosCreateForm | ScenariosUpdateForm) => {
     if (isUpdate && currentRow) {
       // Type guard for update
       updateScenarioAsync({
@@ -94,12 +94,10 @@ export function ScenariosMutateDrawer({
         delete createData.defender_file;
       }
       // Type guard for create
-      createScenarioAsync(createData)
-      
+       createScenarioAsync(createData)
     }
     onOpenChange(false)
     form.reset()
-    showSubmittedData(data, isUpdate ? '场景已更新' : '场景已创建')
   }
 
   return (

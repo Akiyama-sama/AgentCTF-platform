@@ -32,7 +32,7 @@ import { ScenariosDialogs } from './components/scenarios-dialogs'
 import { useScenarioActions } from './hooks/useScenarioActions'
 import { ScenarioFileDialogs } from './components/scenario-file-dialogs'
 import { BuildLog } from './components/build-log'
-import { useScenarioBuildLogs } from '@/hooks/use-log'
+import { useModelBuildLogs } from '@/hooks/use-log'
 
 
 
@@ -42,9 +42,9 @@ export default function Scenarios() {
   const [sort, setSort] = useState('ascending')
   const [scenarioFilterStatus, setScenarioFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
-  const {logs,isBuilding,createBuildConnection,closeBuildConnection,isLogVisible,setIsLogVisible} = useScenarioBuildLogs()
+  const {logs,isBuilding,createBuildConnection,closeBuildConnection,isLogVisible,setIsLogVisible} = useModelBuildLogs('scenario')
   
-  
+
   const filteredScenarios = scenarios?
     (scenarios.sort((a, b) =>
       sort === 'ascending'
@@ -148,7 +148,9 @@ export default function Scenarios() {
           {isLogVisible && (
             <BuildLog 
               logs={logs} 
-              isBuilding={isBuilding}/>
+              isBuilding={isBuilding}
+              className='h-80'
+              />
           )}
           {filteredScenarios.length>0?
           (<ul className='  grid gap-4 overflow-auto pb-16 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>

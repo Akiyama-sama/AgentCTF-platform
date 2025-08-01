@@ -59,7 +59,7 @@ export function ScenarioFileTree({
             <Button
               variant='outline'
               size='sm'
-              onClick={()=>setOpen('create_file')}
+              onClick={()=>setOpen('create_directory')}
               disabled={!filePath}
             >
               <IconFolderPlus className='mr-2 size-4' />
