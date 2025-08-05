@@ -13,13 +13,15 @@ import {
     // Types
     type UserStatusResponse,
     type ChatRequest,
+    // type SSEChatResponse,
 } from "@/types/attacker-agent";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import {
     type Message,
 } from 'ai';
+import { attackerSSEManager } from "@/utils/attacker-sse-connections";
 
-const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL;
+// const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL;
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -116,30 +118,33 @@ export const useAttackerAgentChat = ({
     const [error, setError] = useState<{ message: string, code?: string } | null>(null);
     type ChatStatus = 'idle' | 'connecting' | 'streaming' | 'success' | 'error';
     const [status, setStatus] = useState<ChatStatus>('idle');
-    const [customInfo, setCustomInfo] = useState<{[key:string]:unknown}>({});
 
 
-    const statusRef = useRef(status);
-    statusRef.current = status;
+    const streamControllerRef = useRef<AbortController | null>(null);
   
+    // 当消息列表更新时，自动持久化到 localStorage
+    useEffect(() => {
+        if (user_id) {
+          localStorage.setItem(`attacker-agent-${user_id}`, JSON.stringify(messages));
+        }
+    }, [messages, user_id]);
+
     const sendMessage = useCallback(async (message: string) => {
       if (!user_id) return;
-      // 允许在有 customInfo 的情况下发送空消息
-      if (!message.trim() && Object.keys(customInfo).length === 0) return;
 
       setIsLoading(true);
       setError(null);
       setStatus('connecting');
 
-      // 只有当消息不为空时，才将其作为用户消息添加到对话中
+      const newUserMessage: Message = {
+        id: Math.random().toString(),
+        role: 'user',
+        content: message,
+        createdAt: new Date(),
+      };
+      // Optimistically add user message
       if (message.trim()) {
-          const newUserMessage: Message = {
-            id: Math.random().toString(),
-            role: 'user',
-            content: message,
-            createdAt: new Date(),
-          };
-          setMessages(prev => [...prev, newUserMessage]);
+        setMessages(prev => [...prev, newUserMessage]);
       }
 
       const assistantMessageId = Math.random().toString();
@@ -149,140 +154,70 @@ export const useAttackerAgentChat = ({
         content: '',
         createdAt: new Date(),
       };
-      
-      // 不论用户消息是否可见，都添加AI助手的占位消息
       setMessages(prev => [...prev, assistantPlaceholder]);
+
+      const request: ChatRequest = {
+        user_id: user_id,
+        message: message,
+      };
       
-      try {
-        const response = await fetch(`${attackerAgentURL}/v1/chat/completions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'text/event-stream',
-          },
-          body: JSON.stringify({
-            user_id: user_id,
-            message: message, // 使用传入的消息
-            custom_info: customInfo
-          } as ChatRequest),
-        });
-  
-        if (!response.ok || !response.body) {
-          const errorData = await response.json().catch(() => ({ detail: [{msg: '请求失败，无法解析错误信息'}] }));
-          throw new Error(errorData.detail?.[0]?.msg || `HTTP error! status: ${response.status}`);
-        }
-  
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-  
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            if (statusRef.current === 'streaming' || statusRef.current === 'connecting') {
-                setStatus('success');
-            }
-            break;
-          }
-  
-          buffer += decoder.decode(value, { stream: true });
-          const boundary = '\n\n';
-          
-          while (buffer.includes(boundary)) {
-            const eventEndIndex = buffer.indexOf(boundary);
-            const eventString = buffer.substring(0, eventEndIndex);
-            buffer = buffer.substring(eventEndIndex + boundary.length);
-  
-            let eventType = 'message';
-            let dataJson = '';
-  
-            for (const line of eventString.split('\n')) {
-              if (line.startsWith('event: ')) {
-                eventType = line.substring(7).trim();
-              } else if (line.startsWith('data: ')) {
-                dataJson = line.substring(6).trim();
-              }
-            }
-  
-            if (!dataJson) continue;
-            
-            try {
-              const data = JSON.parse(dataJson);
-              
-              switch (eventType) {
-                case 'start':
-                  // eslint-disable-next-line no-console
-                  console.log('Stream started:', data);
-                  setStatus('streaming');
-                  break;
-                
-                case 'message':
-                  if (data.message) {
-                    setMessages(prev =>
-                      prev.map(msg =>
-                        msg.id === assistantMessageId
-                          ? { ...msg, content: msg.content + data.message }
-                          : msg
-                      )
-                    );
-                    localStorage.setItem(`attacker-agent-${user_id}`,JSON.stringify(messages))
-                  }
-                  break;
-  
-                case 'ping':
-                  // eslint-disable-next-line no-console
-                  console.log('Ping received:', data.timestamp);
-                  break;
-  
-                case 'end':
-                  // eslint-disable-next-line no-console
-                  console.log('Stream ended:', data);
-                  setStatus('success');
-                  setIsLoading(false);
-                  return; 
-  
-                case 'error': {
-                  // eslint-disable-next-line no-console
-                  console.error('API Error Event:', data);
-                  const apiError = { code: data.code, message: data.message };
-                  setError(apiError);
-                  setStatus('error');
-                  setIsLoading(false);
-                  setMessages(prev =>
+      const callbacks = {
+        onStart: () => {
+            setStatus('streaming');
+        },
+        onMessage: (data: unknown) => {
+            const { message: chunk } = data as { message: string };
+            if (chunk) {
+                setMessages(prev =>
                     prev.map(msg =>
-                      msg.id === assistantMessageId
-                        ? { ...msg, content: `API错误: ${apiError.message} (代码: ${apiError.code})` }
-                        : msg
+                        msg.id === assistantMessageId
+                            ? { ...msg, content: msg.content + chunk }
+                            : msg
                     )
-                  );
-                  return;
-                }
-              }
-            } catch (e) {
-              // eslint-disable-next-line no-console
-              console.error('Failed to parse SSE data JSON:', dataJson, e);
+                );
             }
-          }
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-            // eslint-disable-next-line no-console
-            console.error('Fetch request error:', err);
-            setError({ message: err.message });
+        },
+        onEnd: () => {
+            setStatus('success');
+        },
+        onError: (err: { code?: string, message: string }) => {
+            setError(err);
             setStatus('error');
             setMessages(prev =>
                 prev.map(msg =>
                     msg.id === assistantMessageId
-                        ? { ...msg, content: `出现错误: ${err.message}` }
+                        ? { ...msg, content: `错误: ${err.message} (代码: ${err.code || 'N/A'})` }
                         : msg
                 )
             );
+        },
+        onFinally: () => {
+            setIsLoading(false);
+            streamControllerRef.current = null;
         }
-      } finally {
-        setIsLoading(false);
-      }
-    }, [user_id, customInfo]);
+      };
+
+      streamControllerRef.current = attackerSSEManager.createChatStream(user_id, request, callbacks);
+
+    }, [user_id]);
+
+    const stop = useCallback(() => {
+        if(user_id) {
+            attackerSSEManager.closeStream(`chat-${user_id}`);
+        }
+    }, [user_id]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            stop();
+        }
+    }, [stop]);
+
+    const clearMessages = useCallback(() => {
+      localStorage.removeItem(`attacker-agent-${user_id}`)
+      setMessages([]);
+    }, [user_id]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInput(e.target.value);
@@ -303,7 +238,7 @@ export const useAttackerAgentChat = ({
       handleInputChange,
       handleSubmit,
       sendMessage, 
-      setCustomInfo,
+      clearMessages,
       isLoading,
       status,
       error,

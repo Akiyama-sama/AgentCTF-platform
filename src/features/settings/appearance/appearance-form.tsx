@@ -61,7 +61,7 @@ export function AppearanceForm() {
           name='font'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Font</FormLabel>
+              <FormLabel>字体</FormLabel>
               <div className='relative w-max'>
                 <FormControl>
                   <select
@@ -82,7 +82,7 @@ export function AppearanceForm() {
                 <ChevronDownIcon className='absolute top-2.5 right-3 h-4 w-4 opacity-50' />
               </div>
               <FormDescription className='font-manrope'>
-                Set the font you want to use in the dashboard.
+                设置您想要在应用程序中使用的字体。
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -93,9 +93,9 @@ export function AppearanceForm() {
           name='theme'
           render={({ field }) => (
             <FormItem className='space-y-1'>
-              <FormLabel>Theme</FormLabel>
+              <FormLabel>主题</FormLabel>
               <FormDescription>
-                Select the theme for the dashboard.
+                选择应用程序的外观。自动切换日间和夜间主题。
               </FormDescription>
               <FormMessage />
               <RadioGroup
@@ -125,7 +125,7 @@ export function AppearanceForm() {
                       </div>
                     </div>
                     <span className='block w-full p-2 text-center font-normal'>
-                      Light
+                      浅色
                     </span>
                   </FormLabel>
                 </FormItem>
@@ -151,7 +151,7 @@ export function AppearanceForm() {
                       </div>
                     </div>
                     <span className='block w-full p-2 text-center font-normal'>
-                      Dark
+                      深色
                     </span>
                   </FormLabel>
                 </FormItem>
@@ -160,7 +160,7 @@ export function AppearanceForm() {
           )}
         />
 
-        <Button type='submit'>Update preferences</Button>
+        <Button type='submit'>更新偏好</Button>
       </form>
     </Form>
   )

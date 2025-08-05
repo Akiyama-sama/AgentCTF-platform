@@ -34,6 +34,8 @@ export const useExerciseActions = (
     if (!exercise) return
     switch (action) {
       case 'submit_flag':
+        setCurrentRow(exercise)
+        setOpen('submit_flag');
         break;
       case 'build':
         setCurrentRow(exercise)

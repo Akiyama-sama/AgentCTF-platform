@@ -481,12 +481,24 @@
             "type": "string",
             "title": "Api Key",
             "description": "API密钥"
+          },
+          "attacker_server_url": {
+            "type": "string",
+            "title": "Attacker Server Url",
+            "description": "攻击者服务器URL"
+          },
+          "target_entrance_url": {
+            "type": "string",
+            "title": "Target Entrance Url",
+            "description": "目标入口URL"
           }
         },
         "type": "object",
         "required": [
           "user_id",
-          "api_key"
+          "api_key",
+          "attacker_server_url",
+          "target_entrance_url"
         ],
         "title": "UserInitRequest"
       },

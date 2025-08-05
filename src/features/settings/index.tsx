@@ -1,7 +1,5 @@
 import { Outlet } from '@tanstack/react-router'
 import {
-  IconBrowserCheck,
-  IconNotification,
   IconPalette,
   IconTool,
   IconUser,
@@ -32,7 +30,7 @@ export default function Settings() {
             Settings
           </h1>
           <p className='text-muted-foreground'>
-            Manage your account settings and set e-mail preferences.
+            管理您的账户设置和Agent密钥信息。
           </p>
         </div>
         <Separator className='my-4 lg:my-6' />
@@ -51,28 +49,18 @@ export default function Settings() {
 
 const sidebarNavItems = [
   {
-    title: 'Profile',
+    title: '个人信息',
     icon: <IconUser size={18} />,
     href: '/settings',
   },
   {
-    title: 'Account',
+    title: 'Agent设置',
     icon: <IconTool size={18} />,
-    href: '/settings/account',
+    href: '/settings/agent',
   },
   {
-    title: 'Appearance',
+    title: '外观',
     icon: <IconPalette size={18} />,
     href: '/settings/appearance',
-  },
-  {
-    title: 'Notifications',
-    icon: <IconNotification size={18} />,
-    href: '/settings/notifications',
-  },
-  {
-    title: 'Display',
-    icon: <IconBrowserCheck size={18} />,
-    href: '/settings/display',
   },
 ]

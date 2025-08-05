@@ -1,4 +1,4 @@
-import { LogController } from "../scenario/components/log-controller";
+import { LogController } from "../scenario/components/container-log-controller";
 
 export function LabComponents(){
     return(

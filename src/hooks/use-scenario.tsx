@@ -52,6 +52,7 @@ type ContainerInspectDetail = {
     PortBindings?: {
       '8000/tcp'?: { HostPort: string }[]
       '2222/tcp'?: { HostPort: string }[]
+      '8080/tcp'?: { HostPort: string }[]
     }
   }
 }
@@ -234,6 +235,7 @@ export const useScenario = (
 type Port = {
   mcpPort?: number
   sshPort?: number
+  targetEntrancePort?: number
 }
 
 export const useScenarioContainers = (scenarioId: string) => {
@@ -265,10 +267,11 @@ export const useScenarioContainers = (scenarioId: string) => {
             container.HostConfig?.PortBindings?.['8000/tcp']?.[0]?.HostPort
           const sshPortStr =
             container.HostConfig?.PortBindings?.['2222/tcp']?.[0]?.HostPort
-
+          const targetEntrancePortStr =
+            container.HostConfig?.PortBindings?.['8080/tcp']?.[0]?.HostPort
           const mcpPort = mcpPortStr ? parseInt(mcpPortStr, 10) : undefined
           const sshPort = sshPortStr ? parseInt(sshPortStr, 10) : undefined
-
+          const targetEntrancePort = targetEntrancePortStr ? parseInt(targetEntrancePortStr, 10) : undefined
           if (serviceName === 'attacker') {
             attackerContainer = container
           } else if (serviceName === 'defender') {
@@ -279,6 +282,7 @@ export const useScenarioContainers = (scenarioId: string) => {
           portMap.set(containerId, {
             mcpPort: mcpPort && !isNaN(mcpPort) ? mcpPort : undefined,
             sshPort: sshPort && !isNaN(sshPort) ? sshPort : undefined,
+            targetEntrancePort: targetEntrancePort && !isNaN(targetEntrancePort) ? targetEntrancePort : undefined,
           })
         }
       }

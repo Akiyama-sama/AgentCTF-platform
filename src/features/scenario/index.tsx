@@ -11,7 +11,7 @@ import { ScenariosDialogs } from '../scenarios/components/scenarios-dialogs'
 import ScenariosDialogProvider from '../scenarios/context/scenarios-context'
 import { AgentLogController } from './components/agent-log-controller'
 import { ChatBot } from './components/chat-bot'
-import { LogController } from './components/log-controller'
+import { LogController } from './components/container-log-controller'
 
 interface ScenarioDetailProps {
   scenarioId: string

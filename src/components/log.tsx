@@ -6,14 +6,15 @@ import { ScrollArea } from './ui/scroll-area'
 type LogProps = {
   logs: LogDisplayItem[]
   className?: string
+  behavior?: 'smooth' | 'instant'
 }
 
-const Log = ({ logs, className }: LogProps) => {
+const Log = ({ logs, className, behavior = 'smooth' }: LogProps) => {
   const endOfLogsRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (endOfLogsRef.current) {
       endOfLogsRef.current.scrollIntoView({ 
-        behavior: 'smooth',
+        behavior,
         block: 'end',
         inline: 'center'
       })

@@ -63,7 +63,6 @@ export const useScenarioActions = (
       case 'delete':
         setCurrentRow(scenario)
         closeBuildConnection()
-        localStorage.removeItem(`attacker-agent-${scenarioId}`)
         setOpen('delete');
         break;
       case 'view_details':

@@ -106,6 +106,10 @@ export interface UserInitRequest {
   user_id: string;
   /** API密钥 */
   api_key: string;
+  /** 攻击者服务器URL */
+  attacker_server_url: string;
+  /** 目标入口URL */
+  target_entrance_url: string;
 }
 
 export interface UserInitResponse {

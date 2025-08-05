@@ -1,36 +1,44 @@
 import { ModelResponse } from '@/types/docker-manager'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
+import { Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 type Props = {
   open: boolean
-  onOpenChange: () => void
+  onOpenChange: (open: boolean) => void
   currentRow: ModelResponse
 }
 
-export function SubmitFlagDialog({
-  open,
-  onOpenChange,
-  currentRow,
-}:Props) {
+export function SubmitFlagDialog({ open, onOpenChange, currentRow }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogHeader>
-        <DialogTitle>练习：{currentRow.name}</DialogTitle>
-      </DialogHeader>
-      <DialogContent>
+      <DialogContent className='flex flex-col gap-4'>
+        <DialogHeader>
+          <DialogTitle>练习：{currentRow.name}</DialogTitle>
+        </DialogHeader>
         <div className='flex flex-col gap-4'>
-          <div className='flex flex-col gap-2'>
-            <Label>flag</Label>
-            <Input type='text' />
+          <p className='text-muted-foreground text-sm'>
+            题目描述：{currentRow.description}
+          </p>
+          <div className='flex items-center gap-2'>
+            靶机入口URL：10.255.255.254:2222
+            <button className='hover:bg-muted rounded-md p-2'>
+              <Copy size={18} />
+            </button>
           </div>
         </div>
+        <Input type='text' placeholder='请输入 flag' className='w-full' />
+        <DialogFooter>
+          <Button>提交 flag</Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogFooter>
-        <Button>提交</Button>
-      </DialogFooter>
     </Dialog>
   )
 }

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { LogRequest } from '@/types/attacker-agent'
+import { type LogRequest } from '@/types/attacker-agent'
 import {
   SSEConnectionState,
   SSEMessage,
@@ -14,9 +14,10 @@ import {
   sseConnectionManager,
   convertSSEMessageToLogItem,
 } from '@/utils/sseConnection'
+import { attackerSSEManager } from '@/utils/attacker-sse-connections'
 
 const dockerManagerURL = import.meta.env.VITE_BASE_URL
-const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL
+// const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL
 
 /**
  * 一个用于处理场景构建日志流的React Hook。
@@ -123,276 +124,250 @@ export const useModelBuildLogs = (type: 'scenario' | 'exercise') => {
   }
 }
 
-  
+// --- Module-level state for useContainerLogs to act as a singleton manager ---
+const containerLogsState: {
+  [containerId: string]: {
+    logs: LogDisplayItem[]
+    connectionState: SSEConnectionState
+  }
+} = {}
+const containerLogSubscribers = new Set<() => void>()
 
-export const useContainerLogs = () => {
-  const [containerLogs, setContainerLogs] = useState<{
-    [containerId: string]: {
-      logs: LogDisplayItem[]
-      connectionState: SSEConnectionState
-    }
-  }>({})
+const notifyContainerLogSubscribers = () => {
+  containerLogSubscribers.forEach(callback => callback())
+}
 
+const createContainerLogConnection = (modelId: string, containerName: string) => {
+  const containerId = `${modelId}-${containerName}`
   const dockerManagerURL = import.meta.env.VITE_BASE_URL
 
-  const createContainerConnection = useCallback(
-    (modelId: string, containerName: string) => {
-      const containerId = `${modelId}-${containerName}`
-      setContainerLogs((prev) => ({
-        ...prev,
-        [containerId]: {
-          logs: [],
-          connectionState: SSEConnectionState.CONNECTING,
-        },
-      }))
+  // If already connected or connecting, do nothing.
+  if (
+    containerLogsState[containerId] &&
+    (containerLogsState[containerId].connectionState ===
+      SSEConnectionState.CONNECTED ||
+      containerLogsState[containerId].connectionState ===
+        SSEConnectionState.CONNECTING)
+  ) {
+    return
+  }
 
-      const url = `${dockerManagerURL}/logs/stream/model/${modelId}/container/${containerName}`
+  // Initialize state for the new connection
+  containerLogsState[containerId] = {
+    logs: [],
+    connectionState: SSEConnectionState.CONNECTING,
+  }
+  notifyContainerLogSubscribers()
 
-      const onMessage = (message: SSEMessage) => {
-        setContainerLogs((prev) => {
-          const currentContainerLogs = prev[containerId]?.logs || []
-          const logItem = convertSSEMessageToLogItem(
-            message,
-            currentContainerLogs.length
-          )
-          if (logItem) {
-            return {
-              ...prev,
-              [containerId]: {
-                ...prev[containerId],
-                logs: [...currentContainerLogs, logItem],
-              },
-            }
-          }
-          return prev
-        })
-        if (message.type === SSELogType.END) {
-          sseConnectionManager.closeConnection(containerId)
-        }
-      }
+  const url = `${dockerManagerURL}/logs/stream/model/${modelId}/container/${containerName}`
 
-      const onStateChange = (newState: SSEConnectionState) => {
-        setContainerLogs((prev) => ({
-          ...prev,
-          [containerId]: {
-            ...prev[containerId],
-            connectionState: newState,
-          },
-        }))
-      }
+  const onMessage = (message: SSEMessage) => {
+    const currentState = containerLogsState[containerId]
+    if (!currentState) return // Connection might have been closed
 
-      const connection = sseConnectionManager.createConnection(
-        containerId,
-        { url },
-        onMessage,
-        onStateChange
-      )
-      connection.connect()
-    },
-    []
-  )
-
-  const closeContainerConnection = useCallback(
-    (modelId: string, containerName: string) => {
-      const containerId = `${modelId}-${containerName}`
-      sseConnectionManager.closeConnection(containerId)
-      setContainerLogs((prev) => {
-        const newLogs = { ...prev }
-        delete newLogs[containerId]
-        return newLogs
-      })
-    },
-    []
-  )
-
-  // Cleanup all connections on component unmount
-  useEffect(() => {
-    return () => {
-      Object.keys(containerLogs).forEach((containerId) => {
-        sseConnectionManager.closeConnection(containerId)
-      })
+    const logItem = convertSSEMessageToLogItem(
+      message,
+      currentState.logs.length
+    )
+    if (logItem) {
+      currentState.logs.push(logItem)
+      notifyContainerLogSubscribers()
     }
-  }, [containerLogs])
+    if (message.type === SSELogType.END) {
+      sseConnectionManager.closeConnection(containerId)
+    }
+  }
+
+  const onStateChange = (newState: SSEConnectionState) => {
+    const currentState = containerLogsState[containerId]
+    if (currentState) {
+      currentState.connectionState = newState
+      notifyContainerLogSubscribers()
+    }
+  }
+
+  const connection = sseConnectionManager.createConnection(
+    containerId,
+    { url },
+    onMessage,
+    onStateChange
+  )
+  connection.connect()
+}
+
+const closeContainerLogConnection = (
+  modelId: string,
+  containerName: string
+) => {
+  const containerId = `${modelId}-${containerName}`
+  sseConnectionManager.closeConnection(containerId)
+  // The onStateChange callback should handle updating the state to DISCONNECTED.
+  // We can also remove it from our cache to clean up.
+  if (containerLogsState[containerId]) {
+    delete containerLogsState[containerId]
+    notifyContainerLogSubscribers()
+  }
+}
+
+export const useContainerLogs = () => {
+  const [, forceUpdate] = useState(0)
+
+  useEffect(() => {
+    const subscriber = () => forceUpdate(v => v + 1)
+    containerLogSubscribers.add(subscriber)
+    // Immediately update with the latest state from the manager
+    subscriber()
+
+    // When the component unmounts, unsubscribe
+    return () => {
+      containerLogSubscribers.delete(subscriber)
+    }
+  }, [])
 
   return {
-    containerLogs,
-    createContainerConnection,
-    closeContainerConnection,
+    containerLogs: containerLogsState,
+    createContainerConnection: createContainerLogConnection,
+    closeContainerConnection: closeContainerLogConnection,
   }
 }
 
 /**
- * Hook to handle streaming logs from the attacker agent.
+ * Hook to handle streaming logs from the attacker agent using the centralized manager.
+ * @param modelId The ID of the model to stream logs for.
  * @returns Functions and state for managing a log stream.
  */
-export const useAttackerAgentLogs = () => {
+export const useAttackerAgentLogs = (modelId: string | null) => {
+  const sessionKey = `attacker-agent-logs-${modelId}`
+  
   const [logs, setLogs] = useState<LogDisplayItem[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const streamControllerRef = useRef<AbortController | null>(null)
 
-  const startLogs = useCallback(async (params: LogRequest) => {
-    if (streamControllerRef.current) {
-      streamControllerRef.current.abort()
-    }
-    streamControllerRef.current = new AbortController()
-
-    setLogs([])
-    setIsStreaming(true)
-    setError(null)
-
-    try {
-      const response = await fetch(
-        `${attackerAgentURL}/v1/logs/log/completions`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'text/event-stream',
-          },
-          body: JSON.stringify(params),
-          signal: streamControllerRef.current.signal,
+  // Load initial logs from sessionStorage
+  useEffect(() => {
+    if (modelId) {
+      try {
+        const storedLogs = sessionStorage.getItem(sessionKey)
+        if (storedLogs) {
+          setLogs(JSON.parse(storedLogs))
         }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to parse stored logs:', e)
+        setLogs([])
+      }
+    }
+  }, [modelId])
+
+  // Persist logs to sessionStorage whenever they change
+  useEffect(() => {
+    if (modelId) {
+      const sessionKey = `attacker-agent-logs-${modelId}`
+      sessionStorage.setItem(sessionKey, JSON.stringify(logs))
+    }
+  }, [logs.length, modelId])
+
+  const startLogs = useCallback(
+    async (params: LogRequest) => {
+      if (!modelId) return
+
+      // Clear previous logs and errors for a new stream
+      setLogs([])
+      setError(null)
+      setIsStreaming(true)
+
+      const callbacks = {
+        onStart: (data: unknown) => {
+          const { status } = data as { status: string }
+          showSuccessMessage(`攻击Agent SSE日志流已连接: ${status}`)
+          const logEntry: SSELogEntry = {
+            type: SSELogType.LOG,
+            timestamp: new Date().toISOString(),
+            message: `攻击Agent SSE日志流已连接: ${status}`,
+            level: SSELogLevel.INFO,
+            logger_name: 'attacker-agent',
+            model_id: params.user_id,
+          }
+          const logItem = convertSSEMessageToLogItem(logEntry, 0)
+          if (logItem) setLogs(prev => [...prev, logItem])
+        },
+        onMessage: (data: unknown) => {
+          const logData = data as SSELogEntry
+          const level =
+            logData.message && typeof logData.message === 'string'
+              ? getLevelFromData(logData.message) || SSELogLevel.INFO
+              : SSELogLevel.INFO
+          const logEntry: SSELogEntry = {
+            type: SSELogType.LOG,
+            timestamp: logData.timestamp,
+            message: logData.message,
+            level,
+            logger_name: 'attacker-agent',
+            model_id: params.user_id,
+          }
+          setLogs(prevLogs => {
+            const logItem = convertSSEMessageToLogItem(logEntry, prevLogs.length)
+            return logItem ? [...prevLogs, logItem] : prevLogs
+          })
+        },
+        onEnd: (data: unknown) => {
+          const { status } = data as { status: string }
+          const logEntry: SSELogEntry = {
+            type: SSELogType.LOG,
+            timestamp: new Date().toISOString(),
+            message: `攻击Agent SSE日志流已结束: ${status}`,
+            level: SSELogLevel.INFO,
+            logger_name: 'attacker-agent',
+            model_id: params.user_id,
+          }
+          setLogs(prevLogs => {
+            const logItem = convertSSEMessageToLogItem(logEntry, prevLogs.length)
+            return logItem ? [...prevLogs, logItem] : prevLogs
+          })
+        },
+        onError: (err: { message: string }) => {
+          setError(err.message)
+          const logEntry: SSELogEntry = {
+            type: SSELogType.LOG,
+            timestamp: new Date().toISOString(),
+            message: `攻击Agent SSE日志流错误: ${err.message}`,
+            level: SSELogLevel.ERROR,
+            logger_name: 'attacker-agent',
+            model_id: params.user_id,
+          }
+          setLogs(prevLogs => {
+            const logItem = convertSSEMessageToLogItem(logEntry, prevLogs.length)
+            return logItem ? [...prevLogs, logItem] : prevLogs
+          })
+        },
+        onFinally: () => {
+          setIsStreaming(false)
+          streamControllerRef.current = null
+        },
+      }
+
+      streamControllerRef.current = attackerSSEManager.createLogStream(
+        modelId,
+        params,
+        callbacks
       )
-
-      if (!response.ok || !response.body) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ detail: [{ msg: '请求失败，无法解析错误信息' }] }))
-        throw new Error(
-          errorData.detail?.[0]?.msg || `HTTP error! status: ${response.status}`
-        )
-      }
-
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
-      // eslint-disable-next-line no-constant-condition
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        // 1. 将新数据块追加到缓冲区
-        buffer += decoder.decode(value, { stream: true })
-
-        // 2. 按双换行符分割，处理所有完整事件
-        const events = buffer.split('\n\n')
-        // 最后一个元素可能是不完整的事件，所以我们把它放回缓冲区
-        buffer = events.pop() || ''
-
-        for (const eventString of events) {
-          if (!eventString) continue
-          let eventType = 'message'
-          let dataJson = ''
-
-          for (const line of eventString.split('\n')) {
-            if (line.startsWith('event: ')) {
-              eventType = line.substring(7).trim()
-              // console.log('eventType:', eventType)
-            } else if (line.startsWith('data: ')) {
-              dataJson = line.substring(6).trim()
-            }
-          }
-
-          if (!dataJson) continue
-          try {
-            const data = JSON.parse(dataJson)
-            let logEntry: SSELogEntry | null = null
-            // 修复 #1: 从 data.message 中提取 level
-            const level =
-              data.message && typeof data.message === 'string'
-                ? getLevelFromData(data.message) || SSELogLevel.INFO
-                : SSELogLevel.INFO
-
-            // 5. 根据事件类型，将数据转换为 SSELogEntry
-            switch (eventType) {
-              case 'start':
-                showSuccessMessage(`攻击Agent SSE日志流已连接: ${data.status}`)
-                logEntry = {
-                  type: SSELogType.LOG,
-                  timestamp: data.timestamp || new Date().toISOString(),
-                  message: `攻击Agent SSE日志流已连接: ${data.status}`,
-                  level: SSELogLevel.INFO, // 'start' 事件通常是 INFO 级别
-                  logger_name: 'attacker-agent',
-                  model_id: params.user_id,
-                }
-                break
-
-              case 'message':
-                logEntry = {
-                  type: SSELogType.LOG,
-                  timestamp: data.timestamp,
-                  message: data.message,
-                  level,
-                  logger_name: 'attacker-agent',
-                  model_id: params.user_id,
-                }
-                break
-
-              case 'ping':
-                // Ping 事件通常不需要记录
-                break
-
-              case 'end':
-                logEntry = {
-                  type: SSELogType.LOG,
-                  timestamp: data.timestamp || new Date().toISOString(),
-                  message: `攻击Agent SSE日志流已结束: ${data.status}`,
-                  level: SSELogLevel.INFO,
-                  logger_name: 'attacker-agent',
-                  model_id: params.user_id,
-                }
-                // 收到结束信号后，停止监听
-                stopLogs()
-                break
-
-              case 'error':
-                logEntry = {
-                  type: SSELogType.LOG,
-                  timestamp: data.timestamp || new Date().toISOString(),
-                  message: `攻击Agent SSE日志流错误: ${data.message}`,
-                  level: SSELogLevel.ERROR,
-                  logger_name: 'attacker-agent',
-                  model_id: params.user_id,
-                }
-                setError(`Stream error: ${data.message}`)
-                break
-            }
-
-            // 6. 如果成功创建了日志条目，就更新状态
-            if (logEntry) {
-              // 修复 #2: 在 setLogs 回调中处理，避免 stale state
-              setLogs((prevLogs) => {
-                const logItem = convertSSEMessageToLogItem(
-                  logEntry,
-                  prevLogs.length
-                )
-                return logItem ? [...prevLogs, logItem] : prevLogs
-              })
-            }
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.error('Failed to parse SSE data JSON:', dataJson, e)
-          }
-        }
-      }
-    } catch (e) {
-      if (e instanceof Error && e.name !== 'AbortError') {
-        setError(e.message)
-      }
-    } finally {
-      setIsStreaming(false)
-      streamControllerRef.current = null
-    }
-  }, [])
+    },
+    [modelId]
+  )
 
   const stopLogs = useCallback(() => {
-    if (streamControllerRef.current) {
-      streamControllerRef.current.abort()
-      streamControllerRef.current = null
+    if (modelId) {
+      attackerSSEManager.closeStream(`log-${modelId}`)
     }
-    setIsStreaming(false)
-  }, [])
+  }, [modelId])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopLogs()
+    }
+  }, [stopLogs])
 
   return {
     logs,
@@ -400,5 +375,34 @@ export const useAttackerAgentLogs = () => {
     error,
     startLogs,
     stopLogs,
+  }
+}
+
+/**
+ * Placeholder hook for defender agent logs.
+ * It should follow the same singleton pattern as useAttackerAgentLogs.
+ */
+export const useDefenderAgentLogs = () => {
+  // This is a placeholder. You can implement the full logic similar to
+  // useAttackerAgentLogs, with its own module-level state and functions.
+  const [logs] = useState<LogDisplayItem[]>([
+    {
+      id: '0',
+      type: 'history',
+      timestamp: new Date().toISOString(),
+      level: SSELogLevel.INFO,
+      message: '防御 Agent 日志功能待实现。',
+    },
+  ])
+  const startLogs = useCallback(() => {
+    // console.log('Defender agent log stream started (placeholder).')
+  }, [])
+
+  return {
+    logs,
+    isStreaming: false,
+    error: null,
+    startLogs,
+    stopLogs: () => {},
   }
 }

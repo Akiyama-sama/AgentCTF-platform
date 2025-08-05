@@ -6,6 +6,7 @@ import {
 import { ScenariosMutateDrawer } from './scenarios-mutate-drawer'
 import { ModelResponse } from '@/types/docker-manager'
 import { useScenario } from '@/hooks/use-scenario'
+import { useAttackerAgentSession } from '@/hooks/use-ai'
 
 function ScenarioDialogsInner({
   currentRow,
@@ -16,7 +17,7 @@ function ScenarioDialogsInner({
 }) {
   const { setOpen, setCurrentRow } = useScenariosDialog()
   const { deleteScenarioAsync } = useScenario(currentRow.uuid)
-
+  const { cleanupUserAsync } = useAttackerAgentSession(currentRow.uuid)
   return (
     <>
       <ScenariosMutateDrawer
@@ -45,6 +46,9 @@ function ScenarioDialogsInner({
           }, 500)
           showSuccessMessage(`场景${currentRow.name}已删除`)
           deleteScenarioAsync({ modelId: currentRow.uuid })
+          // 清理攻击Agent的会话
+          localStorage.removeItem(`attacker-agent-${currentRow.uuid}`)
+          cleanupUserAsync({ params: { user_id: currentRow.uuid } })
         }}
         className='max-w-md'
         title={`删除场景: ${currentRow.name} ?`}

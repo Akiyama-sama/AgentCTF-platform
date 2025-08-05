@@ -19,8 +19,8 @@ type ChatBotProps = {
 }
 
 export function ChatBot({ className, scenarioId }: ChatBotProps) {
-  const { portMap, attackerContainerName } = useScenarioContainers(scenarioId)
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setCustomInfo, sendMessage } =
+  const { portMap, attackerContainerName, targetContainerName } = useScenarioContainers(scenarioId)
+  const { status:chatSSEStatus, messages, input, handleInputChange, handleSubmit, isLoading, sendMessage } =
     useAttackerAgentChat({ user_id: scenarioId })
   const { status, initUserAsync } = useAttackerAgentSession(scenarioId)
 
@@ -29,7 +29,8 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-
+  const attacker_server_url = `http://localhost:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
+  const target_entrance_url = `http://localhost:${portMap.get(targetContainerName!)?.targetEntrancePort}`
   // 1. 当状态加载完毕且用户未初始化时，执行初始化
   useEffect(() => {
     if (status && !status.initialized) {
@@ -37,6 +38,8 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
         data: {
           api_key: api_key,
           user_id: scenarioId,
+          attacker_server_url: attacker_server_url,
+          target_entrance_url: target_entrance_url,
         },
       })
       .then((res:ApiResponseUserInitResponse) => {
@@ -51,21 +54,17 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
         showErrorMessage(err?.message || '用户初始化失败')
       })
     }
-  }, [status, initUserAsync, scenarioId])
+  }, [status?.initialized, scenarioId])
 
   // 2. 当用户初始化成功后，如果还没有消息，则自动发送第一条消息
   useEffect(() => {
+    if(messages.length>0) return
     const MCPPort = portMap.get(attackerContainerName!)
     // 确保已初始化、没有消息、并且端口已就绪
     if (status?.initialized && messages.length === 0 && MCPPort) {
-      const info = {
-        flag: 2,
-        url: `localhost:${MCPPort}`,
-      };
-      setCustomInfo(info);
-      sendMessage(`当前攻击机MCP地址为:${info.url}，目标靶场flag为:${info.flag}`); 
+      sendMessage(`当前攻击机MCP地址为:${attacker_server_url}，目标靶场入口URL为:${target_entrance_url}`); 
     }
-  }, [status?.initialized, messages.length, portMap, attackerContainerName, setCustomInfo, sendMessage])
+  }, [status?.initialized, messages.length, portMap, attackerContainerName, sendMessage])
 
   // 3. 消息列表更新时，自动滚动到底部
   useEffect(() => {
@@ -75,7 +74,10 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
   return (
     <Card className={cn('flex flex-col', className)}>
       <CardHeader className='items-center justify-center pt-2'>
-        <CardTitle>Attacker Agent 初始化状态：{status?.initialized?'已初始化':'未初始化'}</CardTitle>
+        <CardTitle>Attacker Agent 初始化状态：{status?.initialized?'已初始化':'未初始化'}
+
+          <p>Chat SSE Status: {chatSSEStatus}</p>
+        </CardTitle>
       </CardHeader>
       <CardContent className='flex flex-col flex-1 px-4 min-h-0'>
         <ScrollArea className='h-full '>

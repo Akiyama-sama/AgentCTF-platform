@@ -76,7 +76,7 @@ import { useTheme } from '@/context/theme-context'
   
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='flex !w-[80vw] h-[80vh] max-w-6xl flex-col' >
+        <DialogContent className='flex !w-[100vw] h-[80vh] max-w-6xl flex-col' >
           <DialogHeader>
             <DialogTitle>编辑文件: {basePath}</DialogTitle>
           </DialogHeader>

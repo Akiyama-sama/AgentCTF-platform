@@ -19,7 +19,7 @@ function ExercisesDialogsInner({
   return (
     <>
       <ExercisesMutateDrawer
-        key={`exercise-update-${currentRow.name}`}
+        key={`exercise-update-${currentRow.uuid}`}
         open={open === 'update'}
         onOpenChange={() => {
           setOpen('update')
@@ -31,7 +31,7 @@ function ExercisesDialogsInner({
       />
 
       <SubmitFlagDialog
-        key='exercise-submit-flag'
+        key={`exercise-submit-flag-${currentRow.uuid}`}
         open={open === 'submit_flag'}
         onOpenChange={() => {
           setOpen('submit_flag')
