@@ -1,169 +1,285 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+
 import {
+  // --- 当前用户相关 ---
+  getGetCurrentUserInfoUsersMeGetQueryKey,
   useChangeCurrentUserPasswordUsersMePasswordPut,
   useGetCurrentUserInfoUsersMeGet,
+  // useGetUserInfoUsersUserIdGet,
   useLoginUsersLoginPost,
-  useLogoutUsersLogoutPost,
   useRegisterUsersRegisterPost,
   useUpdateCurrentUserInfoUsersMePut,
-  getGetCurrentUserInfoUsersMeGetQueryKey,
-  type Token,
-  type HTTPValidationError,
-  type UserOut,
-} from '@/types/backend';
-import { AxiosError } from 'axios';
+  // --- 管理员相关 ---
+  getGetAllUsersUsersAdminUsersGetQueryKey,
+  useGetAllUsersUsersAdminUsersGet,
+  useCreateUserByAdminUsersAdminUsersPost,
+  useUpdateUserByAdminUsersAdminUsersUserIdPut,
+  useDeleteUserByAdminUsersAdminUsersUserIdDelete,
+  useChangePasswordUsersUserIdPasswordPut,
+} from '@/types/backend'
+// 另外引入管理员列表参数类型
+import type { GetAllUsersUsersAdminUsersGetParams } from '@/types/backend'
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from '@/utils/show-submitted-data'
 
-// 辅助函数，用于管理 localStorage 中的 token
-const setToken = (token: Token | null) => {
-  if (token) {
-    localStorage.setItem('access_token', token.access_token);
-    localStorage.setItem('refresh_token', token.refresh_token);
-  } else {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-  }
-};
+// 1. 使用 Zustand 创建一个持久化的 store 来存储认证 token
+interface AuthState {
+  token: string | null
+  setToken: (token: string | null) => void
+}
 
-const getRefreshToken = (): string | null => {
-  return localStorage.getItem('refresh_token');
-};
+export const useAuthStore = create<AuthState>()(
+  persist(
+    set => ({
+      token: null,
+      setToken: token => set({ token }),
+    }),
+    {
+      name: 'access_token', // localStorage 中的 key
+    },
+  ),
+)
 
 /**
- * 核心身份验证 Hook。
- * 用于管理当前用户的登录状态，并提供登录、注销、注册等核心功能。
- * @returns 返回包含用户、认证状态和操作函数的对象。
+ * 核心认证 Hook
+ *
+ * 封装了获取当前用户、登录、注册、登出、更新信息等所有与用户认证相关的功能。
  */
 export const useAuth = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const { setToken } = useAuthStore()
 
-  // 获取当前登录用户的信息
-  const { data: user, ...userQuery } = useGetCurrentUserInfoUsersMeGet<
-    UserOut,
-    AxiosError<HTTPValidationError>
-  >({
+  // 2. 获取当前登录用户的信息
+  const { data: user, ...userQuery } = useGetCurrentUserInfoUsersMeGet({
     query: {
-      // 仅当 access_token 存在时才执行此查询
-      enabled: !!localStorage.getItem('access_token'),
-      // 自定义重试逻辑
-      retry: (failureCount, error) => {
-        // 如果收到 401 Unauthorized 错误，说明 token 失效
-        if (error.response?.status === 401) {
-          // 清除本地 token 并停止重试
-          setToken(null);
-          // 立即清除缓存中的用户数据
-          queryClient.setQueryData(getGetCurrentUserInfoUsersMeGetQueryKey(), null);
-          return false;
-        }
-        // 对于其他错误，最多重试 3 次
-        return failureCount < 2;
-      },
+      enabled: !import.meta.env.DEV ,
+      // 如果查询失败，重试1次
+      retry: 1,
+      // 从响应中选择 `data` 字段作为查询结果
+      select: response => response.data ?? null,
     },
-  });
+  })
 
-  // 登录 mutation
+  // 3. 登录 Mutation
   const loginMutation = useLoginUsersLoginPost({
     mutation: {
-      onSuccess: (data) => {
-        // 登录成功后，保存 token
-        setToken(data.data);
-        // 并使当前用户信息的 query 失效，以触发刷新
-        queryClient.invalidateQueries({ queryKey: getGetCurrentUserInfoUsersMeGetQueryKey() });
+      onSuccess: res => {
+        const accessToken = res.data?.access_token
+        if (accessToken) {
+          setToken(accessToken)
+          
+          // 登录成功后，让当前用户的 query 失效以重新获取最新数据
+          queryClient.invalidateQueries({
+            queryKey: getGetCurrentUserInfoUsersMeGetQueryKey(),
+          })
+          // 跳转到首页
+          navigate({ to: '/' })
+        } else {
+          showErrorMessage('登录失败: 未收到 token')
+        }
+      },
+      onError: error => {
+        showErrorMessage('登录失败', error?.detail)
       },
     },
-  });
+  })
 
-  // 注销 mutation
-  const logoutMutation = useLogoutUsersLogoutPost();
+  // 4. 登出逻辑
+  const logout = () => {
+    setToken(null)
+    // 清除缓存中的用户数据
+    queryClient.setQueryData(getGetCurrentUserInfoUsersMeGetQueryKey(), null)
+    // 可以考虑清除所有 query-cache
+    // queryClient.clear()
+    navigate({ to: '/sign-in-2' })
+  }
 
-  /**
-   * 封装的注销函数。
-   * 调用 API 通知后端注销，并清除本地状态。
-   */
-  const logout = async () => {
-    const refreshToken = getRefreshToken();
-    if (refreshToken) {
-      try {
-        // 调用后端 API 注销
-        await logoutMutation.mutateAsync({ data: { refresh_token: refreshToken } });
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Logout API call failed, but clearing local state anyway.", error);
-      }
-    }
-    // 无论 API 调用是否成功，都清除本地的 token 和所有缓存
-    setToken(null);
-    queryClient.clear();
-  };
+  // 5. 注册 Mutation
+  const registerMutation = useRegisterUsersRegisterPost({
+    mutation: {
+      onSuccess: () => {
+        showSuccessMessage('注册成功，请登录')
+        navigate({ to: '/sign-in-2' })
+      },
+      onError: error => {
+        showErrorMessage('注册失败', error?.detail)
+      },
+    },
+  })
 
-  // 注册 mutation
-  const registerMutation = useRegisterUsersRegisterPost();
+  // 6. 更新当前用户信息 Mutation
+  const updateUserMutation = useUpdateCurrentUserInfoUsersMePut({
+    mutation: {
+      onSuccess: res => {
+        // 更新成功后，直接用返回的新用户信息更新缓存
+        queryClient.setQueryData(
+          getGetCurrentUserInfoUsersMeGetQueryKey(),
+          res.data,
+        )
+      },
+      onError: error => {
+        showErrorMessage('更新失败', error?.detail)
+      },
+    },
+  })
+
+  // 7. 修改当前用户密码 Mutation
+  const changePasswordMutation = useChangeCurrentUserPasswordUsersMePasswordPut({
+    mutation: {
+      onSuccess: () => {
+        showSuccessMessage('密码修改成功')
+      },
+      onError: error => {
+        showErrorMessage('修改密码失败', error?.detail)
+      },
+    },
+  })
 
   return {
-    // 如果查询未启用或正在加载，user 为 undefined，我们返回 null
-    user: user ?? null,
-    // 登录
+    // --- 状态 ---
+    user,
+    userQuery,
+    isAuthenticated: import.meta.env.DEV || !!user, // 开发模式下总是认为已认证
+    isLoading: userQuery.isLoading,
+
+    // --- 方法 ---
     login: loginMutation.mutate,
     loginAsync: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
-    // 注销
+
     logout,
-    logoutAsync: logout,
-    isLoggingOut: logoutMutation.isPending,
-    // 注册
+
     register: registerMutation.mutate,
     registerAsync: registerMutation.mutateAsync,
     isRegistering: registerMutation.isPending,
-    // 初始认证状态检查
-    isLoading: userQuery.isLoading,
-    isError: userQuery.isError,
-    error: userQuery.error,
-  };
-};
 
-/**
- * 用于管理当前用户个人资料的 Hook。
- * 提供更新个人信息和修改密码的功能。
- * @returns 返回包含更新和修改密码操作函数的对象。
+    updateUser: updateUserMutation.mutate,
+    updateUserAsync: updateUserMutation.mutateAsync,
+    isUpdatingUser: updateUserMutation.isPending,
+
+    changePassword: changePasswordMutation.mutate,
+    changePasswordAsync: changePasswordMutation.mutateAsync,
+    isChangingPassword: changePasswordMutation.isPending,
+  }
+}
+
+
+/* 
+管理员权限
  */
-export const useUser = () => {
-    const queryClient = useQueryClient();
+export const useAdmin = () => {
+  const queryClient = useQueryClient()
 
-    const invalidateUserQueries = () => {
-        // 操作成功后，让当前用户信息的 query 失效以获取最新数据
-        queryClient.invalidateQueries({ queryKey: getGetCurrentUserInfoUsersMeGetQueryKey() });
-    }
+  // 用于控制列表查询参数（分页等）
+  const [listParams, setListParams] = useState<GetAllUsersUsersAdminUsersGetParams>()
 
-    // 更新个人信息 mutation
-    const updateProfileMutation = useUpdateCurrentUserInfoUsersMePut({
-        mutation: {
-            onSuccess: (updatedUser) => {
-                // 为了更好的用户体验，可以乐观地更新缓存数据
-                queryClient.setQueryData(getGetCurrentUserInfoUsersMeGetQueryKey(), updatedUser.data);
-                // 之后仍然触发一次后台刷新以确保数据一致性
-                invalidateUserQueries();
-            }
-        }
-    });
+  // 1. 获取用户列表 Query
+  const { data: usersResponse, ...usersQuery } = useGetAllUsersUsersAdminUsersGet(listParams, {
+    query: {
+      select: response => response.data ?? null,
+    },
+  })
 
-    // 修改密码 mutation
-    const changePasswordMutation = useChangeCurrentUserPasswordUsersMePasswordPut({
-        mutation: {
-            onSuccess: () => {
-                // 修改密码后，可以根据产品需求执行特定操作，
-                // 例如提示用户、或强制重新登录。
-                // 此处我们不执行全局操作，交由调用组件处理。
-            }
-        }
-    });
-    
-    return {
-        // 更新个人信息
-        updateProfile: updateProfileMutation.mutate,
-        updateProfileAsync: updateProfileMutation.mutateAsync,
-        isUpdatingProfile: updateProfileMutation.isPending,
-        // 修改密码
-        changePassword: changePasswordMutation.mutate,
-        changePasswordAsync: changePasswordMutation.mutateAsync,
-        isChangingPassword: changePasswordMutation.isPending,
-    };
+  // 2. 创建用户 Mutation
+  const createUserMutation = useCreateUserByAdminUsersAdminUsersPost({
+    mutation: {
+      onSuccess: () => {
+        showSuccessMessage('用户创建成功')
+        // 创建成功后刷新用户列表
+        queryClient.invalidateQueries({
+          queryKey: getGetAllUsersUsersAdminUsersGetQueryKey(listParams),
+        })
+      },
+      onError: error => {
+        showErrorMessage('创建用户失败', error?.detail)
+      },
+    },
+  })
+
+  // 3. 更新用户 Mutation
+  const updateUserMutation = useUpdateUserByAdminUsersAdminUsersUserIdPut({
+    mutation: {
+      onSuccess: () => {
+        showSuccessMessage('用户信息更新成功')
+        queryClient.invalidateQueries({
+          queryKey: getGetAllUsersUsersAdminUsersGetQueryKey(listParams),
+        })
+      },
+      onError: error => {
+        showErrorMessage('更新用户失败', error?.detail)
+      },
+    },
+  })
+
+  // 4. 删除用户 Mutation
+  const deleteUserMutation = useDeleteUserByAdminUsersAdminUsersUserIdDelete({
+    mutation: {
+      onSuccess: () => {
+        showSuccessMessage('用户删除成功')
+        queryClient.invalidateQueries({
+          queryKey: getGetAllUsersUsersAdminUsersGetQueryKey(listParams),
+        })
+      },
+      onError: error => {
+        showErrorMessage('删除用户失败', error?.detail)
+      },
+    },
+  })
+
+  // 5. 修改指定用户密码 Mutation
+  const changeUserPasswordMutation = useChangePasswordUsersUserIdPasswordPut({
+    mutation: {
+      onSuccess: () => {
+        showSuccessMessage('密码修改成功')
+      },
+      onError: error => {
+        showErrorMessage('修改密码失败', error?.detail)
+      },
+    },
+  })
+
+  return {
+    // --- 列表与状态 ---
+    users: usersResponse?.users ?? [],
+    total: usersResponse?.total ?? 0,
+    skip: usersResponse?.skip ?? 0,
+    limit: usersResponse?.limit ?? 0,
+    usersQuery,
+
+    listParams,
+    setListParams,
+
+    // --- 创建用户 ---
+    createUser: createUserMutation.mutate,
+    createUserAsync: createUserMutation.mutateAsync,
+    isCreatingUser: createUserMutation.isPending,
+
+    // --- 更新用户 ---
+    updateUser: updateUserMutation.mutate,
+    updateUserAsync: updateUserMutation.mutateAsync,
+    isUpdatingUser: updateUserMutation.isPending,
+
+    // --- 删除用户 ---
+    deleteUser: deleteUserMutation.mutate,
+    deleteUserAsync: deleteUserMutation.mutateAsync,
+    isDeletingUser: deleteUserMutation.isPending,
+
+    // --- 修改用户密码 ---
+    changePassword: changeUserPasswordMutation.mutate,
+    changePasswordAsync: changeUserPasswordMutation.mutateAsync,
+    isChangingPassword: changeUserPasswordMutation.isPending,
+
+    // --- 其他工具方法 ---
+    refreshUsers: () =>
+      queryClient.invalidateQueries({
+        queryKey: getGetAllUsersUsersAdminUsersGetQueryKey(listParams),
+      }),
+  }
 }

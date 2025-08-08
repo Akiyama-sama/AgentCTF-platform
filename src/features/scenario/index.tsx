@@ -31,7 +31,6 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
 
   return (
     <div className='flex h-screen flex-col overflow-y-auto'>
-      {/* ===== Top Heading ===== */}
 
       {/* ===== Content ===== */}
       <Main className='h-screen'>
@@ -47,7 +46,7 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
             />
           </div>
           <Card className='mt-0 flex w-2/3 flex-col p-4'>
-            <div className='h-2/3 w-full p-10'>
+            <div className='h-3/5 w-full p-10'>
               <TextScroll
                 text='TARGET SAFE'
                 className='text-2xl text-green-600'
@@ -58,7 +57,7 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
                 className='text-2xl text-green-600'
               />
             </div>
-            <div className='flex h-1/3 w-full flex-col gap-2'>
+            <div className='flex h-2/5 w-full flex-col gap-2'>
               <LogController modelId={scenarioId} />
             </div>
           </Card>

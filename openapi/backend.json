@@ -4,7 +4,7 @@
     "title": "Attack Monitor Backend API",
     "description": "攻击监控系统后端API接口",
     "version": "1.0.0",
-    "x-generated-at": "2025-07-16T14:06:49.294240",
+    "x-generated-at": "2025-08-08T10:25:30.891015",
     "x-description": "此文件由FastAPI自动生成，用于AI生成前端代码"
   },
   "paths": {
@@ -19,7 +19,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterRequest"
+                "$ref": "#/components/schemas/UserCreate"
               }
             }
           },
@@ -72,7 +72,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Token"
+                  "$ref": "#/components/schemas/LoginResponse"
                 }
               }
             }
@@ -90,18 +90,121 @@
         }
       }
     },
-    "/users/refresh": {
+    "/users/debug-token": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Debug Token",
+        "description": "调试接口：检查token的状态，不进行用户验证",
+        "operationId": "debug_token_users_debug_token_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/users/verify-token": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Verify Token",
+        "description": "验证token是否有效，如果有效则返回当前用户信息\n前端可以定期调用此接口来验证token状态",
+        "operationId": "verify_token_users_verify_token_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/users/refresh-token": {
       "post": {
         "tags": [
           "users"
         ],
         "summary": "Refresh Token",
-        "operationId": "refresh_token_users_refresh_post",
+        "description": "刷新token，生成新的access_token\n前端可以在token即将过期时调用此接口",
+        "operationId": "refresh_token_users_refresh_token_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get Current User Info",
+        "operationId": "get_current_user_info_users_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Update Current User Info",
+        "operationId": "update_current_user_info_users_me_put",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RefreshToken"
+                "$ref": "#/components/schemas/UserUpdate"
               }
             }
           },
@@ -113,7 +216,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Token"
+                  "$ref": "#/components/schemas/UserOut"
                 }
               }
             }
@@ -128,21 +231,26 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
       }
     },
-    "/users/logout": {
-      "post": {
+    "/users/me/password": {
+      "put": {
         "tags": [
           "users"
         ],
-        "summary": "Logout",
-        "operationId": "logout_users_logout_post",
+        "summary": "Change Current User Password",
+        "operationId": "change_current_user_password_users_me_password_put",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RefreshToken"
+                "$ref": "#/components/schemas/ChangePassword"
               }
             }
           },
@@ -167,46 +275,12 @@
               }
             }
           }
-        }
-      }
-    },
-    "/users/request-verification": {
-      "post": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Request Verification",
-        "operationId": "request_verification_users_request_verification_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EmailRequest"
-              }
-            }
-          },
-          "required": true
         },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
           }
-        }
+        ]
       }
     },
     "/users/{user_id}": {
@@ -366,13 +440,134 @@
         }
       }
     },
-    "/users/me": {
+    "/users/admin/users": {
       "get": {
         "tags": [
           "users"
         ],
-        "summary": "Get Current User Info",
-        "operationId": "get_current_user_info_users_me_get",
+        "summary": "Get All Users",
+        "description": "管理员获取所有用户列表",
+        "operationId": "get_all_users_users_admin_users_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Create User By Admin",
+        "description": "管理员创建新用户",
+        "operationId": "create_user_by_admin_users_admin_users_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/admin/users/{user_id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get User By Admin",
+        "description": "管理员获取指定用户信息",
+        "operationId": "get_user_by_admin_users_admin_users__user_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -383,29 +578,51 @@
                 }
               }
             }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ]
+        }
       },
       "put": {
         "tags": [
           "users"
         ],
-        "summary": "Update Current User Info",
-        "operationId": "update_current_user_info_users_me_put",
+        "summary": "Update User By Admin",
+        "description": "管理员更新用户信息",
+        "operationId": "update_user_by_admin_users_admin_users__user_id__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserUpdate"
+                "$ref": "#/components/schemas/AdminUserUpdate"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
@@ -428,31 +645,31 @@
               }
             }
           }
-        },
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Delete User By Admin",
+        "description": "管理员删除用户",
+        "operationId": "delete_user_by_admin_users_admin_users__user_id__delete",
         "security": [
           {
             "OAuth2PasswordBearer": []
           }
-        ]
-      }
-    },
-    "/users/me/password": {
-      "put": {
-        "tags": [
-          "users"
         ],
-        "summary": "Change Current User Password",
-        "operationId": "change_current_user_password_users_me_password_put",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChangePassword"
-              }
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
             }
-          },
-          "required": true
-        },
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -472,17 +689,93 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "OAuth2PasswordBearer": []
-          }
-        ]
+        }
       }
     }
   },
   "components": {
     "schemas": {
+      "AdminUserCreate": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "roles": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Roles",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "AdminUserCreate",
+        "description": "管理员创建用户时的请求模型"
+      },
+      "AdminUserUpdate": {
+        "properties": {
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Password"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "roles": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Roles"
+          }
+        },
+        "type": "object",
+        "title": "AdminUserUpdate",
+        "description": "管理员更新用户时的请求模型"
+      },
       "ChangePassword": {
         "properties": {
           "old_password": {
@@ -501,20 +794,6 @@
         ],
         "title": "ChangePassword"
       },
-      "EmailRequest": {
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email",
-            "title": "Email"
-          }
-        },
-        "type": "object",
-        "required": [
-          "email"
-        ],
-        "title": "EmailRequest"
-      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -527,6 +806,28 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "LoginResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type",
+          "user"
+        ],
+        "title": "LoginResponse"
       },
       "Permission": {
         "properties": {
@@ -562,48 +863,6 @@
           "created_time"
         ],
         "title": "Permission"
-      },
-      "RefreshToken": {
-        "properties": {
-          "refresh_token": {
-            "type": "string",
-            "title": "Refresh Token"
-          }
-        },
-        "type": "object",
-        "required": [
-          "refresh_token"
-        ],
-        "title": "RefreshToken"
-      },
-      "RegisterRequest": {
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email",
-            "title": "Email"
-          },
-          "username": {
-            "type": "string",
-            "title": "Username"
-          },
-          "password": {
-            "type": "string",
-            "title": "Password"
-          },
-          "code": {
-            "type": "string",
-            "title": "Code"
-          }
-        },
-        "type": "object",
-        "required": [
-          "email",
-          "username",
-          "password",
-          "code"
-        ],
-        "title": "RegisterRequest"
       },
       "Role": {
         "properties": {
@@ -648,34 +907,11 @@
         ],
         "title": "Role"
       },
-      "Token": {
+      "UserCreate": {
         "properties": {
-          "access_token": {
+          "username": {
             "type": "string",
-            "title": "Access Token"
-          },
-          "token_type": {
-            "type": "string",
-            "title": "Token Type"
-          },
-          "refresh_token": {
-            "type": "string",
-            "title": "Refresh Token"
-          }
-        },
-        "type": "object",
-        "required": [
-          "access_token",
-          "token_type",
-          "refresh_token"
-        ],
-        "title": "Token"
-      },
-      "UserLogin": {
-        "properties": {
-          "username_or_email": {
-            "type": "string",
-            "title": "Username Or Email"
+            "title": "Username"
           },
           "password": {
             "type": "string",
@@ -684,7 +920,56 @@
         },
         "type": "object",
         "required": [
-          "username_or_email",
+          "username",
+          "password"
+        ],
+        "title": "UserCreate"
+      },
+      "UserListResponse": {
+        "properties": {
+          "users": {
+            "items": {
+              "$ref": "#/components/schemas/UserOut"
+            },
+            "type": "array",
+            "title": "Users"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "skip": {
+            "type": "integer",
+            "title": "Skip"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "users",
+          "total",
+          "skip",
+          "limit"
+        ],
+        "title": "UserListResponse"
+      },
+      "UserLogin": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
           "password"
         ],
         "title": "UserLogin"
@@ -695,11 +980,6 @@
             "type": "string",
             "title": "Username"
           },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "title": "Email"
-          },
           "id": {
             "type": "string",
             "title": "Id"
@@ -707,10 +987,6 @@
           "is_active": {
             "type": "boolean",
             "title": "Is Active"
-          },
-          "is_verified": {
-            "type": "boolean",
-            "title": "Is Verified"
           },
           "created_time": {
             "type": "string",
@@ -729,10 +1005,8 @@
         "type": "object",
         "required": [
           "username",
-          "email",
           "id",
           "is_active",
-          "is_verified",
           "created_time"
         ],
         "title": "UserOut"
@@ -749,18 +1023,6 @@
               }
             ],
             "title": "Username"
-          },
-          "email": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "email"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Email"
           }
         },
         "type": "object",

@@ -1,5 +1,7 @@
 import ViteLogo from '@/assets/vite.svg'
 import { UserAuthForm } from './components/user-auth-form'
+import { Link } from '@tanstack/react-router'
+
 
 export default function SignIn2() {
   return (
@@ -43,11 +45,20 @@ export default function SignIn2() {
           <div className='flex flex-col space-y-2 text-left'>
             <h1 className='text-2xl font-semibold tracking-tight'>登录</h1>
             <p className='text-muted-foreground text-sm'>
-              输入你的邮箱和密码登录你的账户
+              输入你的用户名和密码登录你的账户
             </p>
+            
           </div>
           <UserAuthForm />
-
+          <div className='flex flex-row justify-end text-muted-foreground text-sm'>
+            还没有账户?{' '}
+            <Link
+              to='/sign-up'
+              className='hover:text-primary underline underline-offset-4'
+            >
+              注册
+            </Link>
+            </div>
         </div>
       </div>
     </div>

@@ -291,6 +291,8 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
           }
           const logItem = convertSSEMessageToLogItem(logEntry, 0)
           if (logItem) setLogs(prev => [...prev, logItem])
+          // eslint-disable-next-line no-console
+          console.log('攻击Agent SSE日志流已连接: ', data)
         },
         onMessage: (data: unknown) => {
           const logData = data as SSELogEntry
@@ -325,6 +327,8 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
             const logItem = convertSSEMessageToLogItem(logEntry, prevLogs.length)
             return logItem ? [...prevLogs, logItem] : prevLogs
           })
+          // eslint-disable-next-line no-console
+          console.log('攻击Agent SSE日志流已结束: ', data)
         },
         onError: (err: { message: string }) => {
           setError(err.message)

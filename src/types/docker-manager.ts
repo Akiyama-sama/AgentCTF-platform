@@ -68,6 +68,22 @@ export interface ApiResponseAllPacketFilesResponse {
   data?: ApiResponseAllPacketFilesResponseData;
 }
 
+export type ApiResponseDictDataAnyOf = { [key: string]: unknown };
+
+/**
+ * 响应数据
+ */
+export type ApiResponseDictData = ApiResponseDictDataAnyOf | null;
+
+export interface ApiResponseDict {
+  /** 状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseDictData;
+}
+
 /**
  * 响应数据
  */
@@ -1588,7 +1604,7 @@ export const useGetModelFileContentModelsModelIdFilesContentPost = <TError = HTT
  * 创建模型数据目录
  * @summary Create Model Directory
  */
-export const createModelDirectoryModelsModelIdDirectoriesPost = (
+export const createModelDirectoryModelsModelIdFilesDirectoriesPost = (
     modelId: string,
     createDataDirectoryRequest: CreateDataDirectoryRequest,
  signal?: AbortSignal
@@ -1596,7 +1612,7 @@ export const createModelDirectoryModelsModelIdDirectoriesPost = (
       
       
       return docker_manager_api<ApiResponse>(
-      {url: `/models/${modelId}/directories`, method: 'POST',
+      {url: `/models/${modelId}/files/directories`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: createDataDirectoryRequest, signal
     },
@@ -1605,11 +1621,11 @@ export const createModelDirectoryModelsModelIdDirectoriesPost = (
   
 
 
-export const getCreateModelDirectoryModelsModelIdDirectoriesPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext> => {
+export const getCreateModelDirectoryModelsModelIdFilesDirectoriesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdFilesDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdFilesDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext> => {
 
-const mutationKey = ['createModelDirectoryModelsModelIdDirectoriesPost'];
+const mutationKey = ['createModelDirectoryModelsModelIdFilesDirectoriesPost'];
 const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -1619,10 +1635,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>, {modelId: string;data: CreateDataDirectoryRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdFilesDirectoriesPost>>, {modelId: string;data: CreateDataDirectoryRequest}> = (props) => {
           const {modelId,data} = props ?? {};
 
-          return  createModelDirectoryModelsModelIdDirectoriesPost(modelId,data,)
+          return  createModelDirectoryModelsModelIdFilesDirectoriesPost(modelId,data,)
         }
 
         
@@ -1630,23 +1646,23 @@ const {mutation: mutationOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateModelDirectoryModelsModelIdDirectoriesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>>
-    export type CreateModelDirectoryModelsModelIdDirectoriesPostMutationBody = CreateDataDirectoryRequest
-    export type CreateModelDirectoryModelsModelIdDirectoriesPostMutationError = HTTPValidationError
+    export type CreateModelDirectoryModelsModelIdFilesDirectoriesPostMutationResult = NonNullable<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdFilesDirectoriesPost>>>
+    export type CreateModelDirectoryModelsModelIdFilesDirectoriesPostMutationBody = CreateDataDirectoryRequest
+    export type CreateModelDirectoryModelsModelIdFilesDirectoriesPostMutationError = HTTPValidationError
 
     /**
  * @summary Create Model Directory
  */
-export const useCreateModelDirectoryModelsModelIdDirectoriesPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext>, }
+export const useCreateModelDirectoryModelsModelIdFilesDirectoriesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createModelDirectoryModelsModelIdFilesDirectoriesPost>>, TError,{modelId: string;data: CreateDataDirectoryRequest}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createModelDirectoryModelsModelIdDirectoriesPost>>,
+        Awaited<ReturnType<typeof createModelDirectoryModelsModelIdFilesDirectoriesPost>>,
         TError,
         {modelId: string;data: CreateDataDirectoryRequest},
         TContext
       > => {
 
-      const mutationOptions = getCreateModelDirectoryModelsModelIdDirectoriesPostMutationOptions(options);
+      const mutationOptions = getCreateModelDirectoryModelsModelIdFilesDirectoriesPostMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }
@@ -2002,6 +2018,530 @@ export function useDownloadContainerPacketFileModelsModelIdContainersContainerNa
 
 
 
+/**
+ * 获取DinD内所有容器，包括关闭的
+ * @summary Get Model Dind Containers
+ */
+export const getModelDindContainersModelsModelIdDindGet = (
+    modelId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseDict>(
+      {url: `/models/${modelId}/dind`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetModelDindContainersModelsModelIdDindGetQueryKey = (modelId: string,) => {
+    return [`/models/${modelId}/dind`] as const;
+    }
+
+    
+export const getGetModelDindContainersModelsModelIdDindGetQueryOptions = <TData = Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetModelDindContainersModelsModelIdDindGetQueryKey(modelId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>> = ({ signal }) => getModelDindContainersModelsModelIdDindGet(modelId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetModelDindContainersModelsModelIdDindGetQueryResult = NonNullable<Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>>
+export type GetModelDindContainersModelsModelIdDindGetQueryError = HTTPValidationError
+
+
+export function useGetModelDindContainersModelsModelIdDindGet<TData = Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelDindContainersModelsModelIdDindGet<TData = Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>,
+          TError,
+          Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetModelDindContainersModelsModelIdDindGet<TData = Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Model Dind Containers
+ */
+
+export function useGetModelDindContainersModelsModelIdDindGet<TData = Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getModelDindContainersModelsModelIdDindGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetModelDindContainersModelsModelIdDindGetQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 获取DinD内所有容器的详细inspect信息
+ * @summary Get Dind All Container Inspect
+ */
+export const getDindAllContainerInspectModelsModelIdDindInspectGet = (
+    modelId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseDict>(
+      {url: `/models/${modelId}/dind/inspect`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetDindAllContainerInspectModelsModelIdDindInspectGetQueryKey = (modelId: string,) => {
+    return [`/models/${modelId}/dind/inspect`] as const;
+    }
+
+    
+export const getGetDindAllContainerInspectModelsModelIdDindInspectGetQueryOptions = <TData = Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDindAllContainerInspectModelsModelIdDindInspectGetQueryKey(modelId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>> = ({ signal }) => getDindAllContainerInspectModelsModelIdDindInspectGet(modelId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetDindAllContainerInspectModelsModelIdDindInspectGetQueryResult = NonNullable<Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>>
+export type GetDindAllContainerInspectModelsModelIdDindInspectGetQueryError = HTTPValidationError
+
+
+export function useGetDindAllContainerInspectModelsModelIdDindInspectGet<TData = Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>,
+          TError,
+          Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDindAllContainerInspectModelsModelIdDindInspectGet<TData = Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>,
+          TError,
+          Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDindAllContainerInspectModelsModelIdDindInspectGet<TData = Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Dind All Container Inspect
+ */
+
+export function useGetDindAllContainerInspectModelsModelIdDindInspectGet<TData = Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindAllContainerInspectModelsModelIdDindInspectGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetDindAllContainerInspectModelsModelIdDindInspectGetQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 获取DinD内指定容器的详细inspect信息
+ * @summary Get Dind Container Inspect
+ */
+export const getDindContainerInspectModelsModelIdDindInspectContainerNameGet = (
+    modelId: string,
+    containerName: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseDict>(
+      {url: `/models/${modelId}/dind/inspect/${containerName}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetDindContainerInspectModelsModelIdDindInspectContainerNameGetQueryKey = (modelId: string,
+    containerName: string,) => {
+    return [`/models/${modelId}/dind/inspect/${containerName}`] as const;
+    }
+
+    
+export const getGetDindContainerInspectModelsModelIdDindInspectContainerNameGetQueryOptions = <TData = Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError = HTTPValidationError>(modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDindContainerInspectModelsModelIdDindInspectContainerNameGetQueryKey(modelId,containerName);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>> = ({ signal }) => getDindContainerInspectModelsModelIdDindInspectContainerNameGet(modelId,containerName, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId && containerName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetDindContainerInspectModelsModelIdDindInspectContainerNameGetQueryResult = NonNullable<Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>>
+export type GetDindContainerInspectModelsModelIdDindInspectContainerNameGetQueryError = HTTPValidationError
+
+
+export function useGetDindContainerInspectModelsModelIdDindInspectContainerNameGet<TData = Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>,
+          TError,
+          Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDindContainerInspectModelsModelIdDindInspectContainerNameGet<TData = Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>,
+          TError,
+          Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDindContainerInspectModelsModelIdDindInspectContainerNameGet<TData = Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Dind Container Inspect
+ */
+
+export function useGetDindContainerInspectModelsModelIdDindInspectContainerNameGet<TData = Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindContainerInspectModelsModelIdDindInspectContainerNameGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetDindContainerInspectModelsModelIdDindInspectContainerNameGetQueryOptions(modelId,containerName,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 获取DinD数据包信息
+ * @summary Get Dind Packet Files
+ */
+export const getDindPacketFilesModelsModelIdDindPacketsGet = (
+    modelId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<ApiResponseDict>(
+      {url: `/models/${modelId}/dind/packets`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetDindPacketFilesModelsModelIdDindPacketsGetQueryKey = (modelId: string,) => {
+    return [`/models/${modelId}/dind/packets`] as const;
+    }
+
+    
+export const getGetDindPacketFilesModelsModelIdDindPacketsGetQueryOptions = <TData = Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError = HTTPValidationError>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDindPacketFilesModelsModelIdDindPacketsGetQueryKey(modelId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>> = ({ signal }) => getDindPacketFilesModelsModelIdDindPacketsGet(modelId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetDindPacketFilesModelsModelIdDindPacketsGetQueryResult = NonNullable<Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>>
+export type GetDindPacketFilesModelsModelIdDindPacketsGetQueryError = HTTPValidationError
+
+
+export function useGetDindPacketFilesModelsModelIdDindPacketsGet<TData = Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError = HTTPValidationError>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDindPacketFilesModelsModelIdDindPacketsGet<TData = Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetDindPacketFilesModelsModelIdDindPacketsGet<TData = Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Dind Packet Files
+ */
+
+export function useGetDindPacketFilesModelsModelIdDindPacketsGet<TData = Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError = HTTPValidationError>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getDindPacketFilesModelsModelIdDindPacketsGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetDindPacketFilesModelsModelIdDindPacketsGetQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 下载数据包
+ * @summary Download Dind Packet File Direct
+ */
+export const downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet = (
+    modelId: string,
+    containerName: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<unknown>(
+      {url: `/models/${modelId}/dind/packets/${containerName}/download`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getDownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGetQueryKey = (modelId: string,
+    containerName: string,) => {
+    return [`/models/${modelId}/dind/packets/${containerName}/download`] as const;
+    }
+
+    
+export const getDownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGetQueryOptions = <TData = Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError = HTTPValidationError>(modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGetQueryKey(modelId,containerName);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>> = ({ signal }) => downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet(modelId,containerName, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(modelId && containerName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type DownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGetQueryResult = NonNullable<Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>>
+export type DownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGetQueryError = HTTPValidationError
+
+
+export function useDownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet<TData = Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>,
+          TError,
+          Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet<TData = Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>,
+          TError,
+          Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet<TData = Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Download Dind Packet File Direct
+ */
+
+export function useDownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet<TData = Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError = HTTPValidationError>(
+ modelId: string,
+    containerName: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGet>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getDownloadDindPacketFileDirectModelsModelIdDindPacketsContainerNameDownloadGetQueryOptions(modelId,containerName,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * 获取指定容器的DinD数据包文件路径（无需下载）
+ * @summary Get Dind Packet File Info
+ */
+export const getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost = (
+    modelId: string,
+    containerName: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return docker_manager_api<unknown>(
+      {url: `/models/${modelId}/dind/packets/${containerName}/download`, method: 'POST', signal
+    },
+      );
+    }
+  
+
+
+export const getGetDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost>>, TError,{modelId: string;containerName: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost>>, TError,{modelId: string;containerName: string}, TContext> => {
+
+const mutationKey = ['getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost>>, {modelId: string;containerName: string}> = (props) => {
+          const {modelId,containerName} = props ?? {};
+
+          return  getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost(modelId,containerName,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GetDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPostMutationResult = NonNullable<Awaited<ReturnType<typeof getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost>>>
+    
+    export type GetDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPostMutationError = HTTPValidationError
+
+    /**
+ * @summary Get Dind Packet File Info
+ */
+export const useGetDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost>>, TError,{modelId: string;containerName: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof getDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPost>>,
+        TError,
+        {modelId: string;containerName: string},
+        TContext
+      > => {
+
+      const mutationOptions = getGetDindPacketFileInfoModelsModelIdDindPacketsContainerNameDownloadPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
 /**
  * 根路径
  * @summary Root

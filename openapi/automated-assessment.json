@@ -1,0 +1,205 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+      "title": "AI Agent驱动的动态攻防推演靶场平台 API",
+      "description": "自动化演练评估平台 - 第四部分 API 接口",
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/api/assessment/status/{Model_id}": {
+        "get": {
+          "tags": [
+            "评估报告"
+          ],
+          "summary": "Get Assessment Status",
+          "description": "获取指定模型的评估状态",
+          "operationId": "get_assessment_status_api_assessment_status__Model_id__get",
+          "parameters": [
+            {
+              "name": "Model_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Model Id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/assessment/report/{Model_id}": {
+        "get": {
+          "tags": [
+            "评估报告"
+          ],
+          "summary": "Get Assessment Report",
+          "description": "获取指定模型的评估报告",
+          "operationId": "get_assessment_report_api_assessment_report__Model_id__get",
+          "parameters": [
+            {
+              "name": "Model_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Model Id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/assessment/analyze": {
+        "post": {
+          "tags": [
+            "评估报告"
+          ],
+          "summary": "Analyze And Store",
+          "description": "接收Model_id和流量包路径，自动分析流量包，生成评估报告，并与Model_id一起存入数据库。",
+          "operationId": "analyze_and_store_api_assessment_analyze_post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body_analyze_and_store_api_assessment_analyze_post"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {}
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Body_analyze_and_store_api_assessment_analyze_post": {
+          "properties": {
+            "Model_id": {
+              "type": "string",
+              "title": "Model Id",
+              "description": "模型ID"
+            },
+            "pcap_paths": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "title": "Pcap Paths",
+              "description": "流量包路径列表"
+            }
+          },
+          "type": "object",
+          "required": [
+            "Model_id",
+            "pcap_paths"
+          ],
+          "title": "Body_analyze_and_store_api_assessment_analyze_post"
+        },
+        "HTTPValidationError": {
+          "properties": {
+            "detail": {
+              "items": {
+                "$ref": "#/components/schemas/ValidationError"
+              },
+              "type": "array",
+              "title": "Detail"
+            }
+          },
+          "type": "object",
+          "title": "HTTPValidationError"
+        },
+        "ValidationError": {
+          "properties": {
+            "loc": {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              },
+              "type": "array",
+              "title": "Location"
+            },
+            "msg": {
+              "type": "string",
+              "title": "Message"
+            },
+            "type": {
+              "type": "string",
+              "title": "Error Type"
+            }
+          },
+          "type": "object",
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ],
+          "title": "ValidationError"
+        }
+      }
+    }
+  }

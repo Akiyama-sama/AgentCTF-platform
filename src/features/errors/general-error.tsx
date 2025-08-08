@@ -18,16 +18,16 @@ export default function GeneralError({
         {!minimal && (
           <h1 className='text-[7rem] leading-tight font-bold'>500</h1>
         )}
-        <span className='font-medium'>Oops! Something went wrong {`:')`}</span>
+        <span className='font-medium'>Oops! 服务器内部错误 {':('}</span>
         <p className='text-muted-foreground text-center'>
-          We apologize for the inconvenience. <br /> Please try again later.
+          请稍后再试
         </p>
         {!minimal && (
           <div className='mt-6 flex gap-4'>
             <Button variant='outline' onClick={() => history.go(-1)}>
-              Go Back
+              返回上一页
             </Button>
-            <Button onClick={() => navigate({ to: '/' })}>Back to Home</Button>
+            <Button onClick={() => navigate({ to: '/' })}>返回首页</Button>
           </div>
         )}
       </div>

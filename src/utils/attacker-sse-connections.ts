@@ -38,60 +38,71 @@ async function processFetchStream<T>(
   const decoder = new TextDecoder()
   let buffer = ''
 
+  const processEvent = (eventString: string) => {
+    if (!eventString.trim()) return
+
+    const dataLines: string[] = []
+    let eventType = 'message'
+
+    for (const line of eventString.split('\n')) {
+      if (line.startsWith('event: ')) {
+        eventType = line.substring('event: '.length).trim()
+      } else if (line.startsWith('data: ')) {
+        dataLines.push(line.substring('data: '.length).trim())
+      }
+    }
+
+    if (dataLines.length === 0) return
+
+    const dataJson = dataLines.join('\n')
+
+    try {
+      const data: T = JSON.parse(dataJson)
+      switch (eventType) {
+        case 'start':
+          callbacks.onStart?.(data)
+          break
+        case 'message':
+          callbacks.onMessage?.(data)
+          break
+        case 'end':
+          callbacks.onEnd?.(data)
+          break
+        case 'error':
+          callbacks.onError?.(data as { code?: string; message: string })
+          break
+        case 'ping':
+          break
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to parse SSE data JSON:', dataJson, e)
+    }
+  }
+
   try {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const { done, value } = await reader.read()
-      if (done) {
-        break
+
+      if (value) {
+        buffer += decoder.decode(value, { stream: true })
       }
 
-      buffer += decoder.decode(value, { stream: true })
       const boundary = '\n\n'
+      let boundaryIndex
 
-      while (buffer.includes(boundary)) {
-        const eventEndIndex = buffer.indexOf(boundary)
-        const eventString = buffer.substring(0, eventEndIndex)
-        buffer = buffer.substring(eventEndIndex + boundary.length)
+      while ((boundaryIndex = buffer.indexOf(boundary)) !== -1) {
+        const eventString = buffer.substring(0, boundaryIndex)
+        buffer = buffer.substring(boundaryIndex + boundary.length)
+        processEvent(eventString)
+      }
 
-        if (!eventString) continue
-
-        let eventType = 'message'
-        let dataJson = ''
-
-        for (const line of eventString.split('\n')) {
-          if (line.startsWith('event: ')) {
-            eventType = line.substring(7).trim()
-          } else if (line.startsWith('data: ')) {
-            dataJson = line.substring(6).trim()
-          }
+      if (done) {
+        if (buffer) {
+          processEvent(buffer)
         }
-
-        if (!dataJson) continue
-
-        try {
-          const data: T = JSON.parse(dataJson)
-          switch (eventType) {
-            case 'start':
-              callbacks.onStart?.(data)
-              break
-            case 'message':
-              callbacks.onMessage?.(data)
-              break
-            case 'end':
-              callbacks.onEnd?.(data)
-              return // End of stream
-            case 'error':
-              callbacks.onError?.(data as { code?: string; message: string })
-              return // End of stream on error
-            case 'ping':
-              // Ping is a keep-alive event and can be ignored.
-              break
-          }
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error('Failed to parse SSE data JSON:', dataJson, e)
-        }
+        break
       }
     }
   } catch (err) {

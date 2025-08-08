@@ -52,13 +52,12 @@ const queryClient = new QueryClient({
           toast.error('Session expired!')
           // 1. 清除本地存储的 tokens
           localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
           
           // 2. 清除 React Query 的所有缓存
           queryClient.clear(); 
 
           const redirect = `${router.history.location.href}`
-          router.navigate({ to: '/sign-in', search: { redirect } })
+          router.navigate({ to: '/sign-in-2', search: { redirect } })
         }
         if (error.response?.status === 500) {
           toast.error('Internal Server Error!')

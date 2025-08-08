@@ -18,7 +18,7 @@ import {
   useCreateModelFileModelsModelIdFilesPost,
   useUpdateModelFileContentModelsModelIdFilesPut,
   useDeleteModelFileModelsModelIdFilesDelete,
-  useCreateModelDirectoryModelsModelIdDirectoriesPost,
+  useCreateModelDirectoryModelsModelIdFilesDirectoriesPost,
   useUploadModelFileModelsModelIdFilesUploadPost,
   // 导入所有需要的 Query Key 工厂函数
   getGetModelsModelsGetQueryKey,
@@ -47,12 +47,24 @@ type ContainerInspectDetail = {
     Labels: {
       'com.docker.compose.service': string
     }
-  }
+  },
+  State: {
+    Status: string
+    CreatedAt: string
+  },
   HostConfig?: {
+    NetworkMode: string
     PortBindings?: {
       '8000/tcp'?: { HostPort: string }[]
       '2222/tcp'?: { HostPort: string }[]
       '8080/tcp'?: { HostPort: string }[]
+    }
+  },
+  NetworkSettings?: {
+    Networks?: {
+      [key: string]: {
+        IPAddress: string
+      }
     }
   }
 }
@@ -238,6 +250,11 @@ type Port = {
   targetEntrancePort?: number
 }
 
+type Status = {
+  status: string
+  runningTime: number
+}
+
 export const useScenarioContainers = (scenarioId: string) => {
   const {
     data: containers,
@@ -253,7 +270,8 @@ export const useScenarioContainers = (scenarioId: string) => {
   let defenderContainer: ContainerInspectDetail | undefined
   let targetContainer: ContainerInspectDetail | undefined
   const portMap = new Map<string, Port>()
-
+  const ipAddressMap = new Map<string, string>()
+  const statusMap = new Map<string, Status>()
   if (containers) {
     // 遍历 containers 对象的所有键（即容器ID）
     for (const containerId in containers) {
@@ -272,6 +290,11 @@ export const useScenarioContainers = (scenarioId: string) => {
           const mcpPort = mcpPortStr ? parseInt(mcpPortStr, 10) : undefined
           const sshPort = sshPortStr ? parseInt(sshPortStr, 10) : undefined
           const targetEntrancePort = targetEntrancePortStr ? parseInt(targetEntrancePortStr, 10) : undefined
+          const networkMode = container.HostConfig?.NetworkMode ?? 'bridge'
+          const ipAddress = container.NetworkSettings?.Networks?.[networkMode]?.IPAddress ?? ''
+          const status = container.State.Status
+          const runningTime = Math.floor((new Date().getTime() - new Date(container.State.CreatedAt).getTime()) / 60000)
+
           if (serviceName === 'attacker') {
             attackerContainer = container
           } else if (serviceName === 'defender') {
@@ -284,6 +307,11 @@ export const useScenarioContainers = (scenarioId: string) => {
             sshPort: sshPort && !isNaN(sshPort) ? sshPort : undefined,
             targetEntrancePort: targetEntrancePort && !isNaN(targetEntrancePort) ? targetEntrancePort : undefined,
           })
+          ipAddressMap.set(containerId, ipAddress)
+          statusMap.set(containerId, {
+            status,
+            runningTime,
+          })
         }
       }
     }
@@ -291,6 +319,8 @@ export const useScenarioContainers = (scenarioId: string) => {
 
   return {
     portMap,
+    ipAddressMap,
+    statusMap,
     attackerContainer,
     attackerContainerName: attackerContainer?.Name?.slice(1),
     defenderContainer,
@@ -435,7 +465,7 @@ export const useScenarioFile = (scenarioId: string | null) => {
 
   // 创建目录
   const createDirectoryMutation =
-    useCreateModelDirectoryModelsModelIdDirectoriesPost({
+    useCreateModelDirectoryModelsModelIdFilesDirectoriesPost({
       mutation: {
         onSuccess: invalidateFileTree,
       },

@@ -1,9 +1,9 @@
 'use client'
 
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { showSubmittedData } from '@/utils/show-submitted-data'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -24,54 +24,35 @@ import {
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
 import { SelectDropdown } from '@/components/select-dropdown'
-import { userTypes } from '../data/data'
-import { User } from '../data/schema'
+import { useAdmin } from '@/hooks/use-auth'
+import { userRoles } from '../data/data'
+import type { User } from '../data/schema'
+import { Switch } from '@/components/ui/switch'
 
+// 根据后端接口定义新的表单验证 schema
 const formSchema = z
   .object({
-    firstName: z.string().min(1, { message: 'First Name is required.' }),
-    lastName: z.string().min(1, { message: 'Last Name is required.' }),
-    username: z.string().min(1, { message: 'Username is required.' }),
-    phoneNumber: z.string().min(1, { message: 'Phone number is required.' }),
-    email: z
-      .string()
-      .min(1, { message: 'Email is required.' })
-      .email({ message: 'Email is invalid.' }),
-    password: z.string().transform((pwd) => pwd.trim()),
-    role: z.string().min(1, { message: 'Role is required.' }),
-    confirmPassword: z.string().transform((pwd) => pwd.trim()),
+    username: z.string().min(1, { message: '用户名不能为空。' }),
+    password: z.string().transform(pwd => pwd.trim()),
+    confirmPassword: z.string().transform(pwd => pwd.trim()),
+    roles: z.array(z.number()).min(1, { message: '必须选择一个角色。' }),
+    is_active: z.boolean(),
     isEdit: z.boolean(),
   })
   .superRefine(({ isEdit, password, confirmPassword }, ctx) => {
-    if (!isEdit || (isEdit && password !== '')) {
-      if (password === '') {
+    // 仅在创建用户或在编辑模式下输入了新密码时，才进行密码校验
+    if (!isEdit || (isEdit && password)) {
+      if (!password) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Password is required.',
+          message: '密码不能为空。',
           path: ['password'],
         })
       }
-
-      if (password.length < 8) {
+      else if (password.length < 4) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Password must be at least 8 characters long.',
-          path: ['password'],
-        })
-      }
-
-      if (!password.match(/[a-z]/)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Password must contain at least one lowercase letter.',
-          path: ['password'],
-        })
-      }
-
-      if (!password.match(/\d/)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Password must contain at least one number.',
+          message: '密码长度不能少于4位。',
           path: ['password'],
         })
       }
@@ -79,7 +60,7 @@ const formSchema = z
       if (password !== confirmPassword) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Passwords don't match.",
+          message: '两次输入的密码不一致。',
           path: ['confirmPassword'],
         })
       }
@@ -95,53 +76,76 @@ interface Props {
 
 export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
   const isEdit = !!currentRow
+  const { createUserAsync, updateUserAsync, isCreatingUser, isUpdatingUser }
+    = useAdmin()
+
   const form = useForm<UserForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
-          ...currentRow,
+          username: currentRow.username,
+          is_active: currentRow.is_active,
+          roles: currentRow.roles?.map(r => r.id) ?? [],
           password: '',
           confirmPassword: '',
           isEdit,
         }
       : {
-          firstName: '',
-          lastName: '',
           username: '',
-          email: '',
-          role: '',
-          phoneNumber: '',
+          is_active: true,
+          roles: [],
           password: '',
           confirmPassword: '',
           isEdit,
         },
   })
 
-  const onSubmit = (values: UserForm) => {
-    form.reset()
-    showSubmittedData(values)
+  const onSubmit = async (values: UserForm) => {
+    if (isEdit) {
+      await updateUserAsync({
+        userId: currentRow.id,
+        data: {
+          username: values.username,
+          is_active: values.is_active,
+          roles: values.roles,
+          // 仅当用户输入新密码时才更新密码
+          password: values.password || undefined,
+        },
+      })
+    }
+    else {
+      await createUserAsync({
+        data: {
+          username: values.username,
+          password: values.password,
+          roles: values.roles,
+        },
+      })
+    }
     onOpenChange(false)
   }
 
-  const isPasswordTouched = !!form.formState.dirtyFields.password
+  const isLoading = isCreatingUser || isUpdatingUser
 
   return (
     <Dialog
       open={open}
       onOpenChange={(state) => {
-        form.reset()
+        if (!state) {
+          form.reset()
+        }
         onOpenChange(state)
       }}
     >
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-left'>
-          <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>
+          <DialogTitle>{isEdit ? '编辑用户' : '添加新用户'}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Update the user here. ' : 'Create new user here. '}
-            Click save when you&apos;re done.
+            {isEdit ? '在此处更新用户信息。' : '在此处创建新用户。'}
+            完成后点击“保存”。
           </DialogDescription>
         </DialogHeader>
-        <div className='-mr-4 h-[26.25rem] w-full overflow-y-auto py-1 pr-4'>
+        <div className='-mr-4 max-h-96 w-full overflow-y-auto py-1 pr-4'>
           <Form {...form}>
             <form
               id='user-form'
@@ -150,56 +154,18 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
             >
               <FormField
                 control={form.control}
-                name='firstName'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-right'>
-                      First Name
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='John'
-                        className='col-span-4'
-                        autoComplete='off'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='lastName'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-right'>
-                      Last Name
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Doe'
-                        className='col-span-4'
-                        autoComplete='off'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name='username'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4'>
                     <FormLabel className='col-span-2 text-right'>
-                      Username
+                      用户名
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder='john_doe'
+                        placeholder='例如: zhangsan'
                         className='col-span-4'
+                        autoComplete='off'
+                        disabled={isEdit} // 编辑时不允许修改用户名
                         {...field}
                       />
                     </FormControl>
@@ -209,76 +175,62 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
               />
               <FormField
                 control={form.control}
-                name='email'
+                name='roles'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4'>
                     <FormLabel className='col-span-2 text-right'>
-                      Email
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='john.doe@gmail.com'
-                        className='col-span-4'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='phoneNumber'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-right'>
-                      Phone Number
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='+123456789'
-                        className='col-span-4'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='role'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-right'>
-                      Role
+                      角色
                     </FormLabel>
                     <SelectDropdown
-                      defaultValue={field.value}
-                      onValueChange={field.onChange}
-                      placeholder='Select a role'
+                      defaultValue={field.value[0]?.toString()}
+                      onValueChange={(value) => {
+                        // 假设单选角色，所以直接设置为 [Number(value)]
+                        field.onChange([Number(value)])
+                      }}
+                      placeholder='选择一个角色'
                       className='col-span-4'
-                      items={userTypes.map(({ label, value }) => ({
+                      items={userRoles.map(({ label, id }) => ({
                         label,
-                        value,
+                        value: id.toString(),
                       }))}
                     />
                     <FormMessage className='col-span-4 col-start-3' />
                   </FormItem>
                 )}
               />
+              {isEdit && (
+                <FormField
+                  control={form.control}
+                  name='is_active'
+                  render={({ field }) => (
+                    <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4'>
+                      <FormLabel className='col-span-2 text-right'>
+                        状态
+                      </FormLabel>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage className='col-span-4 col-start-3' />
+                    </FormItem>
+                  )}
+                />
+              )}
               <FormField
                 control={form.control}
                 name='password'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4'>
                     <FormLabel className='col-span-2 text-right'>
-                      Password
+                      密码
                     </FormLabel>
                     <FormControl>
                       <PasswordInput
-                        placeholder='e.g., S3cur3P@ssw0rd'
+                        placeholder={isEdit ? '留空则不修改' : '请输入密码'}
                         className='col-span-4'
+                        autoComplete='new-password'
                         {...field}
                       />
                     </FormControl>
@@ -290,15 +242,15 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
                 control={form.control}
                 name='confirmPassword'
                 render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4'>
                     <FormLabel className='col-span-2 text-right'>
-                      Confirm Password
+                      确认密码
                     </FormLabel>
                     <FormControl>
                       <PasswordInput
-                        disabled={!isPasswordTouched}
-                        placeholder='e.g., S3cur3P@ssw0rd'
+                        placeholder='再次输入密码'
                         className='col-span-4'
+                        autoComplete='new-password'
                         {...field}
                       />
                     </FormControl>
@@ -310,8 +262,8 @@ export function UsersActionDialog({ currentRow, open, onOpenChange }: Props) {
           </Form>
         </div>
         <DialogFooter>
-          <Button type='submit' form='user-form'>
-            Save changes
+          <Button type='submit' form='user-form' disabled={isLoading}>
+            {isLoading ? '保存中...' : '保存'}
           </Button>
         </DialogFooter>
       </DialogContent>

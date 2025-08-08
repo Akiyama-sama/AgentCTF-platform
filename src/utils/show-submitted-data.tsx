@@ -16,9 +16,7 @@ export function showSubmittedData(
 }
 export function showSuccessMessage(message: string) {
   toast.success(
-    <pre className='mt-2 w-full overflow-x-auto rounded-md bg-slate-950 p-4'>
-        <code className='text-white'>{message}</code>
-    </pre>,
+    message,
     {duration:3000}
   )
 }
@@ -27,10 +25,10 @@ export function showErrorMessage(
   data?: unknown
 ) {
   toast.error(
-    <pre className='mt-2 w-full overflow-x-auto rounded-md bg-red-950 p-4'>
-        <code className='text-white'>{message}</code>
+    <div className='mt-2 w-full overflow-x-auto rounded-md bg-red-800 p-4'>
+        {message}
         {data?<code className='text-white'>{JSON.stringify(data, null, 2)}</code>:null}
-    </pre>,
+    </div>,
     {duration:3000}
   )
 }

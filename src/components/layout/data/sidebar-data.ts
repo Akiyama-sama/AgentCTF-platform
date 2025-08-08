@@ -5,34 +5,15 @@ import {
   IconSettings,
   IconShieldCode,
   IconTool,
+  IconUser,
   IconUserCog,
 } from '@tabler/icons-react'
-import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
+
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
-  user: {
-    name: 'mio',
-    email: 'satnaingdev@gmail.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
-  teams: [
-    {
-      name: 'Shadcn Admin',
-      logo: Command,
-      plan: 'Vite + ShadcnUI',
-    },
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
-  ],
+
+
   navGroups: [
     {
       title: '通用',
@@ -41,10 +22,6 @@ export const sidebarData: SidebarData = {
           title: '主页',
           url: '/',
           icon: IconLayoutDashboard,
-        },
-        {
-          title:'组件练习',
-          url:'/lab'
         },
         {
           title: 'Agent攻防',
@@ -56,6 +33,16 @@ export const sidebarData: SidebarData = {
           url: '/exercises',
           icon: IconPencil ,
         }
+      ],
+    },
+    {
+      title: '用户管理',
+      items: [
+        {
+          title: '用户管理',
+          url: '/users',
+          icon: IconUser,
+        },
       ],
     },
     {

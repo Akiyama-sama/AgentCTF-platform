@@ -609,11 +609,11 @@
         }
       }
     },
-    "/models/{model_id}/directories": {
+    "/models/{model_id}/files/directories": {
       "post": {
         "summary": "Create Model Directory",
         "description": "创建模型数据目录",
-        "operationId": "create_model_directory_models__model_id__directories_post",
+        "operationId": "create_model_directory_models__model_id__files_directories_post",
         "parameters": [
           {
             "name": "model_id",
@@ -803,6 +803,267 @@
         "summary": "Download Container Packet File",
         "description": "下载指定容器的数据包文件",
         "operationId": "download_container_packet_file_models__model_id__containers__container_name__packet_download_get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Id"
+            }
+          },
+          {
+            "name": "container_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Container Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{model_id}/dind": {
+      "get": {
+        "summary": "Get Model Dind Containers",
+        "description": "获取DinD内所有容器，包括关闭的",
+        "operationId": "get_model_dind_containers_models__model_id__dind_get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_Dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{model_id}/dind/inspect": {
+      "get": {
+        "summary": "Get Dind All Container Inspect",
+        "description": "获取DinD内所有容器的详细inspect信息",
+        "operationId": "get_dind_all_container_inspect_models__model_id__dind_inspect_get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_Dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{model_id}/dind/inspect/{container_name}": {
+      "get": {
+        "summary": "Get Dind Container Inspect",
+        "description": "获取DinD内指定容器的详细inspect信息",
+        "operationId": "get_dind_container_inspect_models__model_id__dind_inspect__container_name__get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Id"
+            }
+          },
+          {
+            "name": "container_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Container Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_Dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{model_id}/dind/packets": {
+      "get": {
+        "summary": "Get Dind Packet Files",
+        "description": "获取DinD数据包信息",
+        "operationId": "get_dind_packet_files_models__model_id__dind_packets_get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_Dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{model_id}/dind/packets/{container_name}/download": {
+      "get": {
+        "summary": "Download Dind Packet File Direct",
+        "description": "下载数据包",
+        "operationId": "download_dind_packet_file_direct_models__model_id__dind_packets__container_name__download_get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Id"
+            }
+          },
+          {
+            "name": "container_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Container Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Get Dind Packet File Info",
+        "description": "获取指定容器的DinD数据包文件路径（无需下载）",
+        "operationId": "get_dind_packet_file_info_models__model_id__dind_packets__container_name__download_post",
         "parameters": [
           {
             "name": "model_id",
@@ -1058,6 +1319,37 @@
         },
         "type": "object",
         "title": "ApiResponse[AllPacketFilesResponse]"
+      },
+      "ApiResponse_Dict_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[Dict]"
       },
       "ApiResponse_GetDataFileContentResponse_": {
         "properties": {

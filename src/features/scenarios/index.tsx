@@ -86,7 +86,7 @@ export default function Scenarios() {
         <div className='my-4 flex items-end justify-between sm:my-0 sm:items-center'>
           <div className='flex flex-col gap-4 sm:my-4 sm:flex-row'>
             <Input
-              placeholder='Filter scenarios...'
+              placeholder='搜索场景名称...'
               className='h-9 w-40 lg:w-[250px]'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -129,13 +129,13 @@ export default function Scenarios() {
                 <SelectItem value='ascending'>
                   <div className='flex items-center gap-4'>
                     <IconSortAscendingLetters size={16} />
-                    <span>Ascending</span>
+                    <span>升序</span>
                   </div>
                 </SelectItem>
                 <SelectItem value='descending'>
                   <div className='flex items-center gap-4'>
                     <IconSortDescendingLetters size={16} />
-                    <span>Descending</span>
+                    <span>降序</span>
                   </div>
                 </SelectItem>
               </SelectContent>

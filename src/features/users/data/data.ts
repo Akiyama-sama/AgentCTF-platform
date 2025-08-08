@@ -1,40 +1,33 @@
 import {
-  IconCash,
-  IconShield,
-  IconUsersGroup,
+  IconUser,
   IconUserShield,
 } from '@tabler/icons-react'
-import { UserStatus } from './schema'
+import type { UserStatus } from './schema'
 
-export const callTypes = new Map<UserStatus, string>([
+// 状态对应的样式，现在只有 active 和 inactive
+export const statusStyles = new Map<UserStatus, string>([
   ['active', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
   ['inactive', 'bg-neutral-300/40 border-neutral-300'],
-  ['invited', 'bg-sky-200/40 text-sky-900 dark:text-sky-100 border-sky-300'],
-  [
-    'suspended',
-    'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10',
-  ],
 ])
 
-export const userTypes = [
+// 状态对应的中文名称
+export const statusNames: Record<UserStatus, string> = {
+  active: '正常',
+  inactive: '禁用',
+}
+
+// 预定义的用户角色，用于UI显示和筛选
+export const userRoles = [
   {
-    label: 'Superadmin',
-    value: 'superadmin',
-    icon: IconShield,
-  },
-  {
-    label: 'Admin',
+    id: 2,
+    label: '管理员',
     value: 'admin',
     icon: IconUserShield,
   },
   {
-    label: 'Manager',
-    value: 'manager',
-    icon: IconUsersGroup,
-  },
-  {
-    label: 'Cashier',
-    value: 'cashier',
-    icon: IconCash,
+    id: 1,
+    label: '普通用户',
+    value: 'user',
+    icon: IconUser,
   },
 ] as const

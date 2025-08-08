@@ -1,22 +1,26 @@
 import { useUsers } from '../context/users-context'
 import { UsersActionDialog } from './users-action-dialog'
 import { UsersDeleteDialog } from './users-delete-dialog'
-import { UsersInviteDialog } from './users-invite-dialog'
 
 export function UsersDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useUsers()
+
+  const handleOpenChange = (newOpenState: boolean) => {
+    if (!newOpenState) {
+      setOpen(null)
+      // 在关闭对话框后清除当前行数据
+      setTimeout(() => {
+        setCurrentRow(null)
+      }, 500)
+    }
+  }
+
   return (
     <>
       <UsersActionDialog
-        key='user-add'
+        key='user-add-dialog'
         open={open === 'add'}
-        onOpenChange={() => setOpen('add')}
-      />
-
-      <UsersInviteDialog
-        key='user-invite'
-        open={open === 'invite'}
-        onOpenChange={() => setOpen('invite')}
+        onOpenChange={handleOpenChange}
       />
 
       {currentRow && (
@@ -24,24 +28,14 @@ export function UsersDialogs() {
           <UsersActionDialog
             key={`user-edit-${currentRow.id}`}
             open={open === 'edit'}
-            onOpenChange={() => {
-              setOpen('edit')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
+            onOpenChange={handleOpenChange}
             currentRow={currentRow}
           />
 
           <UsersDeleteDialog
             key={`user-delete-${currentRow.id}`}
             open={open === 'delete'}
-            onOpenChange={() => {
-              setOpen('delete')
-              setTimeout(() => {
-                setCurrentRow(null)
-              }, 500)
-            }}
+            onOpenChange={handleOpenChange}
             currentRow={currentRow}
           />
         </>

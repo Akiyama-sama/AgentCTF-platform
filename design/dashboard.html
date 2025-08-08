@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent驱动的动态攻防推演靶场平台 - 主页</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0a0c1f;
+            --card-color: #161833;
+            --primary-accent: #00f5c3;
+            --text-color: #e0e0e0;
+            --text-muted: #8892b0;
+            --border-color: rgba(0, 245, 195, 0.2);
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, rgba(10, 12, 31, 0.8), rgba(22, 24, 51, 0.9)), url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="p" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M5 0 L5 10 M0 5 L10 5" stroke="%23161833" stroke-width="0.5"/></pattern></defs><rect width="100%" height="100%" fill="url(%23p)"/></svg>');
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: white;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(0, 245, 195, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-top: 15px;
+            font-weight: 300;
+        }
+
+        /* --- Features Section --- */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--card-color);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-accent);
+        }
+
+        .feature-card .icon {
+            font-size: 2.5rem;
+            color: var(--primary-accent);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin: 0 0 10px 0;
+            color: white;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        /* --- Dashboard Section --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .container-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .container-card .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .container-card .header h3 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: white;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #28a745; /* Green for running */
+            box-shadow: 0 0 8px #28a745;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 8px #28a745; }
+            50% { box-shadow: 0 0 16px #28a745; }
+            100% { box-shadow: 0 0 8px #28a745; }
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .info-grid .label {
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        
+        .info-grid .value {
+            font-weight: 400;
+            color: var(--text-color);
+            word-break: break-all;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .ports {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <section class="hero">
+            [cite_start]<h1>AI Agent驱动的动态攻防推演靶场平台 [cite: 4, 15]</h1>
+            [cite_start]<p>通过AI技术重塑网络安全实训模式，实现智能化、自动化、精准化的攻防演练 [cite: 92]</p>
+        </section>
+
+        <section id="features" style="margin-top: 80px;">
+            <h2 class="section-title">四大核心支柱</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon"><i class="fa-solid fa-sitemap"></i></div>
+                    [cite_start]<h3>动态场景生成 [cite: 93, 115]</h3>
+                    [cite_start]<p>自动生成与真实业务相关的多维攻防场景，并能实时调整环境参数，解放人力资源 [cite: 75, 94, 95]。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fa-solid fa-robot"></i></div>
+                    [cite_start]<h3>智能攻击模拟 [cite: 103]</h3>
+                    [cite_start]<p>通过攻击AI Agent模拟复杂的攻击链，如高级持续性威胁(APT)，提升攻击的真实性 [cite: 77, 104]。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fa-solid fa-shield-virus"></i></div>
+                    [cite_start]<h3>自适应防御决策 [cite: 110, 711]</h3>
+                    [cite_start]<p>防御AI Agent动态优化安全策略，实现自动化的漏洞修复与威胁阻断，动态响应威胁 [cite: 81, 111]。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    [cite_start]<h3>演练评估自动化 [cite: 100, 898]</h3>
+                    [cite_start]<p>构建量化评估模型，提供客观的技能画像和提升引导，实现客观量化分析 [cite: 83, 85, 101]。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" style="margin-top: 80px;">
+            <h2 class="section-title">实时演练环境状态</h2>
+            <div class="dashboard-grid">
+                <div class="container-card">
+                    <div class="header">
+                        <h3><i class="fa-solid fa-user-secret"></i> 攻击机 (Attacker)</h3>
+                        <div class="status">
+                            <div class="status-dot"></div>
+                            [cite_start]<span>Running [cite: 1]</span>
+                        </div>
+                    </div>
+                    <div class="info-grid">
+                        <div class="label">镜像:</div>
+                        [cite_start]<div class="value">kali-linux (rolling) [cite: 1]</div>
+                        <div class="label">IP地址:</div>
+                        [cite_start]<div class="value">172.18.0.2 [cite: 1]</div>
+                        <div class="label">端口映射:</div>
+                        <div class="value ports">
+                            [cite_start]<span>47646 → 2222/tcp [cite: 1]</span>
+                            [cite_start]<span>39987 → 8000/tcp [cite: 1]</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-card">
+                    <div class="header">
+                        <h3><i class="fa-solid fa-shield-halved"></i> 防御Agent (Defender)</h3>
+                        <div class="status">
+                            <div class="status-dot"></div>
+                            [cite_start]<span>Running [cite: 1]</span>
+                        </div>
+                    </div>
+                    <div class="info-grid">
+                        <div class="label">镜像:</div>
+                        [cite_start]<div class="value">...-defender [cite: 1]</div>
+                        <div class="label">IP地址:</div>
+                        [cite_start]<div class="value">172.18.0.3 [cite: 1]</div>
+                        <div class="label">端口映射:</div>
+                        <div class="value ports">
+                            [cite_start]<span>52629 → 2222/tcp [cite: 1]</span>
+                            [cite_start]<span>35103 → 8000/tcp [cite: 1]</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="container-card">
+                    <div class="header">
+                        <h3><i class="fa-solid fa-crosshairs"></i> 靶机环境 (Target)</h3>
+                        <div class="status">
+                            <div class="status-dot"></div>
+                            [cite_start]<span>Running [cite: 1]</span>
+                        </div>
+                    </div>
+                    <div class="info-grid">
+                        <div class="label">镜像:</div>
+                        [cite_start]<div class="value">docker:dind [cite: 1]</div>
+                        <div class="label">IP地址:</div>
+                        [cite_start]<div class="value">172.18.0.4 [cite: 1]</div>
+                        <div class="label">端口映射:</div>
+                        <div class="value ports">
+                           [cite_start]<span>38207 → 8080/tcp [cite: 1]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

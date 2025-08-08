@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { SendHorizonal } from 'lucide-react'
+import { ChevronDown, SendHorizonal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAttackerAgentChat, useAttackerAgentSession } from '@/hooks/use-ai'
 import { useScenarioContainers } from '@/hooks/use-scenario'
@@ -9,7 +9,9 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { showErrorMessage, showSuccessMessage } from '@/utils/show-submitted-data'
-import { ApiResponseUserInitResponse } from '@/types/attacker-agent'
+import { ApiResponseUserCleanupResponse, ApiResponseUserInitResponse } from '@/types/attacker-agent'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useNavigate } from '@tanstack/react-router'
 
 const api_key = import.meta.env.VITE_DEEPSEEK_API_KEY
 
@@ -19,18 +21,20 @@ type ChatBotProps = {
 }
 
 export function ChatBot({ className, scenarioId }: ChatBotProps) {
-  const { portMap, attackerContainerName, targetContainerName } = useScenarioContainers(scenarioId)
-  const { status:chatSSEStatus, messages, input, handleInputChange, handleSubmit, isLoading, sendMessage } =
+  const { portMap, attackerContainerName, targetContainerName, ipAddressMap } = useScenarioContainers(scenarioId)
+  const {  messages, setMessages, input, handleInputChange, handleSubmit, isLoading, sendMessage } =
     useAttackerAgentChat({ user_id: scenarioId })
-  const { status, initUserAsync } = useAttackerAgentSession(scenarioId)
-
+  const { status, initUserAsync, cleanupUserAsync } = useAttackerAgentSession(scenarioId)
+  const navigate = useNavigate()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-  const attacker_server_url = `http://localhost:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
-  const target_entrance_url = `http://localhost:${portMap.get(targetContainerName!)?.targetEntrancePort}`
+ /*  const attacker_server_url = `http://${ipAddressMap.get(attackerContainerName!)}:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
+  const target_entrance_url = `http://${ipAddressMap.get(targetContainerName!)}:${portMap.get(targetContainerName!)?.targetEntrancePort}` */
+   const attacker_server_url = `http://${attackerContainerName}:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
+  const target_entrance_url = `http://${targetContainerName}:${portMap.get(targetContainerName!)?.targetEntrancePort}`
   // 1. 当状态加载完毕且用户未初始化时，执行初始化
   useEffect(() => {
     if (status && !status.initialized) {
@@ -56,15 +60,14 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     }
   }, [status?.initialized, scenarioId])
 
-  // 2. 当用户初始化成功后，如果还没有消息，则自动发送第一条消息
+/*   // 2. 当用户初始化成功后，如果还没有消息，则自动发送第一条消息
   useEffect(() => {
     if(messages.length>0) return
-    const MCPPort = portMap.get(attackerContainerName!)
     // 确保已初始化、没有消息、并且端口已就绪
-    if (status?.initialized && messages.length === 0 && MCPPort) {
+    if (status?.initialized && messages.length === 0 ) {
       sendMessage(`当前攻击机MCP地址为:${attacker_server_url}，目标靶场入口URL为:${target_entrance_url}`); 
     }
-  }, [status?.initialized, messages.length, portMap, attackerContainerName, sendMessage])
+  }, [status?.initialized, messages.length, attacker_server_url, target_entrance_url, sendMessage]) */
 
   // 3. 消息列表更新时，自动滚动到底部
   useEffect(() => {
@@ -73,11 +76,41 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
 
   return (
     <Card className={cn('flex flex-col', className)}>
-      <CardHeader className='items-center justify-center pt-2'>
+      <CardHeader className='flex flex-row items-center justify-center pt-2'>
         <CardTitle>Attacker Agent 初始化状态：{status?.initialized?'已初始化':'未初始化'}
-
-          <p>Chat SSE Status: {chatSSEStatus}</p>
         </CardTitle>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant='outline'>
+              <ChevronDown className='h-4 w-4' />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Button variant='outline' onClick={() => {
+                localStorage.removeItem(`attacker-agent-${scenarioId}`)
+                setMessages([])
+              }}>清除本地消息</Button>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Button variant='outline' onClick={() => {
+                cleanupUserAsync({params: {user_id: scenarioId}}).then((res:ApiResponseUserCleanupResponse) => {
+                  if(res.code==200){
+                    showSuccessMessage(res.message || 'Agent实例清除成功')
+                  }
+                  if (res && res.code === 1001) {
+                    showErrorMessage(res.message || 'Agent实例清除失败')
+                  }
+                }).catch((err: Error) => {
+                  showErrorMessage(err?.message || 'Agent实例清除失败')
+                })
+                localStorage.removeItem(`attacker-agent-${scenarioId}`)
+                setMessages([])
+                navigate({to: '/scenarios'})
+              }}>清除Agent实例</Button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
       <CardContent className='flex flex-col flex-1 px-4 min-h-0'>
         <ScrollArea className='h-full '>

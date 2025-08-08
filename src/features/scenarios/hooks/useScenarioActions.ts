@@ -14,12 +14,11 @@ import { useNavigate } from '@tanstack/react-router';
 export const useScenarioActions = (
   scenarioId: string,
   createBuildConnection: (scenarioId: string) => void,
-  closeBuildConnection: () => void
+  closeBuildConnection: () => void,
 ) => {
   const { scenario, updateState, isUpdatingState } = useScenario(scenarioId);
   const { setOpen, setCurrentRow } = useScenariosDialog();
   const navigate = useNavigate();
-
   // 新增一个 state 来追踪正在进行中的 action
   const [pendingAction, setPendingAction] = useState<ActionType | null>(null);
 
@@ -59,6 +58,7 @@ export const useScenarioActions = (
         setCurrentRow(scenario)
         setPendingAction('stop'); 
         updateState({ modelId: scenarioId, data: { action } });
+        closeBuildConnection()
         break;
       case 'delete':
         setCurrentRow(scenario)

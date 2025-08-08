@@ -18,10 +18,10 @@ export default function SignUp() {
             创建一个账户
           </CardTitle>
           <CardDescription>
-            输入你的邮箱和密码创建一个账户。 <br />
+            输入你的用户名和密码创建一个账户。 <br />
             已经有账户?{' '}
             <Link
-              to='/sign-in'
+              to='/sign-in-2'
               className='hover:text-primary underline underline-offset-4'
             >
               登录

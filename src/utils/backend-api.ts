@@ -4,10 +4,11 @@ import axios, {
   type AxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
+import { useAuthStore } from '@/hooks/use-auth';
 
 // 1. 创建一个基础的 Axios 实例
 const backendApiInstance: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -17,12 +18,12 @@ const backendApiInstance: AxiosInstance = axios.create({
 // 2. 添加请求拦截器
 backendApiInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 从 localStorage 获取 access_token
-    const accessToken = localStorage.getItem('access_token');
-    
+    // 在请求被发送之前，从 Zustand store 中获取最新的 token
+    const { token } = useAuthStore.getState();
+
     // 如果 token 存在，则添加到请求头
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     
     return config;

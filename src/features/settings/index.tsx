@@ -27,7 +27,7 @@ export default function Settings() {
       <Main fixed>
         <div className='space-y-0.5'>
           <h1 className='text-2xl font-bold tracking-tight md:text-3xl'>
-            Settings
+            设置
           </h1>
           <p className='text-muted-foreground'>
             管理您的账户设置和Agent密钥信息。

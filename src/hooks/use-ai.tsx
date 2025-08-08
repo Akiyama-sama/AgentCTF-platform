@@ -20,6 +20,7 @@ import {
     type Message,
 } from 'ai';
 import { attackerSSEManager } from "@/utils/attacker-sse-connections";
+import { showErrorMessage } from "@/utils/show-submitted-data";
 
 // const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL;
 
@@ -164,6 +165,8 @@ export const useAttackerAgentChat = ({
       const callbacks = {
         onStart: () => {
             setStatus('streaming');
+            // eslint-disable-next-line no-console
+            console.log('用户:', user_id, 'Chat Stream started:', message)
         },
         onMessage: (data: unknown) => {
             const { message: chunk } = data as { message: string };
@@ -179,6 +182,9 @@ export const useAttackerAgentChat = ({
         },
         onEnd: () => {
             setStatus('success');
+            // eslint-disable-next-line no-console
+            console.log('用户:', user_id, 'Chat Stream ended:', message)
+
         },
         onError: (err: { code?: string, message: string }) => {
             setError(err);
@@ -190,6 +196,9 @@ export const useAttackerAgentChat = ({
                         : msg
                 )
             );
+            // eslint-disable-next-line no-console
+            console.error("Agent聊天发生错误",err)
+            showErrorMessage(err.message || 'Agent聊天发生错误')
         },
         onFinally: () => {
             setIsLoading(false);
@@ -234,6 +243,7 @@ export const useAttackerAgentChat = ({
   
     return {
       messages,
+      setMessages,
       input,
       handleInputChange,
       handleSubmit,

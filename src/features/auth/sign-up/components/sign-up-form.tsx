@@ -14,40 +14,41 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
+import { useAuth } from '@/hooks/use-auth'
 
 type SignUpFormProps = HTMLAttributes<HTMLFormElement>
 
+
+
+
 const formSchema = z
   .object({
-    email: z
+    username: z
       .string()
-      .min(1, { message: 'Please enter your email' })
-      .email({ message: 'Invalid email address' }),
-    opt:z
-      .string()
-      .min(1, { message: 'Please enter your opt' }),
+      .min(1, { message: '请输入您的用户名' }),
     password: z
       .string()
       .min(1, {
-        message: 'Please enter your password',
+        message: '请输入您的密码',
       })
       .min(7, {
-        message: 'Password must be at least 7 characters long',
+        message: '密码长度至少为7位',
       }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match.",
+    message: '两次输入的密码不一致',
     path: ['confirmPassword'],
   })
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const { register } = useAuth()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
       confirmPassword: '',
     },
@@ -58,9 +59,13 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     // eslint-disable-next-line no-console
     console.log(data)
 
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+    register({data:{
+      username: data.username,
+      password: data.password,
+    }}
+    )
+
+    
   }
 
   return (
@@ -72,29 +77,13 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       >
         <FormField
           control={form.control}
-          name='email'
+          name='username'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>用户名</FormLabel>
               <FormControl>
-                <Input placeholder='name@example.com' {...field} />
+                <Input placeholder='请输入您的用户名' {...field} />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='opt'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>邮箱验证码</FormLabel>
-              <div className='flex gap-3'>
-                <FormControl className='flex-1/2'>
-                  <Input {...field} />
-                </FormControl>
-                <Button className='flex-1' >发送验证码</Button>
-              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -104,9 +93,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           name='password'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>密码</FormLabel>
               <FormControl>
-                <PasswordInput placeholder='********' {...field} />
+                <PasswordInput placeholder='' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -117,16 +106,16 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           name='confirmPassword'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel>确认密码</FormLabel>
               <FormControl>
-                <PasswordInput placeholder='********' {...field} />
+                <PasswordInput placeholder='' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button className='mt-2' disabled={isLoading}>
-          Create Account
+          注册
         </Button>
 
 
