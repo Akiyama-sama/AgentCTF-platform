@@ -237,36 +237,13 @@ export const useContainerLogs = () => {
  * @returns Functions and state for managing a log stream.
  */
 export const useAttackerAgentLogs = (modelId: string | null) => {
-  const sessionKey = `attacker-agent-logs-${modelId}`
+
   
   const [logs, setLogs] = useState<LogDisplayItem[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const streamControllerRef = useRef<AbortController | null>(null)
 
-  // Load initial logs from sessionStorage
-  useEffect(() => {
-    if (modelId) {
-      try {
-        const storedLogs = sessionStorage.getItem(sessionKey)
-        if (storedLogs) {
-          setLogs(JSON.parse(storedLogs))
-        }
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to parse stored logs:', e)
-        setLogs([])
-      }
-    }
-  }, [modelId])
-
-  // Persist logs to sessionStorage whenever they change
-  useEffect(() => {
-    if (modelId) {
-      const sessionKey = `attacker-agent-logs-${modelId}`
-      sessionStorage.setItem(sessionKey, JSON.stringify(logs))
-    }
-  }, [logs.length, modelId])
 
   const startLogs = useCallback(
     async (params: LogRequest) => {
@@ -363,6 +340,8 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
   const stopLogs = useCallback(() => {
     if (modelId) {
       attackerSSEManager.closeStream(`log-${modelId}`)
+      // eslint-disable-next-line no-console
+      console.log('攻击Agent SSE日志流已关闭', modelId)
     }
   }, [modelId])
 

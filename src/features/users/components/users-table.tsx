@@ -99,8 +99,8 @@ export function UsersTable({ columns, data, isLoading }: DataTableProps) {
             {isLoading ? (
               Array.from({ length: 10 }).map((_, i) => (
                 <TableRow key={i}>
-                  {columns.map((column) => (
-                    <TableCell key={column.id ?? ''}>
+                  {columns.map((_, index) => (
+                    <TableCell key={index}>
                       <Skeleton className='h-6' />
                     </TableCell>
                   ))}

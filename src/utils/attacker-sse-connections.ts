@@ -175,11 +175,15 @@ class AttackerSSEManager {
         })
         await processFetchStream(response, enhancedCallbacks)
       } catch (err) {
-        if (err instanceof Error && err.name !== 'AbortError') {
-          // This handles fetch-level errors (e.g., network issues)
-          enhancedCallbacks.onError?.({ message: err.message })
-          // eslint-disable-next-line no-console
-          console.error('Failed to create stream:', err)
+        if (err instanceof Error) {
+          if (err.name !== 'AbortError') {
+            // This handles fetch-level errors (e.g., network issues)
+            enhancedCallbacks.onError?.({ message: err.message })
+            // eslint-disable-next-line no-console
+            console.error('Failed to create stream:', err)
+          }
+          // Crucially, call onFinally for ALL errors, including AbortError,
+          // to ensure the connection state is cleaned up in the manager.
           enhancedCallbacks.onFinally?.()
         }
       }

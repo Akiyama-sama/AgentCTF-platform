@@ -40,7 +40,7 @@ export const LogController = ({ modelId }: Props) => {
     isLoading,
   } = useScenarioContainers(modelId)
 
-  const { containerLogs, createContainerConnection } = useContainerLogs()
+  const { containerLogs, createContainerConnection, closeContainerConnection } = useContainerLogs()
   const [logLevel, setLogLevel] = useState<SSELogLevel | 'ALL'>('ALL')
   const [selectedContainer, setSelectedContainer] =
     useState<ContainerType>('attacker')
@@ -55,12 +55,24 @@ export const LogController = ({ modelId }: Props) => {
     if (targetContainerName) {
       createContainerConnection(modelId, targetContainerName)
     }
+    return () => {
+      if (attackerContainerName) {
+        closeContainerConnection(modelId, attackerContainerName)
+      }
+      if (defenderContainerName) {
+        closeContainerConnection(modelId, defenderContainerName)
+      }
+      if (targetContainerName) {
+        closeContainerConnection(modelId, targetContainerName)
+      }
+    }
   }, [
     modelId,
     attackerContainerName,
     defenderContainerName,
     targetContainerName,
     createContainerConnection,
+    closeContainerConnection,
   ])
 
   const containerNameMap: Record<ContainerType, string | undefined> = {

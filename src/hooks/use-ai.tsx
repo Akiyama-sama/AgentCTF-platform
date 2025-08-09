@@ -53,7 +53,6 @@ export const useAttackerAgentSession = (userId: string | null) => {
         query: {
           enabled: isEnabled,
           select: (response): UserStatusResponse | null => response.data ?? null,
-          refetchInterval: 50000,
         },
       }
     );
