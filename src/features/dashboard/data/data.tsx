@@ -1,5 +1,5 @@
 import { SVGProps } from 'react'
-import { Bot, Shield, Target, Zap } from 'lucide-react'
+
 
 export const Icons = {
     be: (_props: SVGProps<SVGSVGElement>) => (
@@ -164,36 +164,6 @@ export const keyWords = [
   }
 ]
 
-export const statsCards = [
-  {
-    title: '总场景',
-    value: '4',
-    icon: Target,
-    iconClassName: 'text-primary',
-    valueClassName: 'text-primary',
-  },
-  {
-    title: '运行中',
-    value: '1',
-    icon: Zap,
-    iconClassName: 'text-green-400',
-    valueClassName: 'text-green-400',
-  },
-  {
-    title: '已停止',
-    value: '1',
-    icon: Shield,
-    iconClassName: 'text-gray-400',
-    valueClassName: 'text-gray-400',
-  },
-  {
-    title: '构建中',
-    value: '1',
-    icon: Bot,
-    iconClassName: 'text-blue-400',
-    valueClassName: 'text-blue-400',
-  },
-]
 
 export const descriptions = [
   "AI Agent驱动的动态攻防推演靶场平台",

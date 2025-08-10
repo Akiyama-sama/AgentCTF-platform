@@ -22,6 +22,7 @@ import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authen
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedScenariosIndexRouteImport } from './routes/_authenticated/scenarios/index'
+import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
 import { Route as AuthenticatedExercisesIndexRouteImport } from './routes/_authenticated/exercises/index'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAgentRouteImport } from './routes/_authenticated/settings/agent'
@@ -95,6 +96,12 @@ const AuthenticatedScenariosIndexRoute =
     path: '/scenarios/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedReportIndexRoute =
+  AuthenticatedReportIndexRouteImport.update({
+    id: '/report/',
+    path: '/report/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedExercisesIndexRoute =
   AuthenticatedExercisesIndexRouteImport.update({
     id: '/exercises/',
@@ -141,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/settings/agent': typeof AuthenticatedSettingsAgentRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/exercises': typeof AuthenticatedExercisesIndexRoute
+  '/report': typeof AuthenticatedReportIndexRoute
   '/scenarios': typeof AuthenticatedScenariosIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
@@ -159,6 +167,7 @@ export interface FileRoutesByTo {
   '/settings/agent': typeof AuthenticatedSettingsAgentRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/exercises': typeof AuthenticatedExercisesIndexRoute
+  '/report': typeof AuthenticatedReportIndexRoute
   '/scenarios': typeof AuthenticatedScenariosIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
@@ -180,6 +189,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/agent': typeof AuthenticatedSettingsAgentRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/exercises/': typeof AuthenticatedExercisesIndexRoute
+  '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/scenarios/': typeof AuthenticatedScenariosIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/settings/agent'
     | '/settings/appearance'
     | '/exercises'
+    | '/report'
     | '/scenarios'
     | '/settings/'
     | '/users'
@@ -219,6 +230,7 @@ export interface FileRouteTypes {
     | '/settings/agent'
     | '/settings/appearance'
     | '/exercises'
+    | '/report'
     | '/scenarios'
     | '/settings'
     | '/users'
@@ -239,6 +251,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/agent'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/exercises/'
+    | '/_authenticated/report/'
     | '/_authenticated/scenarios/'
     | '/_authenticated/settings/'
     | '/_authenticated/users/'
@@ -348,6 +361,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedScenariosIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/report/': {
+      id: '/_authenticated/report/'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof AuthenticatedReportIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/exercises/': {
       id: '/_authenticated/exercises/'
       path: '/exercises'
@@ -411,6 +431,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedScenariosScenarioIdRoute: typeof AuthenticatedScenariosScenarioIdRoute
   AuthenticatedExercisesIndexRoute: typeof AuthenticatedExercisesIndexRoute
+  AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedScenariosIndexRoute: typeof AuthenticatedScenariosIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
@@ -420,6 +441,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedScenariosScenarioIdRoute: AuthenticatedScenariosScenarioIdRoute,
   AuthenticatedExercisesIndexRoute: AuthenticatedExercisesIndexRoute,
+  AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedScenariosIndexRoute: AuthenticatedScenariosIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }

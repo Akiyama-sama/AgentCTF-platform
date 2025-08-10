@@ -14,6 +14,20 @@ module.exports = {
         },
       },
     },
+    composeAgent: {
+        input: './openapi/compose-agent.json',
+        output: {
+          target: './src/types/compose-agent.ts',
+          client: 'react-query',
+          mode: 'single', 
+          override: {
+            mutator: {
+              path: './src/utils/compose-agent-api.ts',
+              name: 'compose_agent_api',
+            },
+          },
+        },
+      },
     backend: {
         input: './openapi/backend.json',
         output: {

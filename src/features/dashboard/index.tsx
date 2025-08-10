@@ -16,6 +16,7 @@ import { Search } from '@/components/search'
 import FlipLink from '@/components/text-effect-flipper'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Icons, teamMates } from './data/data'
+import ProjectDescription from './components/project-description'
 
 export default function Dashboard() {
   return (
@@ -32,6 +33,7 @@ export default function Dashboard() {
 
       {/* ===== Main ===== */}
       <Main className='h-screen p-6'>
+        {/* 顶部 */}
         <div className='mb-8 flex items-center justify-between space-y-2'>
           <div className='flex w-full flex-row'>
             <div className='text-chart-1 dark:text-chart-3 flex w-1/2 flex-col tracking-tight'>
@@ -92,12 +94,13 @@ export default function Dashboard() {
             </HoverCard>
             
           </div>
+        
           <Card className='transition-shadow duration-300 hover:shadow-lg'>
             <CardHeader>
-              <CardTitle>平台特色</CardTitle>
+              <CardTitle></CardTitle>
             </CardHeader>
             <CardContent className='space-y-3 text-base'>
-              
+            <ProjectDescription />
             </CardContent>
           </Card>
         </div>
