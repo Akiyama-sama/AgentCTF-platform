@@ -203,3 +203,50 @@ export const descriptions = [
   "前瞻性的技术解决方案"
 ]
  
+export const teamMates = [
+  {
+    responsibility: '项目负责人',
+    members: [
+      {
+        name: 'caef11',
+        avatar_url: 'https://avatars.githubusercontent.com/u/123226454?v=4',
+        github_url: 'https://github.com/caef11',
+      },
+    ],
+  },
+  {
+    responsibility: '前端开发',
+    members: [
+      {
+        name: 'Akiyama-sama',
+        avatar_url: 'https://avatars.githubusercontent.com/u/138316429?v=4',
+        github_url: 'https://github.com/Akiyama-sama',
+      },
+    ],
+  },
+  {
+    responsibility: '后端开发',
+    members: [
+      {
+        name: 'shibig666',
+        avatar_url: 'https://avatars.githubusercontent.com/u/151553014?v=4',
+        github_url: 'https://github.com/shibig666',
+      },
+      {
+        name: 'Abyss Ferry',
+        avatar_url: 'https://avatars.githubusercontent.com/u/152617014?v=4',
+        github_url: 'https://github.com/AbyssFerry',
+      },
+      {
+        name: 'Quanqi Cheng',
+        avatar_url: 'https://avatars.githubusercontent.com/u/173524704?v=4',
+        github_url: 'https://github.com/MasonG0808',
+      },
+      {
+        name: 'yuuy288',
+        avatar_url: 'https://avatars.githubusercontent.com/u/190058276?v=4',
+        github_url: 'https://github.com/yuuy288',
+      },
+    ],
+  },
+]

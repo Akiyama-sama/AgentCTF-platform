@@ -25,6 +25,72 @@ import type {
 } from '@tanstack/react-query';
 
 import { automated_assessment_api } from '../utils/automated-assessment-api';
+export interface AnalyzeResponseSchema {
+  /** 模型ID */
+  Model_id: string;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseAnalyzeResponseSchemaData = AnalyzeResponseSchema | null;
+
+export interface ApiResponseAnalyzeResponseSchema {
+  /** 业务状态码，非HTTP状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseAnalyzeResponseSchemaData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseAssessmentReportResponseSchemaData = AssessmentReportResponseSchema | null;
+
+export interface ApiResponseAssessmentReportResponseSchema {
+  /** 业务状态码，非HTTP状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseAssessmentReportResponseSchemaData;
+}
+
+/**
+ * 响应数据
+ */
+export type ApiResponseStatusResponseSchemaData = StatusResponseSchema | null;
+
+export interface ApiResponseStatusResponseSchema {
+  /** 业务状态码，非HTTP状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseStatusResponseSchemaData;
+}
+
+/**
+ * AI评估
+ */
+export type AssessmentReportResponseSchemaAiEvaluation = { [key: string]: unknown };
+
+/**
+ * 得分细节
+ */
+export type AssessmentReportResponseSchemaScoreDetails = { [key: string]: unknown };
+
+export interface AssessmentReportResponseSchema {
+  /** AI评估 */
+  ai_evaluation?: AssessmentReportResponseSchemaAiEvaluation;
+  /** 最终得分 */
+  final_score?: number;
+  /** 得分细节 */
+  score_details?: AssessmentReportResponseSchemaScoreDetails;
+}
+
 export interface BodyAnalyzeAndStoreApiAssessmentAnalyzePost {
   /** 模型ID */
   Model_id: string;
@@ -34,6 +100,11 @@ export interface BodyAnalyzeAndStoreApiAssessmentAnalyzePost {
 
 export interface HTTPValidationError {
   detail?: ValidationError[];
+}
+
+export interface StatusResponseSchema {
+  /** 状态码 1-无 2-生成中 3-已生成 */
+  status_code: number;
 }
 
 export type ValidationErrorLocItem = string | number;
@@ -54,7 +125,7 @@ export const getAssessmentStatusApiAssessmentStatusModelIdGet = (
 ) => {
       
       
-      return automated_assessment_api<unknown>(
+      return automated_assessment_api<ApiResponseStatusResponseSchema>(
       {url: `/api/assessment/status/${modelId}`, method: 'GET', signal
     },
       );
@@ -143,7 +214,7 @@ export const getAssessmentReportApiAssessmentReportModelIdGet = (
 ) => {
       
       
-      return automated_assessment_api<unknown>(
+      return automated_assessment_api<ApiResponseAssessmentReportResponseSchema>(
       {url: `/api/assessment/report/${modelId}`, method: 'GET', signal
     },
       );
@@ -232,7 +303,7 @@ export const analyzeAndStoreApiAssessmentAnalyzePost = (
 ) => {
       
       
-      return automated_assessment_api<unknown>(
+      return automated_assessment_api<ApiResponseAnalyzeResponseSchema>(
       {url: `/api/assessment/analyze`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: bodyAnalyzeAndStoreApiAssessmentAnalyzePost, signal

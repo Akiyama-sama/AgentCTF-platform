@@ -12,6 +12,7 @@ import ScenariosDialogProvider from '../scenarios/context/scenarios-context'
 import { AgentLogController } from './components/agent-log-controller'
 import { ChatBot } from './components/chat-bot'
 import { LogController } from './components/container-log-controller'
+import ScenarioProcessLine from './components/scenario-process-line'
 
 interface ScenarioDetailProps {
   scenarioId: string
@@ -46,6 +47,7 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
             />
           </div>
           <Card className='mt-0 flex w-2/3 flex-col p-4'>
+            <ScenarioProcessLine />
             <div className='h-3/5 w-full p-10'>
               <TextScroll
                 text='TARGET SAFE'

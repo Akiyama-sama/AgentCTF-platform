@@ -1,4 +1,4 @@
-import ViteLogo from '@/assets/vite.svg'
+
 import { UserAuthForm } from './components/user-auth-form'
 import { Link } from '@tanstack/react-router'
 
@@ -23,13 +23,13 @@ export default function SignIn2() {
           </svg>
           智能攻防靶场平台
         </div>
-
+        
         <img
-          src={ViteLogo}
-          className='relative m-auto'
-          width={301}
-          height={60}
-          alt='Vite'
+          src='/images/wordcloud.svg'
+          className='relative m-auto rounded-md'
+          width={600}
+          height={600}
+          alt='wordcloud'
         />
 
         <div className='relative z-20 mt-auto'>
