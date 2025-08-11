@@ -1,4 +1,4 @@
-import { showSubmittedData } from "@/utils/show-submitted-data"
+import { showSuccessMessage } from "@/utils/show-submitted-data"
 import { useScenariosDialog } from "../context/scenarios-context"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { useScenarioFile } from "@/hooks/use-scenario"
@@ -65,7 +65,7 @@ export function ScenarioFileDialogs() {
           setTimeout(() => {
             setFilePath(null)
           }, 500)
-          showSubmittedData(filePath, '以下文件已删除:')
+          showSuccessMessage( `以下文件已删除:${filePath}`)
           deleteFile({ 
             modelId: scenarioId,
             data: {

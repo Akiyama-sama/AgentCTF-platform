@@ -20,6 +20,7 @@ import { Route as authSignUpRouteImport } from './routes/(auth)/sign-up'
 import { Route as authSignIn2RouteImport } from './routes/(auth)/sign-in-2'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
+import { Route as AuthenticatedTargetFactoryIndexRouteImport } from './routes/_authenticated/target-factory/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedScenariosIndexRouteImport } from './routes/_authenticated/scenarios/index'
 import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenticated/report/index'
@@ -84,6 +85,12 @@ const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
   path: '/users/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTargetFactoryIndexRoute =
+  AuthenticatedTargetFactoryIndexRouteImport.update({
+    id: '/target-factory/',
+    path: '/target-factory/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsIndexRoute =
   AuthenticatedSettingsIndexRouteImport.update({
     id: '/',
@@ -151,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/report': typeof AuthenticatedReportIndexRoute
   '/scenarios': typeof AuthenticatedScenariosIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/target-factory': typeof AuthenticatedTargetFactoryIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -170,6 +178,7 @@ export interface FileRoutesByTo {
   '/report': typeof AuthenticatedReportIndexRoute
   '/scenarios': typeof AuthenticatedScenariosIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
+  '/target-factory': typeof AuthenticatedTargetFactoryIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesById {
@@ -192,6 +201,7 @@ export interface FileRoutesById {
   '/_authenticated/report/': typeof AuthenticatedReportIndexRoute
   '/_authenticated/scenarios/': typeof AuthenticatedScenariosIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/_authenticated/target-factory/': typeof AuthenticatedTargetFactoryIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRouteTypes {
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/scenarios'
     | '/settings/'
+    | '/target-factory'
     | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/report'
     | '/scenarios'
     | '/settings'
+    | '/target-factory'
     | '/users'
   id:
     | '__root__'
@@ -254,6 +266,7 @@ export interface FileRouteTypes {
     | '/_authenticated/report/'
     | '/_authenticated/scenarios/'
     | '/_authenticated/settings/'
+    | '/_authenticated/target-factory/'
     | '/_authenticated/users/'
   fileRoutesById: FileRoutesById
 }
@@ -347,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/target-factory/': {
+      id: '/_authenticated/target-factory/'
+      path: '/target-factory'
+      fullPath: '/target-factory'
+      preLoaderRoute: typeof AuthenticatedTargetFactoryIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings/': {
       id: '/_authenticated/settings/'
       path: '/'
@@ -433,6 +453,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedExercisesIndexRoute: typeof AuthenticatedExercisesIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedScenariosIndexRoute: typeof AuthenticatedScenariosIndexRoute
+  AuthenticatedTargetFactoryIndexRoute: typeof AuthenticatedTargetFactoryIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
@@ -443,6 +464,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedExercisesIndexRoute: AuthenticatedExercisesIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedScenariosIndexRoute: AuthenticatedScenariosIndexRoute,
+  AuthenticatedTargetFactoryIndexRoute: AuthenticatedTargetFactoryIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 

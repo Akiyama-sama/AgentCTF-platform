@@ -7,6 +7,7 @@ import {
   IconTool,
   IconUser,
   IconUserCog,
+  IconBuildingFactory 
 } from '@tabler/icons-react'
 
 import { type SidebarData } from '../types'
@@ -22,6 +23,11 @@ export const sidebarData: SidebarData = {
           title: '主页',
           url: '/',
           icon: IconLayoutDashboard,
+        },
+        {
+          title: '动态靶机工厂',
+          url: '/target-factory',
+          icon: IconBuildingFactory ,
         },
         {
           title: 'Agent攻防',

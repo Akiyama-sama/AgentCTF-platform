@@ -6,7 +6,7 @@ import {
     DialogTitle
   } from '@/components/ui/dialog'
   import { useScenarioFile } from '@/hooks/use-scenario'
-  import { showSubmittedData } from '@/utils/show-submitted-data'
+  import { showSuccessMessage } from '@/utils/show-submitted-data'
   import CodeMirror from '@uiw/react-codemirror'
   import { useEffect, useState } from 'react'
   import { Button } from '@/components/ui/button'
@@ -68,7 +68,7 @@ import { useTheme } from '@/context/theme-context'
         {
           onSuccess: () => {
             onOpenChange(false)
-            showSubmittedData({ filePath: basePath }, '文件已成功更新:')
+            showSuccessMessage( '文件已成功更新:')
           }
         }
       )
