@@ -6,7 +6,6 @@ import {
   useListWorkspacesApiWorkspacesGet,
   useGetWorkspaceApiWorkspacesNameGet,
   useDeleteWorkspaceApiWorkspacesNameDelete,
-  useDownloadWorkspaceApiWorkspacesNameDownloadGet,
   // Query key factories
   getListWorkspacesApiWorkspacesGetQueryKey,
   getGetWorkspaceApiWorkspacesNameGetQueryKey,
@@ -330,61 +329,68 @@ export const useWorkspace = (workspaceName: string | null) => {
 
 /**
  * Hook to handle downloading a workspace.
- * This can be a simple query that is manually triggered.
  * @param workspaceName - The name of the workspace to download.
  */
 export const useDownloadWorkspace = (workspaceName: string | null) => {
-  const isEnabled = !!workspaceName
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [error, setError] = useState<HTTPValidationError | null>(null)
 
-  // This query will be disabled by default and can be triggered manually.
-  const { refetch, ...rest } = useDownloadWorkspaceApiWorkspacesNameDownloadGet(
-    workspaceName!,
-    {
-      query: {
-        enabled: false, // Only trigger manually
-        select: (response: unknown) => {
-          // You might want to handle file downloads here.
-          // For now, we just return the raw response.
-          return response
-        },
-      },
-    }
-  )
-
-  const download = async () => {
+  const download = useCallback(async () => {
     if (!workspaceName) return
+
+    setIsDownloading(true)
+    setError(null)
+
+    const url = `${composeAgentStreamURL}/api/workspaces/${workspaceName}/download`
+
     try {
-      const { data } = await refetch()
-      // Create a Blob from the response data and trigger a download
-      const blob = new Blob([JSON.stringify(data, null, 2)], {
-        type: 'application/zip', // Adjust content type as needed
+      const response = await fetch(url, {
+        method: 'GET',
       })
-      const url = window.URL.createObjectURL(blob)
+
+      if (!response.ok) {
+        const errorData: HTTPValidationError = await response.json()
+        throw errorData
+      }
+
+      const contentDisposition = response.headers.get('content-disposition')
+      let filename = `${workspaceName}.zip` // fallback
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(
+          /filename=(?:"([^"]+)"|([^;]+))/
+        )
+        if (filenameMatch) {
+          const newFilename = (filenameMatch[1] || filenameMatch[2] || '').trim()
+          if (newFilename) {
+            filename = newFilename
+          }
+        }
+      }
+
+      const blob = await response.blob()
+      const downloadUrl = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
-      a.href = url
-      a.download = `${workspaceName}.zip` // Or whatever the filename should be
+      a.href = downloadUrl
+      a.download = filename
       document.body.appendChild(a)
       a.click()
-      window.URL.revokeObjectURL(url)
+      window.URL.revokeObjectURL(downloadUrl)
       a.remove()
-    } catch (error: unknown) {
-      const err = error as { detail?: HTTPValidationError['detail'] }
+    } catch (err: unknown) {
+      const httpError = err as HTTPValidationError
+      setError(httpError)
       showErrorMessage(
         `Failed to download workspace "${workspaceName}".`,
-        err?.detail
+        httpError.detail
       )
+    } finally {
+      setIsDownloading(false)
     }
-  }
-
-  if (!isEnabled) {
-    return {
-      download: async () => {},
-      ...rest,
-    }
-  }
+  }, [workspaceName])
 
   return {
     download,
-    ...rest,
+    isDownloading,
+    error,
   }
 }
