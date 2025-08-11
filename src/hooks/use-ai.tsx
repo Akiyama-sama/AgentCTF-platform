@@ -21,6 +21,16 @@ import {
 } from 'ai';
 import { agentSSEManager } from "@/utils/agent-sse-connections";
 import { showErrorMessage } from "@/utils/show-submitted-data";
+import {
+  useGetInstanceStatusApiInstanceStatusModelIdGet,
+  getGetInstanceStatusApiInstanceStatusModelIdGetQueryKey,
+  useInitDefenderInstanceApiInstanceInitPost,
+  useCleanupDefenderInstanceApiInstanceCleanupModelIdDelete,
+  type InstanceStatusResponse,
+  type InstanceInitRequest,
+  type InitDefenderInstanceApiInstanceInitPostMutationResult,
+  type CleanupDefenderInstanceApiInstanceCleanupModelIdDeleteMutationResult,
+} from '@/types/defender-agent'
 
 // const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL;
 
@@ -101,6 +111,81 @@ export const useAttackerAgentSession = (userId: string | null) => {
       cleanupUserAsync: cleanupUserMutation.mutateAsync,
     };
 };
+
+export const useDefenderAgentSession = (modelId: string | null) => {
+  const queryClient = useQueryClient()
+  const isEnabled = !!modelId
+
+  const { data: status, ...statusQuery } =
+    useGetInstanceStatusApiInstanceStatusModelIdGet(modelId!, {
+      query: {
+        enabled: isEnabled,
+        select: (response): InstanceStatusResponse | null =>
+          response.data ?? null,
+      },
+    })
+
+  const invalidateInstanceStatus = useCallback(() => {
+    if (!modelId) return
+    queryClient.invalidateQueries({
+      queryKey: getGetInstanceStatusApiInstanceStatusModelIdGetQueryKey(modelId),
+    })
+  }, [queryClient, modelId])
+
+  const initInstanceMutation = useInitDefenderInstanceApiInstanceInitPost({
+    mutation: {
+      onSuccess: invalidateInstanceStatus,
+    },
+  })
+
+  const cleanupInstanceMutation =
+    useCleanupDefenderInstanceApiInstanceCleanupModelIdDelete({
+      mutation: {
+        onSuccess: invalidateInstanceStatus,
+      },
+    })
+
+  if (!isEnabled) {
+    const noOp = () => {}
+    const noOpAsyncInit = async () =>
+      Promise.resolve({} as InitDefenderInstanceApiInstanceInitPostMutationResult)
+    const noOpAsyncCleanup = async () =>
+      Promise.resolve(
+        {} as CleanupDefenderInstanceApiInstanceCleanupModelIdDeleteMutationResult,
+      )
+    return {
+      status: null,
+      statusQuery: { isInitialLoading: false },
+      isInitializing: false,
+      initInstance: noOp,
+      initInstanceAsync: noOpAsyncInit,
+      isCleaningUp: false,
+      cleanupInstance: noOp,
+      cleanupInstanceAsync: noOpAsyncCleanup,
+    }
+  }
+
+  return {
+    status,
+    statusQuery,
+    isInitializing: initInstanceMutation.isPending,
+    initInstance: (variables: Omit<InstanceInitRequest, 'model_id'>) => {
+      initInstanceMutation.mutate({ data: { ...variables, model_id: modelId } })
+    },
+    initInstanceAsync: (variables: Omit<InstanceInitRequest, 'model_id'>) => {
+      return initInstanceMutation.mutateAsync({
+        data: { ...variables, model_id: modelId },
+      })
+    },
+    isCleaningUp: cleanupInstanceMutation.isPending,
+    cleanupInstance: () => {
+      cleanupInstanceMutation.mutate({ modelId })
+    },
+    cleanupInstanceAsync: () => {
+      return cleanupInstanceMutation.mutateAsync({ modelId })
+    },
+  }
+}
 
 /**
  * Hook to handle streaming chat with the attacker agent.

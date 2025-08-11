@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   // Hooks
   useAnalyzeAndStoreApiAssessmentAnalyzePost,
@@ -17,6 +17,17 @@ import {
   type HTTPValidationError,
 } from '@/types/automated-assessment'
 import {
+  useGetDefenseReportStatusApiDefenseReportStatusPost,
+  useGetDefenseReportApiDefenseReportGetPost,
+  useTriggerOfflineForensicsApiDefenseReportTriggerForensicsPost,
+  type ApiResponseDefenseReportStatusResponse,
+  type DefenseReportStatusResponse,
+  type ApiResponseDefenseReportResponse,
+  type DefenseReportResponse,
+  type HTTPValidationError as DefenderHTTPValidationError,
+  type TriggerOfflineForensicsApiDefenseReportTriggerForensicsPostMutationResult,
+} from '@/types/defender-agent'
+import {
   showErrorMessage,
   showSuccessMessage,
 } from '@/utils/show-submitted-data'
@@ -30,7 +41,7 @@ import {
  * @param options - Hook options.
  * @param options.refetchStatus - Whether to poll for status updates. Defaults to true.
  */
-export const useReport = (
+export const useExerciseReport = (
   modelId: string | null,
   options?: {
     refetchStatus?: boolean
@@ -148,6 +159,111 @@ export const useReport = (
       })
     },
     /** Whether the analysis is currently in progress. */
+    isAnalyzing: analyzeMutation.isPending,
+  }
+}
+
+export const useScenarioReport = (
+  modelId: string | null,
+  options?: {
+    refetchStatus?: boolean
+  },
+) => {
+  const queryClient = useQueryClient()
+  const { refetchStatus = true } = options ?? {}
+  const isEnabled = !!modelId
+
+  // --- Query Keys (local to this hook) ---
+  const statusQueryKey = ['defender-report-status', modelId]
+  const reportQueryKey = ['defender-report', modelId]
+
+  // --- Invalidation Logic ---
+  const invalidateReportQueries = () => {
+    if (!modelId) return
+    queryClient.invalidateQueries({ queryKey: statusQueryKey })
+    queryClient.invalidateQueries({ queryKey: reportQueryKey })
+  }
+
+  // --- Mutations (to be wrapped in useQuery for data fetching) ---
+  const statusMutation = useGetDefenseReportStatusApiDefenseReportStatusPost()
+  const reportMutation = useGetDefenseReportApiDefenseReportGetPost()
+
+  // Query for the assessment status by wrapping a POST mutation
+  const { data: status, ...statusQuery } = useQuery({
+    queryKey: statusQueryKey,
+    queryFn: async (): Promise<DefenseReportStatusResponse | null> => {
+      if (!modelId) return null
+      const response: ApiResponseDefenseReportStatusResponse =
+        await statusMutation.mutateAsync({ data: { model_id: modelId } })
+      return response.data ?? null
+    },
+    enabled: isEnabled,
+    // Refetch every 5 seconds if the report is still generating
+    refetchInterval: query =>
+      refetchStatus && query.state.data?.status === 'generating' ? 5000 : false,
+  })
+
+  // Query for the assessment report, enabled only when status is 'completed'
+  const { data: report, ...reportQuery } = useQuery({
+    queryKey: reportQueryKey,
+    queryFn: async (): Promise<DefenseReportResponse | null> => {
+      if (!modelId) return null
+      const response: ApiResponseDefenseReportResponse =
+        await reportMutation.mutateAsync({ data: { model_id: modelId } })
+      return response.data ?? null
+    },
+    enabled: isEnabled && status?.status === 'completed',
+  })
+
+  // Mutation to start the analysis and report generation
+  const analyzeMutation = useTriggerOfflineForensicsApiDefenseReportTriggerForensicsPost(
+    {
+      mutation: {
+        onSuccess: res => {
+          invalidateReportQueries()
+          showSuccessMessage(res.message ?? '已开始生成防御报告，请稍后')
+        },
+        onError: (error: DefenderHTTPValidationError) => {
+          showErrorMessage(
+            '报告生成请求失败',
+            error.detail?.map(d => d.msg).join(', ') ?? '未知错误',
+          )
+        },
+      },
+    },
+  )
+
+  // --- Null ID Handling ---
+  if (!modelId) {
+    const noOp = () => {}
+    const noOpAsync = async () =>
+      Promise.resolve(
+        {} as TriggerOfflineForensicsApiDefenseReportTriggerForensicsPostMutationResult,
+      )
+
+    return {
+      status: null,
+      statusQuery: { isInitialLoading: false, isFetching: false },
+      report: null,
+      reportQuery: { isInitialLoading: false, isFetching: false },
+      analyze: noOp,
+      analyzeAsync: noOpAsync,
+      isAnalyzing: false,
+    }
+  }
+
+  // --- Return Value ---
+  return {
+    status,
+    statusQuery,
+    report,
+    reportQuery,
+    analyze: () => {
+      analyzeMutation.mutate({ data: { model_id: modelId } })
+    },
+    analyzeAsync: () => {
+      return analyzeMutation.mutateAsync({ data: { model_id: modelId } })
+    },
     isAnalyzing: analyzeMutation.isPending,
   }
 }
