@@ -459,6 +459,8 @@ export interface PacketFileResponse {
   created_time: string;
   /** 文件是否存在 */
   exists: boolean;
+  /** 数据包文件绝对路径 */
+  absolute_path: string;
 }
 
 /**

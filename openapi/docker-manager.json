@@ -2059,6 +2059,11 @@
             "type": "boolean",
             "title": "Exists",
             "description": "文件是否存在"
+          },
+          "absolute_path": {
+            "type": "string",
+            "title": "Absolute Path",
+            "description": "数据包文件绝对路径"
           }
         },
         "type": "object",
@@ -2068,7 +2073,8 @@
           "file_name",
           "file_size",
           "created_time",
-          "exists"
+          "exists",
+          "absolute_path"
         ],
         "title": "PacketFileResponse",
         "description": "数据包文件响应模型"

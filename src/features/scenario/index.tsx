@@ -5,7 +5,6 @@ import { Card } from '@/components/ui/card'
 import { useSidebar } from '@/components/ui/sidebar'
 import { TextScroll } from '@/components/ui/text-scroll'
 import { Main } from '@/components/layout/main'
-import TopologyMap from '@/components/topology-map'
 import { ScenarioFileDialogs } from '../scenarios/components/scenario-file-dialogs'
 import { ScenariosDialogs } from '../scenarios/components/scenarios-dialogs'
 import ScenariosDialogProvider from '../scenarios/context/scenarios-context'
@@ -13,6 +12,8 @@ import { AgentLogController } from './components/agent-log-controller'
 import { ChatBot } from './components/chat-bot'
 import { LogController } from './components/container-log-controller'
 import ScenarioProcessLine from './components/scenario-process-line'
+import { mermaidContent } from './data/data'
+import { ScenarioMermaid } from './components/scenario-mermaid'
 
 interface ScenarioDetailProps {
   scenarioId: string
@@ -53,7 +54,7 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
                 text='TARGET SAFE'
                 className='text-2xl text-green-600'
               />
-              <TopologyMap />
+              <ScenarioMermaid initialContent={mermaidContent}/>
               <TextScroll
                 text='TARGET SAFE'
                 className='text-2xl text-green-600'

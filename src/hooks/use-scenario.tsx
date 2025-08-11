@@ -478,6 +478,18 @@ export const useScenarioFile = (scenarioId: string | null) => {
     },
   })
 
+
+  const getTargetReadmeContentAsync = async()=>{
+    if(!scenarioId) return null
+    const res = await getFileContentMutation.mutateAsync({
+      modelId:scenarioId,
+      data:{
+        file_path:'target/README.md'
+      }
+    })
+    return res.data?.content
+  }
+
   // 如果 scenarioId 为 null，返回一组空的、安全的函数
   if (!scenarioId) {
     const noOpAsync = async () => Promise.resolve(new Response())
@@ -515,6 +527,13 @@ export const useScenarioFile = (scenarioId: string | null) => {
     rootItemId,
     fileTreeQuery,
 
+    getTargetReadmeContentAsync,
+    getTargetReadmeMermaidContents:async()=>{
+      const content = await getTargetReadmeContentAsync()
+      if(!content) return null
+      return extractAllMermaidContents(content)
+    },
+
     getFileContent: getFileContentMutation.mutate,
     getFileContentAsync: getFileContentMutation.mutateAsync,
     isGettingContent: getFileContentMutation.isPending,
@@ -539,4 +558,38 @@ export const useScenarioFile = (scenarioId: string | null) => {
     uploadFileAsync: uploadFileMutation.mutateAsync,
     isUploadingFile: uploadFileMutation.isPending,
   }
+}
+
+/**
+ * @description 从一个Markdown字符串中，通用地提取所有Mermaid语法块中的内容。
+ * @param markdownContent Markdown文件的完整内容字符串。
+ * @returns 一个包含所有被提取的Mermaid内容的字符串数组。
+ * @throws 如果在输入内容中找不到任何Mermaid语法块，则会抛出一个错误。
+ */
+export function extractAllMermaidContents(markdownContent: string): string[] | null {
+  // 1. 定义用于匹配Mermaid代码块的正则表达式
+  //    - ```mermaid: 匹配起始标记。
+  //    - \n: 匹配起始标记后的换行符。
+  //    - ([\s\S]*?): 一个非贪婪捕获组。[\s\S]可以匹配包括换行在内的任何字符，
+  //                  *? 表示非贪婪匹配，即匹配到第一个```时就停止。
+  //    - \n```: 匹配结束标记前的换行符和结束标记。
+  //    - 'g' (全局)标志: 确保找到文件中所有的匹配项，而不仅仅是第一个。
+  const mermaidRegex = /```mermaid\n([\s\S]*?)\n```/g;
+
+  // 2. 使用 String.prototype.matchAll() 来获取所有匹配项及其捕获组
+  //    matchAll返回一个迭代器，我们用扩展语法(...)将其转换为数组。
+  const matches = [...markdownContent.matchAll(mermaidRegex)];
+
+  // 3. 错误处理：如果未找到任何匹配项，则抛出错误
+  if (matches.length === 0) {
+    // eslint-disable-next-line no-console
+    console.log("Error: No Mermaid syntax blocks (```mermaid...) were found in the provided content.");
+    return null;
+  }
+
+  // 4. 提取内容：每个匹配项(match)的第1个捕获组 (match[1]) 就是我们需要的内容
+  //    使用 .map() 遍历所有匹配项，并用 .trim() 清除首尾的空白字符。
+  const contents = matches.map(match => match[1].trim());
+
+  return contents;
 }

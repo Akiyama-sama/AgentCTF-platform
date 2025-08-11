@@ -1,322 +1,111 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-      "title": "Defender Agent API",
-      "description": "网络安全防御代理API",
-      "version": "2.0.0"
-    },
-    "paths": {
-      "/api/logs/stream": {
-        "post": {
-          "tags": [
-            "日志管理"
-          ],
-          "summary": "获取日志流式传输",
-          "description": "使用SSE协议流式获取指定model_id的系统日志，支持标准事件类型：start、ping、message、end、error",
-          "operationId": "stream_logs_api_logs_stream_post",
-          "requestBody": {
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Defender Agent API",
+    "description": "网络安全防御代理API",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/api/logs/stream": {
+      "post": {
+        "tags": [
+          "日志管理"
+        ],
+        "summary": "获取日志流式传输",
+        "description": "使用SSE协议流式获取指定model_id的系统日志，支持标准事件类型：start、ping、message、end、error",
+        "operationId": "stream_logs_api_logs_stream_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogStreamRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "流式事件响应,每个事件对应如下结构",
+            "content": {
+              "text/event-stream": {
+                "examples": {
+                  "start": {
+                    "summary": "连接开始事件",
+                    "value": "event: start\ndata: {\"model_id\": \"model1\", \"status\": \"connected\", \"timestamp\": \"2025-07-19T20:00:00\", \"log_file\": \"/path/to/log\"}"
+                  },
+                  "ping": {
+                    "summary": "心跳事件",
+                    "value": "event: ping\ndata: {\"model_id\": \"model1\", \"status\": \"ping\", \"timestamp\": \"2025-07-19T20:00:05\"}"
+                  },
+                  "message": {
+                    "summary": "日志内容块",
+                    "value": "event: message\ndata: {\"model_id\": \"model1\", \"message\": \"INFO - 检测到威胁: 命令注入 | 192.168.126.1:9263 -> 192.168.126.139:80\", \"timestamp\": \"2025-08-01T17:53:43.728\"}"
+                  },
+                  "end": {
+                    "summary": "结束事件",
+                    "value": "event: end\ndata: {\"model_id\": \"model1\", \"status\": \"completed\", \"timestamp\": \"2025-07-19T20:01:00\"}"
+                  },
+                  "error": {
+                    "summary": "错误事件",
+                    "value": "event: error\ndata: {\"model_id\": \"model1\", \"code\": 1004, \"message\": \"系统内部错误\", \"timestamp\": \"2025-07-19T20:01:30\"}"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "日志文件不存在",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LogStreamRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "流式事件响应,每个事件对应如下结构",
-              "content": {
-                "text/event-stream": {
-                  "examples": {
-                    "start": {
-                      "summary": "连接开始事件",
-                      "value": "event: start\ndata: {\"model_id\": \"model1\", \"status\": \"connected\", \"timestamp\": \"2025-07-19T20:00:00\", \"log_file\": \"/path/to/log\"}"
-                    },
-                    "ping": {
-                      "summary": "心跳事件",
-                      "value": "event: ping\ndata: {\"model_id\": \"model1\", \"status\": \"ping\", \"timestamp\": \"2025-07-19T20:00:05\"}"
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 404
                     },
                     "message": {
-                      "summary": "日志内容块",
-                      "value": "event: message\ndata: {\"model_id\": \"model1\", \"message\": \"INFO - 检测到威胁: 命令注入 | 192.168.126.1:9263 -> 192.168.126.139:80\", \"timestamp\": \"2025-08-01T17:53:43.728\"}"
+                      "type": "string",
+                      "example": "日志文件不存在"
                     },
-                    "end": {
-                      "summary": "结束事件",
-                      "value": "event: end\ndata: {\"model_id\": \"model1\", \"status\": \"completed\", \"timestamp\": \"2025-07-19T20:01:00\"}"
-                    },
-                    "error": {
-                      "summary": "错误事件",
-                      "value": "event: error\ndata: {\"model_id\": \"model1\", \"code\": 1004, \"message\": \"系统内部错误\", \"timestamp\": \"2025-07-19T20:01:30\"}"
+                    "data": {
+                      "type": "null"
                     }
-                  }
-                }
-              }
-            },
-            "404": {
-              "description": "日志文件不存在",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "properties": {
-                      "code": {
-                        "type": "integer",
-                        "example": 404
-                      },
-                      "message": {
-                        "type": "string",
-                        "example": "日志文件不存在"
-                      },
-                      "data": {
-                        "type": "null"
-                      }
-                    },
-                    "type": "object"
-                  }
-                }
-              }
-            },
-            "500": {
-              "description": "服务器内部错误",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "properties": {
-                      "code": {
-                        "type": "integer",
-                        "example": 500
-                      },
-                      "message": {
-                        "type": "string",
-                        "example": "流式日志接口内部错误"
-                      },
-                      "data": {
-                        "type": "null"
-                      }
-                    },
-                    "type": "object"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
+                  },
+                  "type": "object"
                 }
               }
             }
-          }
-        }
-      },
-      "/api/defense-report/get": {
-        "post": {
-          "tags": [
-            "防御报告"
-          ],
-          "summary": "获取指定model_id的防御报告",
-          "description": "获取指定防御代理实例的防御报告内容，包含详细的JSON元数据结构",
-          "operationId": "get_defense_report_api_defense_report_get_post",
-          "requestBody": {
+          },
+          "500": {
+            "description": "服务器内部错误",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DefenseReportRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ApiResponse_DefenseReportResponse_"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 500
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "流式日志接口内部错误"
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  },
+                  "type": "object"
                 }
               }
             }
-          }
-        }
-      },
-      "/api/instance/init": {
-        "post": {
-          "tags": [
-            "实例管理"
-          ],
-          "summary": "初始化防御代理实例",
-          "description": "创建并初始化指定model_id的防御代理实例",
-          "operationId": "init_defender_instance_api_instance_init_post",
-          "requestBody": {
+          },
+          "422": {
+            "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InstanceInitRequest"
-                }
-              }
-            },
-            "required": true
-          },
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ApiResponse_InstanceInitResponse_"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/instance/status/{model_id}": {
-        "get": {
-          "tags": [
-            "实例管理"
-          ],
-          "summary": "获取防御代理实例状态",
-          "description": "获取指定model_id的防御代理实例当前状态信息",
-          "operationId": "get_instance_status_api_instance_status__model_id__get",
-          "parameters": [
-            {
-              "name": "model_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "minLength": 1,
-                "description": "防御代理实例ID",
-                "title": "Model Id"
-              },
-              "description": "防御代理实例ID"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ApiResponse_InstanceStatusResponse_"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/instance/cleanup/{model_id}": {
-        "delete": {
-          "tags": [
-            "实例管理"
-          ],
-          "summary": "清理防御代理实例",
-          "description": "清理并释放指定model_id的防御代理实例资源",
-          "operationId": "cleanup_defender_instance_api_instance_cleanup__model_id__delete",
-          "parameters": [
-            {
-              "name": "model_id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "minLength": 1,
-                "description": "防御代理实例ID",
-                "title": "Model Id"
-              },
-              "description": "防御代理实例ID"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/ApiResponse_InstanceCleanupResponse_"
-                  }
-                }
-              }
-            },
-            "422": {
-              "description": "Validation Error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/HTTPValidationError"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/": {
-        "get": {
-          "summary": "Root",
-          "description": "根路径",
-          "operationId": "root__get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {}
-                }
-              }
-            }
-          }
-        }
-      },
-      "/health": {
-        "get": {
-          "summary": "Health",
-          "description": "健康检查",
-          "operationId": "health_health_get",
-          "responses": {
-            "200": {
-              "description": "Successful Response",
-              "content": {
-                "application/json": {
-                  "schema": {}
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -324,969 +113,1412 @@
         }
       }
     },
-    "components": {
-      "schemas": {
-        "ApiResponse_DefenseReportResponse_": {
-          "properties": {
-            "code": {
-              "type": "integer",
-              "title": "Code",
-              "description": "业务状态码，非HTTP状态码",
-              "default": 200
-            },
-            "message": {
-              "type": "string",
-              "title": "Message",
-              "description": "响应消息",
-              "default": "success"
-            },
-            "data": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/DefenseReportResponse"
-                },
-                {
-                  "type": "null"
+    "/api/defense-report/trigger-forensics": {
+      "post": {
+        "tags": [
+          "防御报告"
+        ],
+        "summary": "触发离线溯源和防御报告生成",
+        "description": "手动触发指定model_id的离线溯源分析和防御报告生成",
+        "operationId": "trigger_offline_forensics_api_defense_report_trigger_forensics_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DefenseReportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_dict_"
                 }
-              ],
-              "description": "响应数据"
+              }
             }
           },
-          "type": "object",
-          "title": "ApiResponse[DefenseReportResponse]"
-        },
-        "ApiResponse_InstanceCleanupResponse_": {
-          "properties": {
-            "code": {
-              "type": "integer",
-              "title": "Code",
-              "description": "业务状态码，非HTTP状态码",
-              "default": 200
-            },
-            "message": {
-              "type": "string",
-              "title": "Message",
-              "description": "响应消息",
-              "default": "success"
-            },
-            "data": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/InstanceCleanupResponse"
-                },
-                {
-                  "type": "null"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "description": "响应数据"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/defense-report/get": {
+      "post": {
+        "tags": [
+          "防御报告"
+        ],
+        "summary": "获取指定model_id的防御报告",
+        "description": "获取指定防御代理实例的防御报告内容，包含详细的JSON元数据结构",
+        "operationId": "get_defense_report_api_defense_report_get_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DefenseReportRequest"
+              }
             }
           },
-          "type": "object",
-          "title": "ApiResponse[InstanceCleanupResponse]"
+          "required": true
         },
-        "ApiResponse_InstanceInitResponse_": {
-          "properties": {
-            "code": {
-              "type": "integer",
-              "title": "Code",
-              "description": "业务状态码，非HTTP状态码",
-              "default": 200
-            },
-            "message": {
-              "type": "string",
-              "title": "Message",
-              "description": "响应消息",
-              "default": "success"
-            },
-            "data": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/InstanceInitResponse"
-                },
-                {
-                  "type": "null"
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_DefenseReportResponse_"
                 }
-              ],
-              "description": "响应数据"
+              }
             }
           },
-          "type": "object",
-          "title": "ApiResponse[InstanceInitResponse]"
-        },
-        "ApiResponse_InstanceStatusResponse_": {
-          "properties": {
-            "code": {
-              "type": "integer",
-              "title": "Code",
-              "description": "业务状态码，非HTTP状态码",
-              "default": 200
-            },
-            "message": {
-              "type": "string",
-              "title": "Message",
-              "description": "响应消息",
-              "default": "success"
-            },
-            "data": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/InstanceStatusResponse"
-                },
-                {
-                  "type": "null"
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "description": "响应数据"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/defense-report/status": {
+      "post": {
+        "tags": [
+          "防御报告"
+        ],
+        "summary": "查询防御报告生成状态",
+        "description": "查询指定model_id的防御报告生成状态，用于前端轮询检查报告是否生成完成",
+        "operationId": "get_defense_report_status_api_defense_report_status_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DefenseReportRequest"
+              }
             }
           },
-          "type": "object",
-          "title": "ApiResponse[InstanceStatusResponse]"
+          "required": true
         },
-        "AttackChainAnalysis": {
-          "properties": {
-            "attack_stages": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Attack Stages",
-              "description": "攻击阶段列表"
-            },
-            "attack_path": {
-              "type": "string",
-              "title": "Attack Path",
-              "description": "攻击路径描述"
-            },
-            "attack_techniques": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Attack Techniques",
-              "description": "攻击技术列表"
-            }
-          },
-          "type": "object",
-          "required": [
-            "attack_stages",
-            "attack_path",
-            "attack_techniques"
-          ],
-          "title": "AttackChainAnalysis",
-          "description": "攻击链分析"
-        },
-        "AttackType": {
-          "properties": {
-            "description": {
-              "type": "string",
-              "title": "Description",
-              "description": "攻击类型描述"
-            },
-            "examples": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Examples",
-              "description": "攻击示例列表"
-            }
-          },
-          "type": "object",
-          "required": [
-            "description",
-            "examples"
-          ],
-          "title": "AttackType",
-          "description": "攻击类型"
-        },
-        "AttributionSummary": {
-          "properties": {
-            "attacker_attribution": {
-              "type": "string",
-              "title": "Attacker Attribution",
-              "description": "攻击者归属"
-            },
-            "attack_motivation": {
-              "type": "string",
-              "title": "Attack Motivation",
-              "description": "攻击动机"
-            },
-            "attack_impact": {
-              "type": "string",
-              "title": "Attack Impact",
-              "description": "攻击影响"
-            },
-            "attribution_confidence": {
-              "type": "string",
-              "title": "Attribution Confidence",
-              "description": "溯源置信度"
-            },
-            "attribution_reasoning": {
-              "type": "string",
-              "title": "Attribution Reasoning",
-              "description": "溯源推理过程"
-            }
-          },
-          "type": "object",
-          "required": [
-            "attacker_attribution",
-            "attack_motivation",
-            "attack_impact",
-            "attribution_confidence",
-            "attribution_reasoning"
-          ],
-          "title": "AttributionSummary",
-          "description": "溯源结论摘要"
-        },
-        "DefenseReportRequest": {
-          "properties": {
-            "model_id": {
-              "type": "string",
-              "title": "Model Id",
-              "description": "防御代理实例ID"
-            }
-          },
-          "type": "object",
-          "required": [
-            "model_id"
-          ],
-          "title": "DefenseReportRequest"
-        },
-        "DefenseReportResponse": {
-          "properties": {
-            "model_id": {
-              "type": "string",
-              "title": "Model Id",
-              "description": "防御代理实例ID"
-            },
-            "report_file": {
-              "type": "string",
-              "title": "Report File",
-              "description": "报告文件路径"
-            },
-            "report_data": {
-              "$ref": "#/components/schemas/DefenseReportSchema",
-              "description": "报告数据"
-            },
-            "timestamp": {
-              "type": "string",
-              "title": "Timestamp",
-              "description": "获取时间"
-            },
-            "file_size": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_DefenseReportStatusResponse_"
                 }
-              ],
-              "title": "File Size",
-              "description": "文件大小(字节)"
-            },
-            "last_modified": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "title": "Last Modified",
-              "description": "文件最后修改时间"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/instance/init": {
+      "post": {
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "初始化防御代理实例",
+        "description": "创建并初始化指定model_id的防御代理实例",
+        "operationId": "init_defender_instance_api_instance_init_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceInitRequest"
+              }
             }
           },
-          "type": "object",
-          "required": [
-            "model_id",
-            "report_file",
-            "report_data",
-            "timestamp"
-          ],
-          "title": "DefenseReportResponse"
+          "required": true
         },
-        "DefenseReportSchema": {
-          "properties": {
-            "executive_summary": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ExecutiveSummary"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_InstanceInitResponse_"
                 }
-              ],
-              "title": "Executive Summary",
-              "description": "执行摘要"
-            },
-            "threat_statistics": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ThreatStatistics"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "title": "Threat Statistics",
-              "description": "威胁统计"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/instance/status/{model_id}": {
+      "get": {
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "获取防御代理实例状态",
+        "description": "获取指定model_id的防御代理实例当前状态信息",
+        "operationId": "get_instance_status_api_instance_status__model_id__get",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "防御代理实例ID",
+              "title": "Model Id"
             },
-            "attack_types": {
-              "anyOf": [
-                {
-                  "additionalProperties": {
-                    "$ref": "#/components/schemas/AttackType"
-                  },
-                  "type": "object"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+            "description": "防御代理实例ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_InstanceStatusResponse_"
                 }
-              ],
-              "title": "Attack Types",
-              "description": "攻击类型分析"
-            },
-            "threat_blocking_analysis": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ThreatBlockingAnalysis"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "title": "Threat Blocking Analysis",
-              "description": "威胁阻断分析"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/instance/cleanup/{model_id}": {
+      "delete": {
+        "tags": [
+          "实例管理"
+        ],
+        "summary": "清理防御代理实例",
+        "description": "清理并释放指定model_id的防御代理实例资源",
+        "operationId": "cleanup_defender_instance_api_instance_cleanup__model_id__delete",
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "防御代理实例ID",
+              "title": "Model Id"
             },
-            "vulnerability_remediation_analysis": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/VulnerabilityRemediationAnalysis"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+            "description": "防御代理实例ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_InstanceCleanupResponse_"
                 }
-              ],
-              "title": "Vulnerability Remediation Analysis",
-              "description": "漏洞修复分析"
-            },
-            "attribution_summary": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/AttributionSummary"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
-              ],
-              "title": "Attribution Summary",
-              "description": "溯源结论摘要"
-            },
-            "attack_chain_analysis": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/AttackChainAnalysis"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Attack Chain Analysis",
-              "description": "攻击链分析"
-            },
-            "response_effectiveness": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ResponseEffectiveness"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Response Effectiveness",
-              "description": "响应效果评估"
-            },
-            "emergency_response_plan": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/EmergencyResponsePlan"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Emergency Response Plan",
-              "description": "应急响应预案"
-            },
-            "security_recommendations": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/SecurityRecommendations"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Security Recommendations",
-              "description": "安全改进建议"
-            },
-            "risk_assessment": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/RiskAssessment"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Risk Assessment",
-              "description": "风险评估"
-            },
-            "next_steps": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/NextSteps"
-                },
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Next Steps",
-              "description": "后续行动建议"
+              }
             }
-          },
-          "type": "object",
-          "title": "DefenseReportSchema",
-          "description": "防御报告完整结构 - 适配AI生成的格式"
-        },
-        "EmergencyResponsePlan": {
-          "properties": {
-            "immediate_actions": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Immediate Actions",
-              "description": "立即行动列表"
-            },
-            "short_term_measures": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Short Term Measures",
-              "description": "短期措施列表"
-            },
-            "long_term_improvements": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Long Term Improvements",
-              "description": "长期改进列表"
-            },
-            "personnel_assignments": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Personnel Assignments",
-              "description": "人员分工列表"
-            },
-            "communication_mechanisms": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Communication Mechanisms",
-              "description": "沟通机制列表"
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "description": "根路径",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
             }
-          },
-          "type": "object",
-          "required": [
-            "immediate_actions",
-            "short_term_measures",
-            "long_term_improvements",
-            "personnel_assignments",
-            "communication_mechanisms"
-          ],
-          "title": "EmergencyResponsePlan",
-          "description": "应急响应预案"
-        },
-        "ExecutiveSummary": {
-          "properties": {
-            "threat_overview": {
-              "type": "string",
-              "title": "Threat Overview",
-              "description": "威胁概况描述"
-            },
-            "main_findings": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Main Findings",
-              "description": "主要发现列表"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "description": "健康检查",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
             }
-          },
-          "type": "object",
-          "required": [
-            "threat_overview",
-            "main_findings"
-          ],
-          "title": "ExecutiveSummary",
-          "description": "执行摘要"
-        },
-        "HTTPValidationError": {
-          "properties": {
-            "detail": {
-              "items": {
-                "$ref": "#/components/schemas/ValidationError"
-              },
-              "type": "array",
-              "title": "Detail"
-            }
-          },
-          "type": "object",
-          "title": "HTTPValidationError"
-        },
-        "InstanceCleanupResponse": {
-          "properties": {
-            "model_id": {
-              "type": "string",
-              "title": "Model Id",
-              "description": "防御代理实例ID"
-            },
-            "status": {
-              "type": "string",
-              "title": "Status",
-              "description": "清理状态"
-            },
-            "cleaned_at": {
-              "type": "string",
-              "title": "Cleaned At",
-              "description": "清理时间"
-            }
-          },
-          "type": "object",
-          "required": [
-            "model_id",
-            "status",
-            "cleaned_at"
-          ],
-          "title": "InstanceCleanupResponse"
-        },
-        "InstanceConfig": {
-          "properties": {
-            "model_name": {
-              "type": "string",
-              "title": "Model Name",
-              "description": "模型名称"
-            },
-            "session_id": {
-              "type": "string",
-              "title": "Session Id",
-              "description": "会话ID"
-            },
-            "log_level": {
-              "type": "string",
-              "title": "Log Level",
-              "description": "日志级别"
-            },
-            "max_connections": {
-              "type": "integer",
-              "title": "Max Connections",
-              "description": "最大连接数"
-            },
-            "timeout": {
-              "type": "integer",
-              "title": "Timeout",
-              "description": "超时时间(秒)"
-            }
-          },
-          "type": "object",
-          "required": [
-            "model_name",
-            "session_id",
-            "log_level",
-            "max_connections",
-            "timeout"
-          ],
-          "title": "InstanceConfig",
-          "description": "实例配置信息"
-        },
-        "InstanceInitRequest": {
-          "properties": {
-            "model_id": {
-              "type": "string",
-              "title": "Model Id",
-              "description": "防御代理实例ID"
-            }
-          },
-          "type": "object",
-          "required": [
-            "model_id"
-          ],
-          "title": "InstanceInitRequest"
-        },
-        "InstanceInitResponse": {
-          "properties": {
-            "model_id": {
-              "type": "string",
-              "title": "Model Id",
-              "description": "防御代理实例ID"
-            },
-            "status": {
-              "type": "string",
-              "title": "Status",
-              "description": "实例状态"
-            },
-            "created_at": {
-              "type": "string",
-              "title": "Created At",
-              "description": "创建时间"
-            }
-          },
-          "type": "object",
-          "required": [
-            "model_id",
-            "status",
-            "created_at"
-          ],
-          "title": "InstanceInitResponse"
-        },
-        "InstanceStatusResponse": {
-          "properties": {
-            "model_id": {
-              "type": "string",
-              "title": "Model Id",
-              "description": "防御代理实例ID"
-            },
-            "initialized": {
-              "type": "boolean",
-              "title": "Initialized",
-              "description": "是否已初始化"
-            },
-            "last_activity": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Last Activity",
-              "description": "最后活动时间"
-            },
-            "config_info": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/InstanceConfig"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "配置信息"
-            }
-          },
-          "type": "object",
-          "required": [
-            "model_id",
-            "initialized"
-          ],
-          "title": "InstanceStatusResponse"
-        },
-        "LogStreamRequest": {
-          "properties": {
-            "model_id": {
-              "type": "string",
-              "title": "Model Id",
-              "description": "防御代理实例ID"
-            }
-          },
-          "type": "object",
-          "required": [
-            "model_id"
-          ],
-          "title": "LogStreamRequest"
-        },
-        "NextSteps": {
-          "properties": {
-            "steps": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Steps",
-              "description": "行动步骤列表"
-            }
-          },
-          "type": "object",
-          "required": [
-            "steps"
-          ],
-          "title": "NextSteps",
-          "description": "后续行动建议"
-        },
-        "ResponseEffectiveness": {
-          "properties": {
-            "effectiveness": {
-              "type": "string",
-              "title": "Effectiveness",
-              "description": "效果评级"
-            },
-            "details": {
-              "type": "string",
-              "title": "Details",
-              "description": "详细说明"
-            }
-          },
-          "type": "object",
-          "required": [
-            "effectiveness",
-            "details"
-          ],
-          "title": "ResponseEffectiveness",
-          "description": "响应效果评估"
-        },
-        "RiskAssessment": {
-          "properties": {
-            "risk_level": {
-              "type": "string",
-              "title": "Risk Level",
-              "description": "风险等级"
-            },
-            "details": {
-              "type": "string",
-              "title": "Details",
-              "description": "风险详情"
-            }
-          },
-          "type": "object",
-          "required": [
-            "risk_level",
-            "details"
-          ],
-          "title": "RiskAssessment",
-          "description": "风险评估"
-        },
-        "SecurityRecommendations": {
-          "properties": {
-            "recommendations": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Recommendations",
-              "description": "建议列表"
-            }
-          },
-          "type": "object",
-          "required": [
-            "recommendations"
-          ],
-          "title": "SecurityRecommendations",
-          "description": "安全改进建议"
-        },
-        "ThreatBlockingAnalysis": {
-          "properties": {
-            "blocked_ips": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Blocked Ips",
-              "description": "阻断的IP列表"
-            },
-            "blocked_ports": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Blocked Ports",
-              "description": "阻断的端口列表"
-            },
-            "firewall_rules": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Firewall Rules",
-              "description": "防火墙规则列表"
-            },
-            "blocking_effectiveness": {
-              "type": "string",
-              "title": "Blocking Effectiveness",
-              "description": "阻断效果评估"
-            }
-          },
-          "type": "object",
-          "required": [
-            "blocked_ips",
-            "blocked_ports",
-            "firewall_rules",
-            "blocking_effectiveness"
-          ],
-          "title": "ThreatBlockingAnalysis",
-          "description": "威胁阻断分析"
-        },
-        "ThreatStatistics": {
-          "properties": {
-            "total_threats": {
-              "type": "integer",
-              "title": "Total Threats",
-              "description": "总威胁数"
-            },
-            "type_distribution": {
-              "additionalProperties": {
-                "type": "integer"
-              },
-              "type": "object",
-              "title": "Type Distribution",
-              "description": "按类型分布"
-            },
-            "severity_distribution": {
-              "additionalProperties": {
-                "type": "integer"
-              },
-              "type": "object",
-              "title": "Severity Distribution",
-              "description": "按严重程度分布"
-            }
-          },
-          "type": "object",
-          "required": [
-            "total_threats",
-            "type_distribution",
-            "severity_distribution"
-          ],
-          "title": "ThreatStatistics",
-          "description": "威胁统计"
-        },
-        "ValidationError": {
-          "properties": {
-            "loc": {
-              "items": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "integer"
-                  }
-                ]
-              },
-              "type": "array",
-              "title": "Location"
-            },
-            "msg": {
-              "type": "string",
-              "title": "Message"
-            },
-            "type": {
-              "type": "string",
-              "title": "Error Type"
-            }
-          },
-          "type": "object",
-          "required": [
-            "loc",
-            "msg",
-            "type"
-          ],
-          "title": "ValidationError"
-        },
-        "VulnerabilityRemediationAnalysis": {
-          "properties": {
-            "restarted_services": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Restarted Services",
-              "description": "重启的服务列表"
-            },
-            "web_config_changes": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Web Config Changes",
-              "description": "Web配置修改列表"
-            },
-            "applied_patches": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Applied Patches",
-              "description": "应用的补丁列表"
-            },
-            "remediation_success_rate": {
-              "type": "string",
-              "title": "Remediation Success Rate",
-              "description": "修复成功率"
-            },
-            "remediation_actions": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array",
-              "title": "Remediation Actions",
-              "description": "修复动作列表"
-            }
-          },
-          "type": "object",
-          "required": [
-            "restarted_services",
-            "web_config_changes",
-            "applied_patches",
-            "remediation_success_rate",
-            "remediation_actions"
-          ],
-          "title": "VulnerabilityRemediationAnalysis",
-          "description": "漏洞修复分析"
+          }
         }
       }
     }
+  },
+  "components": {
+    "schemas": {
+      "ApiResponse_DefenseReportResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DefenseReportResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[DefenseReportResponse]"
+      },
+      "ApiResponse_DefenseReportStatusResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DefenseReportStatusResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[DefenseReportStatusResponse]"
+      },
+      "ApiResponse_InstanceCleanupResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InstanceCleanupResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[InstanceCleanupResponse]"
+      },
+      "ApiResponse_InstanceInitResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InstanceInitResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[InstanceInitResponse]"
+      },
+      "ApiResponse_InstanceStatusResponse_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InstanceStatusResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[InstanceStatusResponse]"
+      },
+      "ApiResponse_dict_": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "业务状态码，非HTTP状态码",
+            "default": 200
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "响应消息",
+            "default": "success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data",
+            "description": "响应数据"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse[dict]"
+      },
+      "AttackChainAnalysis": {
+        "properties": {
+          "attack_stages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Attack Stages",
+            "description": "攻击阶段列表"
+          },
+          "attack_path": {
+            "type": "string",
+            "title": "Attack Path",
+            "description": "攻击路径描述"
+          },
+          "attack_techniques": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Attack Techniques",
+            "description": "攻击技术列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "attack_stages",
+          "attack_path",
+          "attack_techniques"
+        ],
+        "title": "AttackChainAnalysis",
+        "description": "攻击链分析"
+      },
+      "AttackType": {
+        "properties": {
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "攻击类型描述"
+          },
+          "examples": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Examples",
+            "description": "攻击示例列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "description",
+          "examples"
+        ],
+        "title": "AttackType",
+        "description": "攻击类型"
+      },
+      "AttributionSummary": {
+        "properties": {
+          "attacker_attribution": {
+            "type": "string",
+            "title": "Attacker Attribution",
+            "description": "攻击者归属"
+          },
+          "attack_motivation": {
+            "type": "string",
+            "title": "Attack Motivation",
+            "description": "攻击动机"
+          },
+          "attack_impact": {
+            "type": "string",
+            "title": "Attack Impact",
+            "description": "攻击影响"
+          },
+          "attribution_confidence": {
+            "type": "string",
+            "title": "Attribution Confidence",
+            "description": "溯源置信度"
+          },
+          "attribution_reasoning": {
+            "type": "string",
+            "title": "Attribution Reasoning",
+            "description": "溯源推理过程"
+          }
+        },
+        "type": "object",
+        "required": [
+          "attacker_attribution",
+          "attack_motivation",
+          "attack_impact",
+          "attribution_confidence",
+          "attribution_reasoning"
+        ],
+        "title": "AttributionSummary",
+        "description": "溯源结论摘要"
+      },
+      "DefenseReportRequest": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "防御代理实例ID"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id"
+        ],
+        "title": "DefenseReportRequest"
+      },
+      "DefenseReportResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "防御代理实例ID"
+          },
+          "report_file": {
+            "type": "string",
+            "title": "Report File",
+            "description": "报告文件路径"
+          },
+          "report_data": {
+            "$ref": "#/components/schemas/DefenseReportSchema",
+            "description": "报告数据"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "获取时间"
+          },
+          "file_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Size",
+            "description": "文件大小(字节)"
+          },
+          "last_modified": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Modified",
+            "description": "文件最后修改时间"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "report_file",
+          "report_data",
+          "timestamp"
+        ],
+        "title": "DefenseReportResponse"
+      },
+      "DefenseReportSchema": {
+        "properties": {
+          "executive_summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExecutiveSummary"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Executive Summary",
+            "description": "执行摘要"
+          },
+          "threat_statistics": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ThreatStatistics"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threat Statistics",
+            "description": "威胁统计"
+          },
+          "attack_types": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/AttackType"
+                },
+                "type": "object"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attack Types",
+            "description": "攻击类型分析"
+          },
+          "threat_blocking_analysis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ThreatBlockingAnalysis"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threat Blocking Analysis",
+            "description": "威胁阻断分析"
+          },
+          "vulnerability_remediation_analysis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VulnerabilityRemediationAnalysis"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vulnerability Remediation Analysis",
+            "description": "漏洞修复分析"
+          },
+          "attribution_summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttributionSummary"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attribution Summary",
+            "description": "溯源结论摘要"
+          },
+          "attack_chain_analysis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttackChainAnalysis"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attack Chain Analysis",
+            "description": "攻击链分析"
+          },
+          "response_effectiveness": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResponseEffectiveness"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Response Effectiveness",
+            "description": "响应效果评估"
+          },
+          "emergency_response_plan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmergencyResponsePlan"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Emergency Response Plan",
+            "description": "应急响应预案"
+          },
+          "security_recommendations": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SecurityRecommendations"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Security Recommendations",
+            "description": "安全改进建议"
+          },
+          "risk_assessment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RiskAssessment"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Assessment",
+            "description": "风险评估"
+          },
+          "next_steps": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NextSteps"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Steps",
+            "description": "后续行动建议"
+          }
+        },
+        "type": "object",
+        "title": "DefenseReportSchema",
+        "description": "防御报告完整结构 - 适配AI生成的格式"
+      },
+      "DefenseReportStatusResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "防御代理实例ID"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "报告生成状态：not_started/generating/completed"
+          },
+          "report_exists": {
+            "type": "boolean",
+            "title": "Report Exists",
+            "description": "报告文件是否存在"
+          },
+          "report_file": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report File",
+            "description": "报告文件路径"
+          },
+          "file_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Size",
+            "description": "文件大小(字节)"
+          },
+          "last_modified": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Modified",
+            "description": "文件最后修改时间"
+          },
+          "is_complete": {
+            "type": "boolean",
+            "title": "Is Complete",
+            "description": "报告是否完整可读"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "status",
+          "report_exists",
+          "is_complete"
+        ],
+        "title": "DefenseReportStatusResponse"
+      },
+      "EmergencyResponsePlan": {
+        "properties": {
+          "immediate_actions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Immediate Actions",
+            "description": "立即行动列表"
+          },
+          "short_term_measures": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Short Term Measures",
+            "description": "短期措施列表"
+          },
+          "long_term_improvements": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Long Term Improvements",
+            "description": "长期改进列表"
+          },
+          "personnel_assignments": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Personnel Assignments",
+            "description": "人员分工列表"
+          },
+          "communication_mechanisms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Communication Mechanisms",
+            "description": "沟通机制列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "immediate_actions",
+          "short_term_measures",
+          "long_term_improvements",
+          "personnel_assignments",
+          "communication_mechanisms"
+        ],
+        "title": "EmergencyResponsePlan",
+        "description": "应急响应预案"
+      },
+      "ExecutiveSummary": {
+        "properties": {
+          "threat_overview": {
+            "type": "string",
+            "title": "Threat Overview",
+            "description": "威胁概况描述"
+          },
+          "main_findings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Main Findings",
+            "description": "主要发现列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "threat_overview",
+          "main_findings"
+        ],
+        "title": "ExecutiveSummary",
+        "description": "执行摘要"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InstanceCleanupResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "防御代理实例ID"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "清理状态"
+          },
+          "cleaned_at": {
+            "type": "string",
+            "title": "Cleaned At",
+            "description": "清理时间"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "status",
+          "cleaned_at"
+        ],
+        "title": "InstanceCleanupResponse"
+      },
+      "InstanceConfig": {
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "title": "Model Name",
+            "description": "模型名称"
+          },
+          "session_id": {
+            "type": "string",
+            "title": "Session Id",
+            "description": "会话ID"
+          },
+          "log_level": {
+            "type": "string",
+            "title": "Log Level",
+            "description": "日志级别"
+          },
+          "max_connections": {
+            "type": "integer",
+            "title": "Max Connections",
+            "description": "最大连接数"
+          },
+          "timeout": {
+            "type": "integer",
+            "title": "Timeout",
+            "description": "超时时间(秒)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_name",
+          "session_id",
+          "log_level",
+          "max_connections",
+          "timeout"
+        ],
+        "title": "InstanceConfig",
+        "description": "实例配置信息"
+      },
+      "InstanceInitRequest": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "防御代理实例ID"
+          },
+          "mcp_server_url": {
+            "type": "string",
+            "title": "Mcp Server Url",
+            "description": "MCP服务器URL"
+          },
+          "container_pcap_mapping": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Container Pcap Mapping",
+            "description": "容器名到PCAP文件路径的映射，格式: {'container_name': 'pcap_file_path'}"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "mcp_server_url",
+          "container_pcap_mapping"
+        ],
+        "title": "InstanceInitRequest"
+      },
+      "InstanceInitResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "防御代理实例ID"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "实例状态"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At",
+            "description": "创建时间"
+          },
+          "config": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Config",
+            "description": "实例配置信息"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "status",
+          "created_at",
+          "config"
+        ],
+        "title": "InstanceInitResponse"
+      },
+      "InstanceStatusResponse": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "防御代理实例ID"
+          },
+          "initialized": {
+            "type": "boolean",
+            "title": "Initialized",
+            "description": "是否已初始化"
+          },
+          "last_activity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Activity",
+            "description": "最后活动时间"
+          },
+          "config_info": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InstanceConfig"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "配置信息"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id",
+          "initialized"
+        ],
+        "title": "InstanceStatusResponse"
+      },
+      "LogStreamRequest": {
+        "properties": {
+          "model_id": {
+            "type": "string",
+            "title": "Model Id",
+            "description": "防御代理实例ID"
+          }
+        },
+        "type": "object",
+        "required": [
+          "model_id"
+        ],
+        "title": "LogStreamRequest"
+      },
+      "NextSteps": {
+        "properties": {
+          "steps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Steps",
+            "description": "行动步骤列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "steps"
+        ],
+        "title": "NextSteps",
+        "description": "后续行动建议"
+      },
+      "ResponseEffectiveness": {
+        "properties": {
+          "effectiveness": {
+            "type": "string",
+            "title": "Effectiveness",
+            "description": "效果评级"
+          },
+          "details": {
+            "type": "string",
+            "title": "Details",
+            "description": "详细说明"
+          }
+        },
+        "type": "object",
+        "required": [
+          "effectiveness",
+          "details"
+        ],
+        "title": "ResponseEffectiveness",
+        "description": "响应效果评估"
+      },
+      "RiskAssessment": {
+        "properties": {
+          "risk_level": {
+            "type": "string",
+            "title": "Risk Level",
+            "description": "风险等级"
+          },
+          "details": {
+            "type": "string",
+            "title": "Details",
+            "description": "风险详情"
+          }
+        },
+        "type": "object",
+        "required": [
+          "risk_level",
+          "details"
+        ],
+        "title": "RiskAssessment",
+        "description": "风险评估"
+      },
+      "SecurityRecommendations": {
+        "properties": {
+          "recommendations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Recommendations",
+            "description": "建议列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "recommendations"
+        ],
+        "title": "SecurityRecommendations",
+        "description": "安全改进建议"
+      },
+      "ThreatBlockingAnalysis": {
+        "properties": {
+          "blocked_ips": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Blocked Ips",
+            "description": "阻断的IP列表"
+          },
+          "blocked_ports": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Blocked Ports",
+            "description": "阻断的端口列表"
+          },
+          "firewall_rules": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Firewall Rules",
+            "description": "防火墙规则列表"
+          },
+          "blocking_effectiveness": {
+            "type": "string",
+            "title": "Blocking Effectiveness",
+            "description": "阻断效果评估"
+          }
+        },
+        "type": "object",
+        "required": [
+          "blocked_ips",
+          "blocked_ports",
+          "firewall_rules",
+          "blocking_effectiveness"
+        ],
+        "title": "ThreatBlockingAnalysis",
+        "description": "威胁阻断分析"
+      },
+      "ThreatStatistics": {
+        "properties": {
+          "total_threats": {
+            "type": "integer",
+            "title": "Total Threats",
+            "description": "总威胁数"
+          },
+          "type_distribution": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Type Distribution",
+            "description": "按类型分布"
+          },
+          "severity_distribution": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Severity Distribution",
+            "description": "按严重程度分布"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_threats",
+          "type_distribution",
+          "severity_distribution"
+        ],
+        "title": "ThreatStatistics",
+        "description": "威胁统计"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VulnerabilityRemediationAnalysis": {
+        "properties": {
+          "restarted_services": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Restarted Services",
+            "description": "重启的服务列表"
+          },
+          "web_config_changes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Web Config Changes",
+            "description": "Web配置修改列表"
+          },
+          "applied_patches": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Applied Patches",
+            "description": "应用的补丁列表"
+          },
+          "remediation_success_rate": {
+            "type": "string",
+            "title": "Remediation Success Rate",
+            "description": "修复成功率"
+          },
+          "remediation_actions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Remediation Actions",
+            "description": "修复动作列表"
+          }
+        },
+        "type": "object",
+        "required": [
+          "restarted_services",
+          "web_config_changes",
+          "applied_patches",
+          "remediation_success_rate",
+          "remediation_actions"
+        ],
+        "title": "VulnerabilityRemediationAnalysis",
+        "description": "漏洞修复分析"
+      }
+    }
   }
+}

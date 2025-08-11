@@ -42,6 +42,20 @@ export interface ApiResponseDefenseReportResponse {
 /**
  * 响应数据
  */
+export type ApiResponseDefenseReportStatusResponseData = DefenseReportStatusResponse | null;
+
+export interface ApiResponseDefenseReportStatusResponse {
+  /** 业务状态码，非HTTP状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseDefenseReportStatusResponseData;
+}
+
+/**
+ * 响应数据
+ */
 export type ApiResponseInstanceCleanupResponseData = InstanceCleanupResponse | null;
 
 export interface ApiResponseInstanceCleanupResponse {
@@ -79,6 +93,22 @@ export interface ApiResponseInstanceStatusResponse {
   message?: string;
   /** 响应数据 */
   data?: ApiResponseInstanceStatusResponseData;
+}
+
+export type ApiResponseDictDataAnyOf = { [key: string]: unknown };
+
+/**
+ * 响应数据
+ */
+export type ApiResponseDictData = ApiResponseDictDataAnyOf | null;
+
+export interface ApiResponseDict {
+  /** 业务状态码，非HTTP状态码 */
+  code?: number;
+  /** 响应消息 */
+  message?: string;
+  /** 响应数据 */
+  data?: ApiResponseDictData;
 }
 
 /**
@@ -242,6 +272,38 @@ export interface DefenseReportSchema {
 }
 
 /**
+ * 报告文件路径
+ */
+export type DefenseReportStatusResponseReportFile = string | null;
+
+/**
+ * 文件大小(字节)
+ */
+export type DefenseReportStatusResponseFileSize = number | null;
+
+/**
+ * 文件最后修改时间
+ */
+export type DefenseReportStatusResponseLastModified = string | null;
+
+export interface DefenseReportStatusResponse {
+  /** 防御代理实例ID */
+  model_id: string;
+  /** 报告生成状态：not_started/generating/completed */
+  status: string;
+  /** 报告文件是否存在 */
+  report_exists: boolean;
+  /** 报告文件路径 */
+  report_file?: DefenseReportStatusResponseReportFile;
+  /** 文件大小(字节) */
+  file_size?: DefenseReportStatusResponseFileSize;
+  /** 文件最后修改时间 */
+  last_modified?: DefenseReportStatusResponseLastModified;
+  /** 报告是否完整可读 */
+  is_complete: boolean;
+}
+
+/**
  * 应急响应预案
  */
 export interface EmergencyResponsePlan {
@@ -296,10 +358,24 @@ export interface InstanceConfig {
   timeout: number;
 }
 
+/**
+ * 容器名到PCAP文件路径的映射，格式: {'container_name': 'pcap_file_path'}
+ */
+export type InstanceInitRequestContainerPcapMapping = { [key: string]: unknown };
+
 export interface InstanceInitRequest {
   /** 防御代理实例ID */
   model_id: string;
+  /** MCP服务器URL */
+  mcp_server_url: string;
+  /** 容器名到PCAP文件路径的映射，格式: {'container_name': 'pcap_file_path'} */
+  container_pcap_mapping: InstanceInitRequestContainerPcapMapping;
 }
+
+/**
+ * 实例配置信息
+ */
+export type InstanceInitResponseConfig = { [key: string]: unknown };
 
 export interface InstanceInitResponse {
   /** 防御代理实例ID */
@@ -308,6 +384,8 @@ export interface InstanceInitResponse {
   status: string;
   /** 创建时间 */
   created_at: string;
+  /** 实例配置信息 */
+  config: InstanceInitResponseConfig;
 }
 
 /**
@@ -511,6 +589,72 @@ export const useStreamLogsApiLogsStreamPost = <TError = StreamLogsApiLogsStreamP
     }
     
 /**
+ * 手动触发指定model_id的离线溯源分析和防御报告生成
+ * @summary 触发离线溯源和防御报告生成
+ */
+export const triggerOfflineForensicsApiDefenseReportTriggerForensicsPost = (
+    defenseReportRequest: DefenseReportRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return defender_agent_api<ApiResponseDict>(
+      {url: `/api/defense-report/trigger-forensics`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: defenseReportRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getTriggerOfflineForensicsApiDefenseReportTriggerForensicsPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof triggerOfflineForensicsApiDefenseReportTriggerForensicsPost>>, TError,{data: DefenseReportRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof triggerOfflineForensicsApiDefenseReportTriggerForensicsPost>>, TError,{data: DefenseReportRequest}, TContext> => {
+
+const mutationKey = ['triggerOfflineForensicsApiDefenseReportTriggerForensicsPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof triggerOfflineForensicsApiDefenseReportTriggerForensicsPost>>, {data: DefenseReportRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  triggerOfflineForensicsApiDefenseReportTriggerForensicsPost(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TriggerOfflineForensicsApiDefenseReportTriggerForensicsPostMutationResult = NonNullable<Awaited<ReturnType<typeof triggerOfflineForensicsApiDefenseReportTriggerForensicsPost>>>
+    export type TriggerOfflineForensicsApiDefenseReportTriggerForensicsPostMutationBody = DefenseReportRequest
+    export type TriggerOfflineForensicsApiDefenseReportTriggerForensicsPostMutationError = HTTPValidationError
+
+    /**
+ * @summary 触发离线溯源和防御报告生成
+ */
+export const useTriggerOfflineForensicsApiDefenseReportTriggerForensicsPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof triggerOfflineForensicsApiDefenseReportTriggerForensicsPost>>, TError,{data: DefenseReportRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof triggerOfflineForensicsApiDefenseReportTriggerForensicsPost>>,
+        TError,
+        {data: DefenseReportRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getTriggerOfflineForensicsApiDefenseReportTriggerForensicsPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * 获取指定防御代理实例的防御报告内容，包含详细的JSON元数据结构
  * @summary 获取指定model_id的防御报告
  */
@@ -572,6 +716,72 @@ export const useGetDefenseReportApiDefenseReportGetPost = <TError = HTTPValidati
       > => {
 
       const mutationOptions = getGetDefenseReportApiDefenseReportGetPostMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * 查询指定model_id的防御报告生成状态，用于前端轮询检查报告是否生成完成
+ * @summary 查询防御报告生成状态
+ */
+export const getDefenseReportStatusApiDefenseReportStatusPost = (
+    defenseReportRequest: DefenseReportRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return defender_agent_api<ApiResponseDefenseReportStatusResponse>(
+      {url: `/api/defense-report/status`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: defenseReportRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getGetDefenseReportStatusApiDefenseReportStatusPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getDefenseReportStatusApiDefenseReportStatusPost>>, TError,{data: DefenseReportRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof getDefenseReportStatusApiDefenseReportStatusPost>>, TError,{data: DefenseReportRequest}, TContext> => {
+
+const mutationKey = ['getDefenseReportStatusApiDefenseReportStatusPost'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getDefenseReportStatusApiDefenseReportStatusPost>>, {data: DefenseReportRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  getDefenseReportStatusApiDefenseReportStatusPost(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GetDefenseReportStatusApiDefenseReportStatusPostMutationResult = NonNullable<Awaited<ReturnType<typeof getDefenseReportStatusApiDefenseReportStatusPost>>>
+    export type GetDefenseReportStatusApiDefenseReportStatusPostMutationBody = DefenseReportRequest
+    export type GetDefenseReportStatusApiDefenseReportStatusPostMutationError = HTTPValidationError
+
+    /**
+ * @summary 查询防御报告生成状态
+ */
+export const useGetDefenseReportStatusApiDefenseReportStatusPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getDefenseReportStatusApiDefenseReportStatusPost>>, TError,{data: DefenseReportRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof getDefenseReportStatusApiDefenseReportStatusPost>>,
+        TError,
+        {data: DefenseReportRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getGetDefenseReportStatusApiDefenseReportStatusPostMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }
