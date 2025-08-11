@@ -243,9 +243,9 @@ export const useScenarioReport = (
 
     return {
       status: null,
-      statusQuery: { isInitialLoading: false, isFetching: false },
+      statusQuery,
       report: null,
-      reportQuery: { isInitialLoading: false, isFetching: false },
+      reportQuery,
       analyze: noOp,
       analyzeAsync: noOpAsync,
       isAnalyzing: false,

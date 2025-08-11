@@ -14,13 +14,22 @@ import ResponseEffectiveness from './components/response-effectiveness'
 import RiskAssessment from './components/risk-assessment'
 import ThreatAnalysis from './components/threat-analysis'
 import ThreatStatistics from './components/threat-statistics'
-import { mockDefenseReport } from './data/data'
+
+import { useParams } from '@tanstack/react-router'
+import { useScenarioReport } from '@/hooks/use-report'
 
 export default function ScenarioReport() {
-  const report = mockDefenseReport
+  const { scenarioId } = useParams({
+    from: '/_authenticated/scenarios/$scenarioId/report',
+  })
+  const { report, reportQuery } = useScenarioReport(scenarioId)
+ 
 
-  if (!report) {
+  if (reportQuery.isPending) {
     return <div>Loading report...</div>
+  }
+  if (!report) {
+    return <div>没有找到这份报告</div>
   }
 
   return (

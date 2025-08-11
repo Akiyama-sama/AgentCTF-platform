@@ -47,7 +47,7 @@ export const AgentLogController = ({ modelId, className }: Props) => {
         defenderLogs.length === 0
       ) {
         // Placeholder for starting defender logs.
-        startDefenderLogs({ user_id: modelId });
+        startDefenderLogs({ model_id: modelId });
       }
     }
   }, [

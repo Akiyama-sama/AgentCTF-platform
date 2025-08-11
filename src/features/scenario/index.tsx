@@ -11,17 +11,17 @@ import ScenariosDialogProvider from '../scenarios/context/scenarios-context'
 import { AgentLogController } from './components/agent-log-controller'
 import { ChatBot } from './components/chat-bot'
 import { LogController } from './components/container-log-controller'
-import ScenarioProcessLine from './components/scenario-process-line'
-import { mermaidContent } from './data/data'
 import { ScenarioMermaid } from './components/scenario-mermaid'
+import ScenarioProcessLine from './components/scenario-process-line'
+import ProcessProvider from './context/process-context'
+import { mermaidContent } from './data/data'
 
 interface ScenarioDetailProps {
   scenarioId: string
 }
 
 const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
-  const { status,scenario } = useScenario(scenarioId)
- 
+  const { status, scenario } = useScenario(scenarioId)
 
   if (!scenario) {
     return (
@@ -33,28 +33,24 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
 
   return (
     <div className='flex h-screen flex-col overflow-y-auto'>
-
       {/* ===== Content ===== */}
       <Main className='h-screen'>
         <div className='flex h-full w-full gap-2'>
           <div className='w-1/3'>
-            <ChatBot
-              scenarioId={scenarioId}
-              className='h-3/5 w-full pt-0'
-            />
+            <ChatBot scenarioId={scenarioId} className='h-3/5 w-full pt-0' />
             <AgentLogController
               modelId={scenarioId}
               className='flex h-2/5 w-full flex-col'
             />
           </div>
           <Card className='mt-0 flex w-2/3 flex-col p-4'>
-            <ScenarioProcessLine />
+            <ScenarioProcessLine scenarioId={scenarioId} />
             <div className='h-3/5 w-full p-10'>
               <TextScroll
                 text='TARGET SAFE'
                 className='text-2xl text-green-600'
               />
-              <ScenarioMermaid initialContent={mermaidContent}/>
+              <ScenarioMermaid initialContent={mermaidContent} />
               <TextScroll
                 text='TARGET SAFE'
                 className='text-2xl text-green-600'
@@ -93,9 +89,11 @@ const ScenarioDetail = ({ scenarioId }: ScenarioDetailProps) => {
 
   return (
     <ScenariosDialogProvider>
-      <ScenarioView scenarioId={scenarioId} />
-      <ScenariosDialogs />
-      <ScenarioFileDialogs />
+      <ProcessProvider>
+        <ScenarioView scenarioId={scenarioId} />
+        <ScenariosDialogs />
+        <ScenarioFileDialogs />
+      </ProcessProvider>
     </ScenariosDialogProvider>
   )
 }

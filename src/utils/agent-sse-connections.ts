@@ -1,4 +1,5 @@
 import type { ChatRequest, LogRequest } from '@/types/attacker-agent'
+import { LogStreamRequest } from '@/types/defender-agent';
 const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL;
 const defenderAgentURL = import.meta.env.VITE_DEFENDER_URL;
 /**
@@ -211,7 +212,7 @@ class AgentSSEManager {
   }
   public createDefenderLogStream(
     modelId: string,
-    request: LogRequest,
+    request: LogStreamRequest,
     callbacks: StreamCallbacks<unknown>
   ) {
     const streamId = `defender-log-${modelId}`

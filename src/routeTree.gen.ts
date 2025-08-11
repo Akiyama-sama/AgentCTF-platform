@@ -29,6 +29,7 @@ import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_a
 import { Route as AuthenticatedSettingsAgentRouteImport } from './routes/_authenticated/settings/agent'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedScenariosScenarioIdRouteImport } from './routes/_authenticated/scenarios/$scenarioId'
+import { Route as AuthenticatedScenariosScenarioIdReportRouteImport } from './routes/_authenticated/scenarios/$scenarioId/report'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -139,6 +140,12 @@ const AuthenticatedScenariosScenarioIdRoute =
     path: '/scenarios/$scenarioId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedScenariosScenarioIdReportRoute =
+  AuthenticatedScenariosScenarioIdReportRouteImport.update({
+    id: '/report',
+    path: '/report',
+    getParentRoute: () => AuthenticatedScenariosScenarioIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
@@ -150,7 +157,7 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
-  '/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRoute
+  '/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRouteWithChildren
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/agent': typeof AuthenticatedSettingsAgentRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/target-factory': typeof AuthenticatedTargetFactoryIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/scenarios/$scenarioId/report': typeof AuthenticatedScenariosScenarioIdReportRoute
 }
 export interface FileRoutesByTo {
   '/sign-in-2': typeof authSignIn2Route
@@ -170,7 +178,7 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
-  '/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRoute
+  '/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRouteWithChildren
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/agent': typeof AuthenticatedSettingsAgentRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -180,6 +188,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/target-factory': typeof AuthenticatedTargetFactoryIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/scenarios/$scenarioId/report': typeof AuthenticatedScenariosScenarioIdReportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -193,7 +202,7 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRoute
+  '/_authenticated/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRouteWithChildren
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/agent': typeof AuthenticatedSettingsAgentRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -203,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/target-factory/': typeof AuthenticatedTargetFactoryIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/scenarios/$scenarioId/report': typeof AuthenticatedScenariosScenarioIdReportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/target-factory'
     | '/users'
+    | '/scenarios/$scenarioId/report'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/sign-in-2'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/target-factory'
     | '/users'
+    | '/scenarios/$scenarioId/report'
   id:
     | '__root__'
     | '/_authenticated'
@@ -268,6 +280,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/'
     | '/_authenticated/target-factory/'
     | '/_authenticated/users/'
+    | '/_authenticated/scenarios/$scenarioId/report'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -423,6 +436,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedScenariosScenarioIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/scenarios/$scenarioId/report': {
+      id: '/_authenticated/scenarios/$scenarioId/report'
+      path: '/report'
+      fullPath: '/scenarios/$scenarioId/report'
+      preLoaderRoute: typeof AuthenticatedScenariosScenarioIdReportRouteImport
+      parentRoute: typeof AuthenticatedScenariosScenarioIdRoute
+    }
   }
 }
 
@@ -446,10 +466,25 @@ const AuthenticatedSettingsRouteRouteWithChildren =
     AuthenticatedSettingsRouteRouteChildren,
   )
 
+interface AuthenticatedScenariosScenarioIdRouteChildren {
+  AuthenticatedScenariosScenarioIdReportRoute: typeof AuthenticatedScenariosScenarioIdReportRoute
+}
+
+const AuthenticatedScenariosScenarioIdRouteChildren: AuthenticatedScenariosScenarioIdRouteChildren =
+  {
+    AuthenticatedScenariosScenarioIdReportRoute:
+      AuthenticatedScenariosScenarioIdReportRoute,
+  }
+
+const AuthenticatedScenariosScenarioIdRouteWithChildren =
+  AuthenticatedScenariosScenarioIdRoute._addFileChildren(
+    AuthenticatedScenariosScenarioIdRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedScenariosScenarioIdRoute: typeof AuthenticatedScenariosScenarioIdRoute
+  AuthenticatedScenariosScenarioIdRoute: typeof AuthenticatedScenariosScenarioIdRouteWithChildren
   AuthenticatedExercisesIndexRoute: typeof AuthenticatedExercisesIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedScenariosIndexRoute: typeof AuthenticatedScenariosIndexRoute
@@ -460,7 +495,8 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedScenariosScenarioIdRoute: AuthenticatedScenariosScenarioIdRoute,
+  AuthenticatedScenariosScenarioIdRoute:
+    AuthenticatedScenariosScenarioIdRouteWithChildren,
   AuthenticatedExercisesIndexRoute: AuthenticatedExercisesIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedScenariosIndexRoute: AuthenticatedScenariosIndexRoute,

@@ -169,10 +169,10 @@ export const useDefenderAgentSession = (modelId: string | null) => {
     status,
     statusQuery,
     isInitializing: initInstanceMutation.isPending,
-    initInstance: (variables: Omit<InstanceInitRequest, 'model_id'>) => {
+    initInstance: (variables: InstanceInitRequest) => {
       initInstanceMutation.mutate({ data: { ...variables, model_id: modelId } })
     },
-    initInstanceAsync: (variables: Omit<InstanceInitRequest, 'model_id'>) => {
+    initInstanceAsync: (variables: InstanceInitRequest) => {
       return initInstanceMutation.mutateAsync({
         data: { ...variables, model_id: modelId },
       })

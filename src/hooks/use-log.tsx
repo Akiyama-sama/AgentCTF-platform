@@ -9,12 +9,16 @@ import {
   SSELogEntry,
 } from '@/types/sse'
 import { getLevelFromData } from '@/lib/tools'
+import {
+  agentSSEManager,
+  type StreamCallbacks,
+} from '@/utils/agent-sse-connections'
 import { showSuccessMessage } from '@/utils/show-submitted-data'
 import {
   sseConnectionManager,
   convertSSEMessageToLogItem,
 } from '@/utils/sseConnection'
-import { agentSSEManager, type StreamCallbacks } from '@/utils/agent-sse-connections'
+import { LogStreamRequest } from '@/types/defender-agent'
 
 const dockerManagerURL = import.meta.env.VITE_BASE_URL
 // const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL
@@ -134,10 +138,13 @@ const containerLogsState: {
 const containerLogSubscribers = new Set<() => void>()
 
 const notifyContainerLogSubscribers = () => {
-  containerLogSubscribers.forEach(callback => callback())
+  containerLogSubscribers.forEach((callback) => callback())
 }
 
-const createContainerLogConnection = (modelId: string, containerName: string) => {
+const createContainerLogConnection = (
+  modelId: string,
+  containerName: string
+) => {
   const containerId = `${modelId}-${containerName}`
   const dockerManagerURL = import.meta.env.VITE_BASE_URL
 
@@ -213,7 +220,7 @@ export const useContainerLogs = () => {
   const [, forceUpdate] = useState(0)
 
   useEffect(() => {
-    const subscriber = () => forceUpdate(v => v + 1)
+    const subscriber = () => forceUpdate((v) => v + 1)
     containerLogSubscribers.add(subscriber)
     // Immediately update with the latest state from the manager
     subscriber()
@@ -237,13 +244,10 @@ export const useContainerLogs = () => {
  * @returns Functions and state for managing a log stream.
  */
 export const useAttackerAgentLogs = (modelId: string | null) => {
-
-  
   const [logs, setLogs] = useState<LogDisplayItem[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const streamControllerRef = useRef<AbortController | null>(null)
-
 
   const startLogs = useCallback(
     async (params: LogRequest) => {
@@ -267,7 +271,7 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
             model_id: params.user_id,
           }
           const logItem = convertSSEMessageToLogItem(logEntry, 0)
-          if (logItem) setLogs(prev => [...prev, logItem])
+          if (logItem) setLogs((prev) => [...prev, logItem])
           // eslint-disable-next-line no-console
           console.log('攻击Agent SSE日志流已连接: ', data)
         },
@@ -285,8 +289,11 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
             logger_name: 'attacker-agent',
             model_id: params.user_id,
           }
-          setLogs(prevLogs => {
-            const logItem = convertSSEMessageToLogItem(logEntry, prevLogs.length)
+          setLogs((prevLogs) => {
+            const logItem = convertSSEMessageToLogItem(
+              logEntry,
+              prevLogs.length
+            )
             return logItem ? [...prevLogs, logItem] : prevLogs
           })
         },
@@ -300,8 +307,11 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
             logger_name: 'attacker-agent',
             model_id: params.user_id,
           }
-          setLogs(prevLogs => {
-            const logItem = convertSSEMessageToLogItem(logEntry, prevLogs.length)
+          setLogs((prevLogs) => {
+            const logItem = convertSSEMessageToLogItem(
+              logEntry,
+              prevLogs.length
+            )
             return logItem ? [...prevLogs, logItem] : prevLogs
           })
           // eslint-disable-next-line no-console
@@ -317,8 +327,11 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
             logger_name: 'attacker-agent',
             model_id: params.user_id,
           }
-          setLogs(prevLogs => {
-            const logItem = convertSSEMessageToLogItem(logEntry, prevLogs.length)
+          setLogs((prevLogs) => {
+            const logItem = convertSSEMessageToLogItem(
+              logEntry,
+              prevLogs.length
+            )
             return logItem ? [...prevLogs, logItem] : prevLogs
           })
         },
@@ -372,7 +385,7 @@ export const useDefenderAgentLogs = (modelId: string | null) => {
   const streamControllerRef = useRef<AbortController | null>(null)
 
   const startLogs = useCallback(
-    async (params: LogRequest) => {
+    async (params: LogStreamRequest) => {
       if (!modelId) return
 
       // Clear previous logs and errors for a new stream
@@ -393,10 +406,10 @@ export const useDefenderAgentLogs = (modelId: string | null) => {
             message: `防御Agent SSE日志流已连接: ${status}`,
             level: SSELogLevel.INFO,
             logger_name: 'defender-agent',
-            model_id: params.user_id,
+            model_id: params.model_id,
           }
           const logItem = convertSSEMessageToLogItem(logEntry, 0)
-          if (logItem) setLogs(prev => [...prev, logItem])
+          if (logItem) setLogs((prev) => [...prev, logItem])
           // eslint-disable-next-line no-console
           console.log('防御Agent SSE日志流已连接: ', data)
         },
@@ -412,9 +425,9 @@ export const useDefenderAgentLogs = (modelId: string | null) => {
             message: logData.message,
             level,
             logger_name: 'defender-agent',
-            model_id: params.user_id,
+            model_id: params.model_id,
           }
-          setLogs(prevLogs => {
+          setLogs((prevLogs) => {
             const logItem = convertSSEMessageToLogItem(
               logEntry,
               prevLogs.length
@@ -433,9 +446,9 @@ export const useDefenderAgentLogs = (modelId: string | null) => {
             message: `防御Agent SSE日志流已结束: ${status}`,
             level: SSELogLevel.INFO,
             logger_name: 'defender-agent',
-            model_id: params.user_id,
+            model_id: params.model_id,
           }
-          setLogs(prevLogs => {
+          setLogs((prevLogs) => {
             const logItem = convertSSEMessageToLogItem(
               logEntry,
               prevLogs.length
@@ -456,9 +469,9 @@ export const useDefenderAgentLogs = (modelId: string | null) => {
             message: `防御Agent SSE日志流错误: ${errorMessage}`,
             level: SSELogLevel.ERROR,
             logger_name: 'defender-agent',
-            model_id: params.user_id,
+            model_id: params.model_id,
           }
-          setLogs(prevLogs => {
+          setLogs((prevLogs) => {
             const logItem = convertSSEMessageToLogItem(
               logEntry,
               prevLogs.length
