@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, SendHorizonal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAttackerAgentChat, useAttackerAgentSession } from '@/hooks/use-ai'
-import { useScenarioContainers } from '@/hooks/use-scenario'
+import { useScenarioContainers, useScenarioFile } from '@/hooks/use-scenario'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -21,20 +21,33 @@ type ChatBotProps = {
 }
 
 export function ChatBot({ className, scenarioId }: ChatBotProps) {
-  const { portMap, attackerContainerName, targetContainerName, ipAddressMap } = useScenarioContainers(scenarioId)
+  const { portMap, attackerContainerName, targetContainerName } = useScenarioContainers(scenarioId)
   const {  messages, setMessages, input, handleInputChange, handleSubmit, isLoading, sendMessage } =
     useAttackerAgentChat({ user_id: scenarioId })
   const { status, initUserAsync, cleanupUserAsync } = useAttackerAgentSession(scenarioId)
+  const { readmeContent } = useScenarioFile(scenarioId)
   const navigate = useNavigate()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
- /*  const attacker_server_url = `http://${ipAddressMap.get(attackerContainerName!)}:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
-  const target_entrance_url = `http://${ipAddressMap.get(targetContainerName!)}:${portMap.get(targetContainerName!)?.targetEntrancePort}` */
-   const attacker_server_url = `http://${attackerContainerName}:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
+
+  const [isOptionVisible, setIsOptionVisible] = useState(false)
+  
+  const attacker_server_url = `http://${attackerContainerName}:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
   const target_entrance_url = `http://${targetContainerName}:${portMap.get(targetContainerName!)?.targetEntrancePort}`
+
+
+  const blackBoxMessage='当前靶机地址为:'+target_entrance_url+'请开始黑盒攻击'
+  const whiteBoxMessage='当前靶机地址为:'+target_entrance_url+'\n'+'白盒信息为:'+readmeContent+'\n'+'请开始白盒攻击'
+
+  const handleOptionClick = (message: string) => {
+    sendMessage(message)
+    setIsOptionVisible(false)
+  }
+
+
   // 1. 当状态加载完毕且用户未初始化时，执行初始化
   useEffect(() => {
     if (status && !status.initialized) {
@@ -60,14 +73,13 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     }
   }, [status?.initialized, scenarioId])
 
-/*   // 2. 当用户初始化成功后，如果还没有消息，则自动发送第一条消息
+  // 2. 当用户初始化成功后，如果还没有消息，则渲染选项，让用户选择进行黑盒还是白盒攻击
   useEffect(() => {
-    if(messages.length>0) return
-    // 确保已初始化、没有消息、并且端口已就绪
+    // 确保已初始化、没有消息
     if (status?.initialized && messages.length === 0 ) {
-      sendMessage(`当前攻击机MCP地址为:${attacker_server_url}，目标靶场入口URL为:${target_entrance_url}`); 
+      setIsOptionVisible(true)
     }
-  }, [status?.initialized, messages.length, attacker_server_url, target_entrance_url, sendMessage]) */
+  }, [status?.initialized, messages.length])
 
   // 3. 消息列表更新时，自动滚动到底部
   useEffect(() => {
@@ -156,6 +168,19 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
           </div>
         </ScrollArea>
       </CardContent>
+      {isOptionVisible && (
+        <div className='border-t px-4 py-4'>
+          <p className='mb-2 text-center text-sm text-muted-foreground'>选择一个模式开始：</p>
+          <div className='flex justify-center gap-2'>
+            <Button variant='outline' onClick={() => handleOptionClick(blackBoxMessage)}>
+              进行黑盒攻击
+            </Button>
+            <Button variant='outline' onClick={() => handleOptionClick(whiteBoxMessage)}>
+              进行白盒攻击
+            </Button>
+          </div>
+        </div>
+      )}
       <CardFooter className=''>
         <form
           onSubmit={handleSubmit}

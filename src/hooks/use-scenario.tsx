@@ -527,13 +527,18 @@ export const useScenarioFile = (scenarioId: string | null) => {
     rootItemId,
     fileTreeQuery,
 
-    getTargetReadmeContentAsync,
-    getTargetReadmeMermaidContents:async()=>{
-      const content = await getTargetReadmeContentAsync()
-      if(!content) return null
-      return extractAllMermaidContents(content)
-    },
-
+    readmeContent:getTargetReadmeContentAsync().then(res=>res).catch(err=>{
+      showErrorMessage('获取靶机README.md失败',err.detail)
+      return null
+    }),
+    readmeMermaidContents:getTargetReadmeContentAsync().then(res=>{
+      if(!res) return (showErrorMessage('README.md为空'),null)
+      return extractAllMermaidContents(res)
+    }).catch(err=>{
+      showErrorMessage('获取mermaid语法失败',err.detail)
+      return null
+    }),
+    
     getFileContent: getFileContentMutation.mutate,
     getFileContentAsync: getFileContentMutation.mutateAsync,
     isGettingContent: getFileContentMutation.isPending,
