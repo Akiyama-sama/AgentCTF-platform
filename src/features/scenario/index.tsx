@@ -20,8 +20,8 @@ interface ScenarioDetailProps {
 }
 
 const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
-  const { scenario } = useScenario(scenarioId)
-  const { status } = useScenario(scenarioId)
+  const { status,scenario } = useScenario(scenarioId)
+ 
 
   if (!scenario) {
     return (

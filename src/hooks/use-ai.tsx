@@ -19,7 +19,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import {
     type Message,
 } from 'ai';
-import { attackerSSEManager } from "@/utils/attacker-sse-connections";
+import { agentSSEManager } from "@/utils/agent-sse-connections";
 import { showErrorMessage } from "@/utils/show-submitted-data";
 
 // const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL;
@@ -185,8 +185,12 @@ export const useAttackerAgentChat = ({
             console.log('用户:', user_id, 'Chat Stream ended:', message)
 
         },
-        onError: (err: { code?: string, message: string }) => {
-            setError(err);
+        onError: (err: { code?: string | number, message: string }) => {
+            const error = {
+                message: err.message,
+                code: err.code?.toString()
+            }
+            setError(error);
             setStatus('error');
             setMessages(prev =>
                 prev.map(msg =>
@@ -205,13 +209,13 @@ export const useAttackerAgentChat = ({
         }
       };
 
-      streamControllerRef.current = attackerSSEManager.createChatStream(user_id, request, callbacks);
+      streamControllerRef.current = agentSSEManager.createChatStream(user_id, request, callbacks);
 
     }, [user_id]);
 
     const stop = useCallback(() => {
         if(user_id) {
-            attackerSSEManager.closeStream(`chat-${user_id}`);
+          agentSSEManager.closeStream(`chat-${user_id}`);
         }
     }, [user_id]);
 

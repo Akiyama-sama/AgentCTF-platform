@@ -1,5 +1,6 @@
 import type { ChatRequest, LogRequest } from '@/types/attacker-agent'
 const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL;
+const defenderAgentURL = import.meta.env.VITE_DEFENDER_URL;
 /**
  * Defines the callback functions for handling different events in a stream's lifecycle.
  * @template T The expected type of data in the stream events.
@@ -8,7 +9,7 @@ export interface StreamCallbacks<T> {
   onStart?: (data: T) => void
   onMessage?: (data: T) => void
   onEnd?: (data: T) => void
-  onError?: (error: { code?: string; message: string }) => void
+  onError?: (error: { code?: string | number; message: string }) => void
   onFinally?: () => void
 }
 
@@ -69,7 +70,7 @@ async function processFetchStream<T>(
           callbacks.onEnd?.(data)
           break
         case 'error':
-          callbacks.onError?.(data as { code?: string; message: string })
+          callbacks.onError?.(data as { code?: string | number; message: string })
           break
         case 'ping':
           break
@@ -126,7 +127,7 @@ interface ManagedConnection {
  * Manages fetch-based SSE connections to the attacker-agent backend.
  * This class ensures that connections are properly created, tracked, and terminated.
  */
-class AttackerSSEManager {
+class AgentSSEManager {
   private connections = new Map<string, ManagedConnection>()
 
   private createStream(
@@ -199,13 +200,22 @@ class AttackerSSEManager {
    * @param callbacks Callbacks to handle stream events.
    * @returns An AbortController to manually stop the stream.
    */
-  public createLogStream(
+  public createAttackerLogStream(
     modelId: string,
     request: LogRequest,
     callbacks: StreamCallbacks<unknown>
   ) {
-    const streamId = `log-${modelId}`
+    const streamId = `attacker-log-${modelId}`
     const url = `${attackerAgentURL}/v1/logs/log/completions`
+    return this.createStream(streamId, url, request, callbacks)
+  }
+  public createDefenderLogStream(
+    modelId: string,
+    request: LogRequest,
+    callbacks: StreamCallbacks<unknown>
+  ) {
+    const streamId = `defender-log-${modelId}`
+    const url = `${defenderAgentURL}/api/logs/stream`
     return this.createStream(streamId, url, request, callbacks)
   }
 
@@ -248,4 +258,4 @@ class AttackerSSEManager {
   }
 }
 
-export const attackerSSEManager = new AttackerSSEManager()
+export const agentSSEManager = new AgentSSEManager()

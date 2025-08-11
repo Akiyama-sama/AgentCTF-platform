@@ -23,9 +23,9 @@ export const AgentLogController = ({ modelId, className }: Props) => {
 
   const {
     logs: defenderLogs,
-    // startLogs: startDefenderLogs,
+    startLogs: startDefenderLogs,
     isStreaming: isDefenderStreaming,
-  } = useDefenderAgentLogs()
+  } = useDefenderAgentLogs(modelId)
 
   const { status } = useAttackerAgentSession(modelId)
   const [activeTab, setActiveTab] = useState('attacker-agent-log')
@@ -47,7 +47,7 @@ export const AgentLogController = ({ modelId, className }: Props) => {
         defenderLogs.length === 0
       ) {
         // Placeholder for starting defender logs.
-        // startDefenderLogs({ user_id: modelId });
+        startDefenderLogs({ user_id: modelId });
       }
     }
   }, [
@@ -58,7 +58,7 @@ export const AgentLogController = ({ modelId, className }: Props) => {
     startAttackerLogs,
     isDefenderStreaming,
     defenderLogs.length,
-    // startDefenderLogs,
+    startDefenderLogs,
     modelId,
   ])
 

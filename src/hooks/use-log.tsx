@@ -14,7 +14,7 @@ import {
   sseConnectionManager,
   convertSSEMessageToLogItem,
 } from '@/utils/sseConnection'
-import { attackerSSEManager } from '@/utils/attacker-sse-connections'
+import { agentSSEManager, type StreamCallbacks } from '@/utils/agent-sse-connections'
 
 const dockerManagerURL = import.meta.env.VITE_BASE_URL
 // const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL
@@ -328,7 +328,7 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
         },
       }
 
-      streamControllerRef.current = attackerSSEManager.createLogStream(
+      streamControllerRef.current = agentSSEManager.createAttackerLogStream(
         modelId,
         params,
         callbacks
@@ -339,7 +339,7 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
 
   const stopLogs = useCallback(() => {
     if (modelId) {
-      attackerSSEManager.closeStream(`log-${modelId}`)
+      agentSSEManager.closeStream(`attacker-log-${modelId}`)
       // eslint-disable-next-line no-console
       console.log('攻击Agent SSE日志流已关闭', modelId)
     }
@@ -365,27 +365,142 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
  * Placeholder hook for defender agent logs.
  * It should follow the same singleton pattern as useAttackerAgentLogs.
  */
-export const useDefenderAgentLogs = () => {
-  // This is a placeholder. You can implement the full logic similar to
-  // useAttackerAgentLogs, with its own module-level state and functions.
-  const [logs] = useState<LogDisplayItem[]>([
-    {
-      id: '0',
-      type: 'history',
-      timestamp: new Date().toISOString(),
-      level: SSELogLevel.INFO,
-      message: '防御 Agent 日志功能待实现。',
+export const useDefenderAgentLogs = (modelId: string | null) => {
+  const [logs, setLogs] = useState<LogDisplayItem[]>([])
+  const [isStreaming, setIsStreaming] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const streamControllerRef = useRef<AbortController | null>(null)
+
+  const startLogs = useCallback(
+    async (params: LogRequest) => {
+      if (!modelId) return
+
+      // Clear previous logs and errors for a new stream
+      setLogs([])
+      setError(null)
+      setIsStreaming(true)
+
+      const callbacks: StreamCallbacks<unknown> = {
+        onStart: (data: unknown) => {
+          const { status, timestamp } = data as {
+            status: string
+            timestamp: string
+          }
+          showSuccessMessage(`防御Agent SSE日志流已连接: ${status}`)
+          const logEntry: SSELogEntry = {
+            type: SSELogType.LOG,
+            timestamp: timestamp || new Date().toISOString(),
+            message: `防御Agent SSE日志流已连接: ${status}`,
+            level: SSELogLevel.INFO,
+            logger_name: 'defender-agent',
+            model_id: params.user_id,
+          }
+          const logItem = convertSSEMessageToLogItem(logEntry, 0)
+          if (logItem) setLogs(prev => [...prev, logItem])
+          // eslint-disable-next-line no-console
+          console.log('防御Agent SSE日志流已连接: ', data)
+        },
+        onMessage: (data: unknown) => {
+          const logData = data as { message: string; timestamp: string }
+          const level =
+            logData.message && typeof logData.message === 'string'
+              ? getLevelFromData(logData.message) || SSELogLevel.INFO
+              : SSELogLevel.INFO
+          const logEntry: SSELogEntry = {
+            type: SSELogType.LOG,
+            timestamp: logData.timestamp,
+            message: logData.message,
+            level,
+            logger_name: 'defender-agent',
+            model_id: params.user_id,
+          }
+          setLogs(prevLogs => {
+            const logItem = convertSSEMessageToLogItem(
+              logEntry,
+              prevLogs.length
+            )
+            return logItem ? [...prevLogs, logItem] : prevLogs
+          })
+        },
+        onEnd: (data: unknown) => {
+          const { status, timestamp } = data as {
+            status: string
+            timestamp: string
+          }
+          const logEntry: SSELogEntry = {
+            type: SSELogType.LOG,
+            timestamp: timestamp || new Date().toISOString(),
+            message: `防御Agent SSE日志流已结束: ${status}`,
+            level: SSELogLevel.INFO,
+            logger_name: 'defender-agent',
+            model_id: params.user_id,
+          }
+          setLogs(prevLogs => {
+            const logItem = convertSSEMessageToLogItem(
+              logEntry,
+              prevLogs.length
+            )
+            return logItem ? [...prevLogs, logItem] : prevLogs
+          })
+          // eslint-disable-next-line no-console
+          console.log('防御Agent SSE日志流已结束: ', data)
+        },
+        onError: (err: { code?: string | number; message: string }) => {
+          const errorMessage = err.code
+            ? `${err.message} (代码: ${err.code})`
+            : err.message
+          setError(errorMessage)
+          const logEntry: SSELogEntry = {
+            type: SSELogType.LOG,
+            timestamp: new Date().toISOString(),
+            message: `防御Agent SSE日志流错误: ${errorMessage}`,
+            level: SSELogLevel.ERROR,
+            logger_name: 'defender-agent',
+            model_id: params.user_id,
+          }
+          setLogs(prevLogs => {
+            const logItem = convertSSEMessageToLogItem(
+              logEntry,
+              prevLogs.length
+            )
+            return logItem ? [...prevLogs, logItem] : prevLogs
+          })
+        },
+        onFinally: () => {
+          setIsStreaming(false)
+          streamControllerRef.current = null
+        },
+      }
+
+      streamControllerRef.current = agentSSEManager.createDefenderLogStream(
+        modelId,
+        params,
+        callbacks
+      )
     },
-  ])
-  const startLogs = useCallback(() => {
-    // console.log('Defender agent log stream started (placeholder).')
-  }, [])
+    [modelId]
+  )
+
+  const stopLogs = useCallback(() => {
+    if (modelId) {
+      agentSSEManager.closeStream(`defender-log-${modelId}`)
+      // eslint-disable-next-line no-console
+      console.log('防御Agent SSE日志流已关闭', modelId)
+    }
+  }, [modelId])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopLogs()
+    }
+  }, [stopLogs])
 
   return {
     logs,
-    isStreaming: false,
-    error: null,
+    isStreaming,
+    error,
     startLogs,
-    stopLogs: () => {},
+    stopLogs,
   }
 }
