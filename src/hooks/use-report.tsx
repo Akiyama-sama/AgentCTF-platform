@@ -170,8 +170,9 @@ export const useScenarioReport = (
   },
 ) => {
   const queryClient = useQueryClient()
+  
   const { refetchStatus = true } = options ?? {}
-  const isEnabled = !!modelId
+  const isEnabled = !!modelId && refetchStatus
 
   // --- Query Keys (local to this hook) ---
   const statusQueryKey = ['defender-report-status', modelId]
@@ -189,7 +190,7 @@ export const useScenarioReport = (
   const reportMutation = useGetDefenseReportApiDefenseReportGetPost()
 
   // Query for the assessment status by wrapping a POST mutation
-  const { data: status, ...statusQuery } = useQuery({
+  const { data: status } = useQuery({
     queryKey: statusQueryKey,
     queryFn: async (): Promise<DefenseReportStatusResponse | null> => {
       if (!modelId) return null
@@ -200,11 +201,11 @@ export const useScenarioReport = (
     enabled: isEnabled,
     // Refetch every 5 seconds if the report is still generating
     refetchInterval: query =>
-      refetchStatus && query.state.data?.status === 'generating' ? 5000 : false,
+      refetchStatus && (query.state.data?.status === 'generating') ? 5000 : false,
   })
 
   // Query for the assessment report, enabled only when status is 'completed'
-  const { data: report, ...reportQuery } = useQuery({
+  const { data: report,isPending } = useQuery({
     queryKey: reportQueryKey,
     queryFn: async (): Promise<DefenseReportResponse | null> => {
       if (!modelId) return null
@@ -243,9 +244,9 @@ export const useScenarioReport = (
 
     return {
       status: null,
-      statusQuery,
+  
       report: null,
-      reportQuery,
+      isPending:false,
       analyze: noOp,
       analyzeAsync: noOpAsync,
       isAnalyzing: false,
@@ -255,9 +256,8 @@ export const useScenarioReport = (
   // --- Return Value ---
   return {
     status,
-    statusQuery,
     report,
-    reportQuery,
+    isPending,
     analyze: () => {
       analyzeMutation.mutate({ data: { model_id: modelId } })
     },

@@ -12,6 +12,8 @@ import {
 type ProcessLineProps = {
   lineItems: ProcessLineItem[]
   currentStep: number
+  className?: string
+  
 }
 
 type ProcessLineItem = {
@@ -28,9 +30,11 @@ type ProcessLineItem = {
 export default function ProcessLine({
   lineItems,
   currentStep,
+  className,
+
 }: ProcessLineProps) {
   return (
-    <Timeline defaultValue={currentStep} orientation='horizontal'>
+    <Timeline defaultValue={0} value={currentStep} orientation='horizontal' className={className}>
       {lineItems.map((item) => (
         <TimelineItem
           key={item.id}
@@ -55,7 +59,7 @@ export default function ProcessLine({
             <div>{item.description}</div>
             {item.action && (
               <div
-                className='text-primary group-not-data-completed/timeline-item:pointer-events-none:cursor-not-allowed cursor-pointer underline group-not-data-completed/timeline-item:pointer-events-none'
+                className='text-primary group-not-data-completed/timeline-item:pointer-events-none:cursor-not-allowed cursor-pointer underline group-not-data-completed/timeline-item:pointer-events-none group-not-data-completed/timeline-item:hidden'
                 onClick={item.action?.onClick}
               >
                 {item.action?.label}

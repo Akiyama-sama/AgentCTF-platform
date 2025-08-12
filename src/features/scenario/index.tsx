@@ -11,10 +11,8 @@ import ScenariosDialogProvider from '../scenarios/context/scenarios-context'
 import { AgentLogController } from './components/agent-log-controller'
 import { ChatBot } from './components/chat-bot'
 import { LogController } from './components/container-log-controller'
-import { ScenarioMermaid } from './components/scenario-mermaid'
 import ScenarioProcessLine from './components/scenario-process-line'
-import ProcessProvider from './context/process-context'
-import { mermaidContent } from './data/data'
+
 
 interface ScenarioDetailProps {
   scenarioId: string
@@ -43,20 +41,12 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
               className='flex h-2/5 w-full flex-col'
             />
           </div>
-          <Card className='mt-0 flex w-2/3 flex-col p-4'>
-            <ScenarioProcessLine scenarioId={scenarioId} />
-            <div className='h-3/5 w-full p-10'>
-              <TextScroll
-                text='TARGET SAFE'
-                className='text-2xl text-green-600'
-              />
-              <ScenarioMermaid initialContent={mermaidContent} />
-              <TextScroll
-                text='TARGET SAFE'
-                className='text-2xl text-green-600'
-              />
+          <Card className='h-full flex w-2/3 flex-col py-0 '>
+            <div className='h-2/3 w-full p-10 flex flex-col gap-2'>
+             <ScenarioProcessLine scenarioId={scenarioId} className='h-1/2 mt-0'/>
+             <TextScroll text='TARGET SAFE' className='text-2xl text-green-600'/>
             </div>
-            <div className='flex h-2/5 w-full flex-col gap-2'>
+            <div className='flex h-2/5 w-full flex-col gap-2 rounded-b-lg'>
               <LogController modelId={scenarioId} />
             </div>
           </Card>
@@ -89,11 +79,9 @@ const ScenarioDetail = ({ scenarioId }: ScenarioDetailProps) => {
 
   return (
     <ScenariosDialogProvider>
-      <ProcessProvider>
         <ScenarioView scenarioId={scenarioId} />
         <ScenariosDialogs />
         <ScenarioFileDialogs />
-      </ProcessProvider>
     </ScenariosDialogProvider>
   )
 }

@@ -13,7 +13,7 @@ import {
   agentSSEManager,
   type StreamCallbacks,
 } from '@/utils/agent-sse-connections'
-import { showSuccessMessage } from '@/utils/show-submitted-data'
+
 import {
   sseConnectionManager,
   convertSSEMessageToLogItem,
@@ -159,9 +159,9 @@ const createContainerLogConnection = (
     return
   }
 
-  // Initialize state for the new connection
+  // Initialize state for the new connection, preserving existing logs
   containerLogsState[containerId] = {
-    logs: [],
+    logs: containerLogsState[containerId]?.logs ?? [],
     connectionState: SSEConnectionState.CONNECTING,
   }
   notifyContainerLogSubscribers()
@@ -209,11 +209,7 @@ const closeContainerLogConnection = (
   const containerId = `${modelId}-${containerName}`
   sseConnectionManager.closeConnection(containerId)
   // The onStateChange callback should handle updating the state to DISCONNECTED.
-  // We can also remove it from our cache to clean up.
-  if (containerLogsState[containerId]) {
-    delete containerLogsState[containerId]
-    notifyContainerLogSubscribers()
-  }
+  // We no longer delete the state here, to preserve logs when switching tabs.
 }
 
 export const useContainerLogs = () => {
@@ -261,7 +257,6 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
       const callbacks = {
         onStart: (data: unknown) => {
           const { status } = data as { status: string }
-          showSuccessMessage(`攻击Agent SSE日志流已连接: ${status}`)
           const logEntry: SSELogEntry = {
             type: SSELogType.LOG,
             timestamp: new Date().toISOString(),
@@ -399,7 +394,6 @@ export const useDefenderAgentLogs = (modelId: string | null) => {
             status: string
             timestamp: string
           }
-          showSuccessMessage(`防御Agent SSE日志流已连接: ${status}`)
           const logEntry: SSELogEntry = {
             type: SSELogType.LOG,
             timestamp: timestamp || new Date().toISOString(),

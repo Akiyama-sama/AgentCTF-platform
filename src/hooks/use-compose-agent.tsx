@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { create } from 'zustand'
 import {
   // Orval-generated hooks and functions
   useRootGet,
@@ -184,46 +185,58 @@ const stopStreamInternal = () => {
   }
 }
 
+interface AgentStreamState {
+  logs: AgentEvent[]
+  isConnected: boolean
+  actions: {
+    startStream: (body: StreamApiStreamPostBody) => void
+    stopStream: () => void
+    clearLogs: () => void
+  }
+}
+
+const useAgentStreamStore = create<AgentStreamState>((set) => ({
+  logs: [],
+  isConnected: !!controller,
+  actions: {
+    startStream: (body) => {
+      set({ isConnected: true, logs: [] }) // Immediately set connecting state
+      void startStreamInternal(body)
+    },
+    stopStream: () => {
+      stopStreamInternal()
+      set({ isConnected: false, logs: [] }) // Immediately set disconnected state
+    },
+    clearLogs: () => set({ logs: [] }),
+  },
+}))
+
+// Event handler that updates the Zustand store
+subscribe((event) => {
+  useAgentStreamStore.setState((state) => {
+    if (event.type === 'agent_start') {
+      return { isConnected: true, logs: [event] }
+    }
+    if (event.type === '__end__' || event.type === 'agent_error') {
+      return { isConnected: false, logs: [...state.logs, event] }
+    }
+    return { logs: [...state.logs, event] }
+  })
+})
+
 export const useAgentStream = () => {
-  const [logs, setLogs] = useState<AgentEvent[]>([])
-  const [isConnected, setIsConnected] = useState(false)
+  const { logs, isConnected, actions } = useAgentStreamStore((state) => state)
 
   useEffect(() => {
-    const handleEvent = (event: AgentEvent) => {
-      if (event.type === 'agent_start') {
-        setIsConnected(true)
-        setLogs([event])
-      } else {
-        setLogs((prevLogs) => [...prevLogs, event])
-      }
-
-      if (event.type === '__end__' || event.type === 'agent_error') {
-        setIsConnected(false)
-      }
-    }
-
-    const unsubscribe = subscribe(handleEvent)
     return () => {
-      unsubscribe()
+      // On unmount, clear logs if the stream is not active.
+      if (!useAgentStreamStore.getState().isConnected) {
+        actions.clearLogs()
+      }
     }
-  }, [])
+  }, [actions])
 
-  const startStream = useCallback((body: StreamApiStreamPostBody) => {
-    // Non-blocking call
-    void startStreamInternal(body)
-  }, [])
-
-  const stopStream = useCallback(() => {
-    stopStreamInternal()
-    setLogs([])
-  }, [])
-
-  return {
-    logs,
-    isConnected,
-    startStream,
-    stopStream,
-  }
+  return { ...actions, logs, isConnected }
 }
 
 // 3. New Hooks for other endpoints

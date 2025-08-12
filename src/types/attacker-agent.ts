@@ -67,20 +67,34 @@ export interface ApiResponseUserStatusResponse {
   data?: ApiResponseUserStatusResponseData;
 }
 
-export type ChatRequestCustomInfoAnyOf = { [key: string]: unknown };
+/**
+ * 黑白盒判断，black为黑盒，white为白盒
+ */
+export type ChatRequestBoxType = typeof ChatRequestBoxType[keyof typeof ChatRequestBoxType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ChatRequestBoxType = {
+  black: 'black',
+  white: 'white',
+} as const;
 
 /**
- * 用户自定义信息，前端可自行填写任意键值对
+ * 白盒描述信息，仅在白盒模式下使用
  */
-export type ChatRequestCustomInfo = ChatRequestCustomInfoAnyOf | null;
+export type ChatRequestWhiteboxDescription = string | null;
 
 export interface ChatRequest {
   /** 用户ID */
   user_id: string;
   /** 消息内容 */
   message: string;
-  /** 用户自定义信息，前端可自行填写任意键值对 */
-  custom_info?: ChatRequestCustomInfo;
+  /** 黑白盒判断，black为黑盒，white为白盒 */
+  box_type: ChatRequestBoxType;
+  /** 是否为进攻（第一次请求为True，后续都为false，为True时message为空） */
+  is_attacke: boolean;
+  /** 白盒描述信息，仅在白盒模式下使用 */
+  whitebox_description?: ChatRequestWhiteboxDescription;
 }
 
 export interface HTTPValidationError {

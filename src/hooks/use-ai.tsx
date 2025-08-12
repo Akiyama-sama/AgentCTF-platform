@@ -13,6 +13,7 @@ import {
     // Types
     type UserStatusResponse,
     type ChatRequest,
+    ChatRequestBoxType,
     // type SSEChatResponse,
 } from "@/types/attacker-agent";
 import { useState, useRef, useCallback, useEffect } from "react";
@@ -31,6 +32,7 @@ import {
   type InitDefenderInstanceApiInstanceInitPostMutationResult,
   type CleanupDefenderInstanceApiInstanceCleanupModelIdDeleteMutationResult,
 } from '@/types/defender-agent'
+import { useProcess } from "@/features/scenario/store/process-store";
 
 // const attackerAgentURL = import.meta.env.VITE_ATTACKER_URL;
 
@@ -57,13 +59,18 @@ export const useAttackerAgentSession = (userId: string | null) => {
     const queryClient = useQueryClient();
     const isEnabled = !!userId;
   
+    const queryKey = getGetUserStatusV1UserStatusGetQueryKey({ user_id: userId! });
+    const cachedStatus = queryClient.getQueryData<UserStatusResponse>(queryKey);
+
     const { data: status, ...statusQuery } = useGetUserStatusV1UserStatusGet(
       { user_id: userId! },
       {
         query: {
-          enabled: isEnabled,
+          enabled: isEnabled && (!cachedStatus || !cachedStatus.initialized),
           select: (response): UserStatusResponse | null => response.data ?? null,
+          retry:3
         },
+        
       }
     );
   
@@ -77,6 +84,7 @@ export const useAttackerAgentSession = (userId: string | null) => {
     const initUserMutation = useInitUserV1UserInitPost({
       mutation: {
         onSuccess: invalidateUserStatus,
+        
       },
     });
   
@@ -90,7 +98,7 @@ export const useAttackerAgentSession = (userId: string | null) => {
         const noOpAsync = async () => Promise.resolve(new Response());
         return {
             status: null,
-            statusQuery: { isInitialLoading: false },
+            statusQuery,
             isInitializing: false,
             initUser: noOpAsync,
             initUserAsync: noOpAsync,
@@ -116,10 +124,13 @@ export const useDefenderAgentSession = (modelId: string | null) => {
   const queryClient = useQueryClient()
   const isEnabled = !!modelId
 
+  const queryKey = getGetInstanceStatusApiInstanceStatusModelIdGetQueryKey(modelId!);
+  const cachedStatus = queryClient.getQueryData<InstanceStatusResponse>(queryKey);
+
   const { data: status, ...statusQuery } =
     useGetInstanceStatusApiInstanceStatusModelIdGet(modelId!, {
       query: {
-        enabled: isEnabled,
+        enabled: isEnabled && (!cachedStatus || !cachedStatus.initialized),
         select: (response): InstanceStatusResponse | null =>
           response.data ?? null,
       },
@@ -155,7 +166,7 @@ export const useDefenderAgentSession = (modelId: string | null) => {
       )
     return {
       status: null,
-      statusQuery: { isInitialLoading: false },
+      statusQuery,
       isInitializing: false,
       initInstance: noOp,
       initInstanceAsync: noOpAsyncInit,
@@ -203,6 +214,9 @@ export const useAttackerAgentChat = ({
     const [error, setError] = useState<{ message: string, code?: string } | null>(null);
     type ChatStatus = 'idle' | 'connecting' | 'streaming' | 'success' | 'error';
     const [status, setStatus] = useState<ChatStatus>('idle');
+    const [box_type,setBoxType] = useState<ChatRequestBoxType>('white')
+    const {scenarioProcessState} = useProcess()
+    
 
 
     const streamControllerRef = useRef<AbortController | null>(null);
@@ -214,7 +228,7 @@ export const useAttackerAgentChat = ({
         }
     }, [messages, user_id]);
 
-    const sendMessage = useCallback(async (message: string) => {
+    const sendMessage = useCallback(async (message: string,whitebox_description?:string) => {
       if (!user_id) return;
 
       setIsLoading(true);
@@ -244,6 +258,9 @@ export const useAttackerAgentChat = ({
       const request: ChatRequest = {
         user_id: user_id,
         message: message,
+        box_type: box_type,
+        is_attacke: !scenarioProcessState.isAttackFinished,
+        whitebox_description: whitebox_description,
       };
       
       const callbacks = {
@@ -298,6 +315,8 @@ export const useAttackerAgentChat = ({
 
     }, [user_id]);
 
+  
+
     const stop = useCallback(() => {
         if(user_id) {
           agentSSEManager.closeStream(`chat-${user_id}`);
@@ -335,11 +354,15 @@ export const useAttackerAgentChat = ({
       input,
       handleInputChange,
       handleSubmit,
-      sendMessage, 
+      sendMessage,
+      setBoxType,
+      box_type,
       clearMessages,
       isLoading,
       status,
       error,
+
+
     };
   };
 

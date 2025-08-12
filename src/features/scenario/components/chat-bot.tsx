@@ -34,8 +34,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ScenarioProcessState, useProcess } from '../context/process-context'
-import { ApiResponseInstanceCleanupResponse, ApiResponseInstanceInitResponse } from '@/types/defender-agent'
+import { ScenarioProcessState, useProcess } from '../store/process-store'
+import {
+  ApiResponseInstanceCleanupResponse,
+  ApiResponseInstanceInitResponse,
+} from '@/types/defender-agent'
+import Loading from '@/components/Loading'
+
 
 const api_key = import.meta.env.VITE_DEEPSEEK_API_KEY
 
@@ -50,6 +55,10 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     attackerContainerName,
     targetContainerName,
     defenderContainerName,
+    targetContainer,
+    ipAddressMap,
+    isPending:isContainersPending,
+    isSuccess:isContainersSuccess,
   } = useScenarioContainers(scenarioId)
   const {
     messages,
@@ -59,6 +68,8 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     handleSubmit,
     isLoading,
     sendMessage,
+    setBoxType,
+    
   } = useAttackerAgentChat({ user_id: scenarioId })
   const {
     status,
@@ -81,9 +92,9 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
   }
 
   
-  const defender_mcp_url = `http://${defenderContainerName}:${portMap.get(defenderContainerName!)?.mcpPort}/sse`
-  const attacker_mcp_url = `http://${attackerContainerName}:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
-  const target_entrance_url = `http://${targetContainerName}:${portMap.get(targetContainerName!)?.targetEntrancePort}`
+  const defender_mcp_url = portMap.get(defenderContainerName!)?`http://localhost:${portMap.get(defenderContainerName!)?.mcpPort}/sse`:undefined
+  const attacker_mcp_url = portMap.get(attackerContainerName!)?`http://localhost:${portMap.get(attackerContainerName!)?.mcpPort}/sse`:undefined
+  const target_entrance_url = (portMap.get(targetContainerName!)&&ipAddressMap.get(targetContainerName!))?`http://${ipAddressMap.get(targetContainerName!)}:${portMap.get(targetContainerName!)?.targetEntrancePort}`:undefined
 
   const blackBoxMessage =
     '当前靶机地址为:' + target_entrance_url + '请开始黑盒攻击'
@@ -96,8 +107,8 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     '\n' +
     '请开始白盒攻击'
 
-  const handleOptionClick = (message: string) => {
-    sendMessage(message)
+  const handleOptionClick = (message: string,whitebox_description?:string) => {
+    sendMessage(message,whitebox_description)
     setIsOptionVisible(false)
     setScenarioProcessState((state: ScenarioProcessState) => ({
       ...state,
@@ -105,9 +116,9 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     }))
   }
 
-  // 1. 当状态加载完毕且攻击agent未初始化时，执行初始化
+  // 1. 当状态加载完毕数据准备完毕时候，且攻击agent未初始化时，执行初始化
   useEffect(() => {
-    if (status && !status.initialized) {
+    if (status && !status.initialized&&attacker_mcp_url&&target_entrance_url&&isContainersSuccess) {
       initeAttackerAgent({
         data: {
           api_key: api_key,
@@ -131,12 +142,17 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
         .catch((err: Error) => {
           showErrorMessage(err?.message || '攻击Agent初始化失败')
         })
+    }else if(status && status.initialized){
+      setScenarioProcessState((state: ScenarioProcessState) => ({
+        ...state,
+        attackAgentInitialized: true,
+      }))
     }
-  }, [status?.initialized, scenarioId])
+  }, [status?.initialized, scenarioId,attacker_mcp_url,target_entrance_url,isContainersSuccess])
 
-  // 2. 当状态加载完毕且防御agent未初始化时，执行初始化
+  // 2. 当状态加载完毕且防御agent未初始化，且dind包信息存在时，执行初始化
   useEffect(() => {
-    if (defenseAgentStatus && !defenseAgentStatus.initialized) {
+    if (defenseAgentStatus && !defenseAgentStatus.initialized&&dindPackageInfo&&defender_mcp_url&&isContainersSuccess) {
       initDefenderAgentAsync({
         model_id: scenarioId,
         container_pcap_mapping: dindPackageInfo,
@@ -153,8 +169,13 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
           showErrorMessage(res.message || '防御Agent初始化失败')
         }
       })
+    }else if(defenseAgentStatus && defenseAgentStatus.initialized){
+      setScenarioProcessState((state: ScenarioProcessState) => ({
+        ...state,
+        defenseAgentInitialized: true,
+      }))
     }
-  }, [defenseAgentStatus?.initialized, scenarioId])
+  }, [defenseAgentStatus?.initialized, scenarioId,dindPackageInfo,defender_mcp_url,isContainersSuccess])
 
   // 3. 当用户初始化成功后，如果还没有消息，则渲染选项，让用户选择进行黑盒还是白盒攻击
   useEffect(() => {
@@ -175,12 +196,20 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     scrollToBottom()
   }, [messages])
 
+
+  if(isContainersPending){
+    return <div className='flex h-full w-full items-center justify-center p-4 shadow-xs'>
+      <Loading />
+    </div>
+  }
   return (
     <Card className={cn('flex flex-col', className)}>
       <CardHeader className='flex flex-row items-center justify-center pt-2'>
         <CardTitle>
           Attacker Agent 初始化状态：
           {status?.initialized ? '已初始化' : '未初始化'}
+          Defense Agent 初始化状态：
+          {defenseAgentStatus?.initialized ? '已初始化' : '未初始化'}
         </CardTitle>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -287,13 +316,19 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
           <div className='flex justify-center gap-2'>
             <Button
               variant='outline'
-              onClick={() => handleOptionClick(blackBoxMessage)}
+              onClick={() => {
+                setBoxType('black')
+                handleOptionClick(blackBoxMessage)
+              }}
             >
               进行黑盒攻击
             </Button>
             <Button
               variant='outline'
-              onClick={() => handleOptionClick(whiteBoxMessage)}
+              onClick={() => {
+                setBoxType('white')
+                handleOptionClick(whiteBoxMessage,readmeContent??JSON.stringify(targetContainer))
+              }}
             >
               进行白盒攻击
             </Button>

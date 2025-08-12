@@ -95,7 +95,7 @@ function TargetListItem({
   // Placeholder for download logic
   const handleDownload = () => {
     download().then(() => {
-      showSuccessMessage(`动态靶机 "${name}" 已下载.`)
+      showSuccessMessage(`动态靶机 "${name}" 正在下载，请稍等.`)
     })
   }
 

@@ -91,6 +91,7 @@
     "@types/node": "^24.0.4",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-basic-ssl": "^2.1.0",
     "@vitejs/plugin-react-swc": "^3.10.2",
     "eslint": "^9.29.0",
     "eslint-plugin-react-hooks": "^5.2.0",

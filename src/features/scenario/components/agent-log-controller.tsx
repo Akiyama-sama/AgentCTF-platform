@@ -6,8 +6,9 @@ import {
   useDefenderAgentLogs,
 } from '@/hooks/use-log'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import Log from '@/components/log'
 import { PillTabs } from '@/components/pill-tabs'
+import Loading from '@/components/Loading'
+import { AgentLog } from './agent-log'
 
 type Props = {
   modelId: string
@@ -15,6 +16,7 @@ type Props = {
 }
 
 export const AgentLogController = ({ modelId, className }: Props) => {
+
   const {
     logs: attackerLogs,
     startLogs: startAttackerLogs,
@@ -27,13 +29,13 @@ export const AgentLogController = ({ modelId, className }: Props) => {
     isStreaming: isDefenderStreaming,
   } = useDefenderAgentLogs(modelId)
 
-  const { status } = useAttackerAgentSession(modelId)
+  const { status: attackerAgentStatus ,statusQuery:attackerAgentStatusQuery} = useAttackerAgentSession(modelId)
   const [activeTab, setActiveTab] = useState('attacker-agent-log')
-
+  const [isSessionReady, setIsSessionReady] = useState(false)
   useEffect(() => {
     // Determine if the agent session is ready.
-    const isSessionReady = status?.initialized ?? false
-
+    const isSessionReady = (attackerAgentStatusQuery.isSuccess && ! attackerAgentStatusQuery.isError && attackerAgentStatus?.initialized) ?? false
+    setIsSessionReady(isSessionReady)
     if (isSessionReady) {
       if (
         activeTab === 'attacker-agent-log' &&
@@ -50,17 +52,7 @@ export const AgentLogController = ({ modelId, className }: Props) => {
         startDefenderLogs({ model_id: modelId });
       }
     }
-  }, [
-    status,
-    activeTab,
-    isAttackerStreaming,
-    attackerLogs.length,
-    startAttackerLogs,
-    isDefenderStreaming,
-    defenderLogs.length,
-    startDefenderLogs,
-    modelId,
-  ])
+  }, [activeTab, isAttackerStreaming, attackerLogs.length, startAttackerLogs, isDefenderStreaming, defenderLogs.length, startDefenderLogs, modelId, attackerAgentStatusQuery.isSuccess, attackerAgentStatusQuery.isError, attackerAgentStatus?.initialized])
 
   const activeLogs =
     activeTab === 'attacker-agent-log' ? attackerLogs : defenderLogs
@@ -89,7 +81,7 @@ export const AgentLogController = ({ modelId, className }: Props) => {
         </div>
       </CardHeader>
       <CardContent className='flex-1 min-h-0 overflow-x-auto'>
-        <Log logs={activeLogs} className='text-sm' behavior='instant' />
+        {isSessionReady? <AgentLog logs={activeLogs} />:<Loading/>}
       </CardContent>
     </Card>
   )

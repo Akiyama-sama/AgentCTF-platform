@@ -17,15 +17,17 @@ import ThreatStatistics from './components/threat-statistics'
 
 import { useParams } from '@tanstack/react-router'
 import { useScenarioReport } from '@/hooks/use-report'
+import { useProcess } from '../scenario/store/process-store'
 
 export default function ScenarioReport() {
   const { scenarioId } = useParams({
     from: '/_authenticated/scenarios/$scenarioId/report',
   })
-  const { report, reportQuery } = useScenarioReport(scenarioId)
+  const {scenarioProcessState} = useProcess()
+  const { report, isPending } = useScenarioReport(scenarioId,{refetchStatus:scenarioProcessState.isAttackFinished})
  
 
-  if (reportQuery.isPending) {
+  if (isPending) {
     return <div>Loading report...</div>
   }
   if (!report) {

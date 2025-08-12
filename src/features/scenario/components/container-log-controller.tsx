@@ -37,7 +37,7 @@ export const LogController = ({ modelId }: Props) => {
     attackerContainerName,
     defenderContainerName,
     targetContainerName,
-    isLoading,
+    isPending,
   } = useScenarioContainers(modelId)
 
   const { containerLogs, createContainerConnection, closeContainerConnection } = useContainerLogs()
@@ -46,28 +46,22 @@ export const LogController = ({ modelId }: Props) => {
     useState<ContainerType>('attacker')
 
   useEffect(() => {
-    if (attackerContainerName) {
-      createContainerConnection(modelId, attackerContainerName)
+    const containerNameMap: Record<ContainerType, string | undefined> = {
+      attacker: attackerContainerName,
+      defender: defenderContainerName,
+      target: targetContainerName,
     }
-    if (defenderContainerName) {
-      createContainerConnection(modelId, defenderContainerName)
-    }
-    if (targetContainerName) {
-      createContainerConnection(modelId, targetContainerName)
-    }
-    return () => {
-      if (attackerContainerName) {
-        closeContainerConnection(modelId, attackerContainerName)
-      }
-      if (defenderContainerName) {
-        closeContainerConnection(modelId, defenderContainerName)
-      }
-      if (targetContainerName) {
-        closeContainerConnection(modelId, targetContainerName)
+    const selectedName = containerNameMap[selectedContainer]
+
+    if (selectedName) {
+      createContainerConnection(modelId, selectedName)
+      return () => {
+        closeContainerConnection(modelId, selectedName)
       }
     }
   }, [
     modelId,
+    selectedContainer,
     attackerContainerName,
     defenderContainerName,
     targetContainerName,
@@ -94,7 +88,7 @@ export const LogController = ({ modelId }: Props) => {
   const state =
     containerLogs[selectedContainerLogId]?.connectionState ?? 'Waiting...'
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <Card className='flex h-full w-full items-center justify-center p-4 shadow-xs'>
         <Loading />

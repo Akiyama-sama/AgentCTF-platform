@@ -1,5 +1,10 @@
 
-import { useQueryClient } from '@tanstack/react-query'
+import {
+  useState,
+  useEffect,
+  useMemo
+} from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   FileTreeNode,
 } from '@/types/api'
@@ -132,12 +137,9 @@ export const useScenarios = () => {
  */
 export const useScenario = (
   scenarioId: string | null,
-  options?: {
-    refetchStatus?: boolean
-  }
 ) => {
   const queryClient = useQueryClient()
-  const { refetchStatus = true } = options ?? {}
+  const [isPollingEnabled, setIsPollingEnabled] = useState(false);
 
   const isEnabled = !!scenarioId
 
@@ -159,7 +161,7 @@ export const useScenario = (
     useGetModelStateModelsModelIdStateGet(scenarioId!, {
       query: {
         enabled: isEnabled,
-        refetchInterval: refetchStatus ? 10000 : false,
+        refetchInterval: isPollingEnabled ? 2000 : false, // Poll every 2 seconds if enabled
         select: (
           response: ApiResponseModelStateResponse
         ): ModelStateResponse | null => {
@@ -167,6 +169,12 @@ export const useScenario = (
         },
       },
     })
+
+  useEffect(() => {
+    if (status && status.state !== 'pending' && status.state !== 'building') {
+      setIsPollingEnabled(false); // Stop polling when the state is final
+    }
+  }, [status]);
 
   const invalidateScenarioQueries = () => {
     if (!scenarioId) return
@@ -195,7 +203,10 @@ export const useScenario = (
 
   const updateStateMutation = useUpdateModelStateModelsModelIdPatch({
     mutation: {
-      onSuccess: invalidateScenarioQueries,
+      onSuccess: () => {
+        invalidateScenarioQueries();
+        setIsPollingEnabled(true); // Start polling on success
+      },
     },
   })
 
@@ -258,7 +269,8 @@ type Status = {
 export const useScenarioContainers = (scenarioId: string) => {
   const {
     data: containers,
-    isLoading,
+    isPending,
+    isSuccess,
     error,
   } = useGetModelAllContainerInspectModelsModelIdInspectGet(scenarioId, {
     query: {
@@ -327,7 +339,8 @@ export const useScenarioContainers = (scenarioId: string) => {
     defenderContainerName: defenderContainer?.Name?.slice(1),
     targetContainer,
     targetContainerName: targetContainer?.Name?.slice(1),
-    isLoading,
+    isPending,
+    isSuccess,
     error,
   }
 }
@@ -479,16 +492,43 @@ export const useScenarioFile = (scenarioId: string | null) => {
   })
 
 
-  const getTargetReadmeContentAsync = async()=>{
-    if(!scenarioId) return null
-    const res = await getFileContentMutation.mutateAsync({
-      modelId:scenarioId,
-      data:{
-        file_path:'target/README.md'
-      }
-    })
-    return res.data?.content
-  }
+  const {
+    data: readmeContent,
+    isPending: isReadmeLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['readme', scenarioId],
+    queryFn: async () => {
+      if (!scenarioId) return null
+      const res = await getFileContentMutation.mutateAsync({
+        modelId: scenarioId,
+        data: {
+          file_path: 'target/README.md',
+        },
+      })
+      return res.data?.content 
+    },
+    enabled: isEnabled,
+    retry: false,
+  })
+
+  useEffect(() => {
+    if (isSuccess && !readmeContent && isEnabled) {
+      showErrorMessage('README.md为空或不存在')
+    }
+    if (isError && error) {
+      showErrorMessage('获取靶机README.md失败', error.message)
+    }
+  }, [isSuccess, isError, readmeContent, error, isEnabled])
+
+  const readmeMermaidContents = useMemo(() => {
+    if (!readmeContent) {
+      return null
+    }
+    return extractAllMermaidContents(readmeContent)
+  }, [readmeContent])
 
   // 如果 scenarioId 为 null，返回一组空的、安全的函数
   if (!scenarioId) {
@@ -500,6 +540,9 @@ export const useScenarioFile = (scenarioId: string | null) => {
       fileTreeItems: {},
       rootItemId: '.',
       fileTreeQuery: { isInitialLoading: false },
+      readmeContent: null,
+      readmeMermaidContents: null,
+      isReadmeLoading: false,
       getFileContent: noOp,
       getFileContentAsync: noOpAsync,
       isGettingContent: false,
@@ -526,19 +569,10 @@ export const useScenarioFile = (scenarioId: string | null) => {
     fileTreeItems,
     rootItemId,
     fileTreeQuery,
+    readmeContent,
+    readmeMermaidContents,
+    isReadmeLoading,
 
-    readmeContent:getTargetReadmeContentAsync().then(res=>res).catch(err=>{
-      showErrorMessage('获取靶机README.md失败',err.detail)
-      return null
-    }),
-    readmeMermaidContents:getTargetReadmeContentAsync().then(res=>{
-      if(!res) return (showErrorMessage('README.md为空'),null)
-      return extractAllMermaidContents(res)
-    }).catch(err=>{
-      showErrorMessage('获取mermaid语法失败',err.detail)
-      return null
-    }),
-    
     getFileContent: getFileContentMutation.mutate,
     getFileContentAsync: getFileContentMutation.mutateAsync,
     isGettingContent: getFileContentMutation.isPending,

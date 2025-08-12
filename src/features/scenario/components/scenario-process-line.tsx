@@ -1,25 +1,27 @@
 import ProcessLine from "@/components/process-line";
-import { useProcess } from "../context/process-context";
+import { useProcess } from "../store/process-store";
 import { useScenarioReport } from "@/hooks/use-report";
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 
 type ScenarioProcessLineProps = {
   scenarioId: string
+  className?: string
 }
 
-export default function ScenarioProcessLine({scenarioId}:ScenarioProcessLineProps) {
+export default function ScenarioProcessLine({scenarioId,className}:ScenarioProcessLineProps) {
   const navigate = useNavigate()
-  const { step ,setScenarioProcessState} = useProcess()
-  const {analyzeAsync,status:reportStatus}=useScenarioReport(scenarioId,{refetchStatus:true})
+  const { step ,setScenarioProcessState,scenarioProcessState} = useProcess()
+  const {analyzeAsync,status:reportStatus}=useScenarioReport(scenarioId,{refetchStatus:scenarioProcessState.isAttackFinished})
   useEffect(()=>{
-    if(reportStatus?.status==='completed'){
+    if(scenarioProcessState.isAttackFinished&&reportStatus?.status==='completed'){
       setScenarioProcessState((state) => ({
         ...state,
         isReportGenerated: true,
       }))
     }
-  },[reportStatus?.status])
+  },[reportStatus?.status,scenarioProcessState.isAttackFinished])
   const items = [
     {
       id: 1,
@@ -57,7 +59,7 @@ export default function ScenarioProcessLine({scenarioId}:ScenarioProcessLineProp
     {
       id: 4,
       title: '演练报告生成',
-      purpose: '报告用于溯源进攻策略，防御手段，供指挥官进行学习复盘',
+      purpose: '用于溯源、复盘',
       description: '防御演练报告已生成，演练结束->',
       action:{
         label:'查看演练报告',
@@ -68,6 +70,6 @@ export default function ScenarioProcessLine({scenarioId}:ScenarioProcessLineProp
     },
   ]
   return (
-    <ProcessLine lineItems={items} currentStep={step} />
+    <ProcessLine lineItems={items} currentStep={step} className={cn(className,'overflow-y-auto no-scrollbar')} />
   )
 }

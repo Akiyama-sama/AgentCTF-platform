@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-
+import basicSsl from '@vitejs/plugin-basic-ssl'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -12,6 +12,7 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     react(),
+    basicSsl(),
     tailwindcss(),
   ],
   server: {
@@ -27,7 +28,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/attacker/, ''),
       },
       '/defender': {
-        target: 'http://localhost:8001',
+        target: 'http://localhost:17777',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/defender/, ''),
       },

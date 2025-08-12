@@ -1,6 +1,6 @@
 import { InstanceInitRequestContainerPcapMapping } from '@/types/defender-agent'
-import { useGetDindPacketFilesModelsModelIdDindPacketsGet } from '@/types/docker-manager'
-
+import { getGetDindPacketFilesModelsModelIdDindPacketsGetQueryKey, useGetDindPacketFilesModelsModelIdDindPacketsGet } from '@/types/docker-manager'
+import { useQueryClient } from '@tanstack/react-query'
 // Based on the sample response from Postman
 export interface DindPacketFile {
   file_path: string
@@ -20,6 +20,10 @@ export interface DindPacketFilesData {
 }
 
 export const useDind = (modelId: string) => {
+  const queryClient = useQueryClient()
+  const queryKey = getGetDindPacketFilesModelsModelIdDindPacketsGetQueryKey(modelId);
+  const cachedStatus = queryClient.getQueryData<DindPacketFilesData>(queryKey);
+
   const {
     data: dindPacketFilesData,
     isLoading,
@@ -27,7 +31,9 @@ export const useDind = (modelId: string) => {
     error,
   } = useGetDindPacketFilesModelsModelIdDindPacketsGet(modelId, {
     query: {
+      enabled: !!(modelId) && (!cachedStatus),
       select: (data) => data.data as unknown as DindPacketFilesData,
+      retry:3
     },
   })
   const packetFiles=dindPacketFilesData?.packet_files || {}

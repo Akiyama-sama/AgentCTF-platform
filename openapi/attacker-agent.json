@@ -396,24 +396,39 @@
             "title": "Message",
             "description": "消息内容"
           },
-          "custom_info": {
+          "box_type": {
+            "type": "string",
+            "enum": [
+              "black",
+              "white"
+            ],
+            "title": "Box Type",
+            "description": "黑白盒判断，black为黑盒，white为白盒"
+          },
+          "is_attacke": {
+            "type": "boolean",
+            "title": "Is Attacke",
+            "description": "是否为进攻（第一次请求为True，后续都为false，为True时message为空）"
+          },
+          "whitebox_description": {
             "anyOf": [
               {
-                "additionalProperties": true,
-                "type": "object"
+                "type": "string"
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Custom Info",
-            "description": "用户自定义信息，前端可自行填写任意键值对"
+            "title": "Whitebox Description",
+            "description": "白盒描述信息，仅在白盒模式下使用"
           }
         },
         "type": "object",
         "required": [
           "user_id",
-          "message"
+          "message",
+          "box_type",
+          "is_attacke"
         ],
         "title": "ChatRequest"
       },

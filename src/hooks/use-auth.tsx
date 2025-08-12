@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -11,6 +11,7 @@ import {
   useGetCurrentUserInfoUsersMeGet,
   // useGetUserInfoUsersUserIdGet,
   useLoginUsersLoginPost,
+  useRefreshTokenUsersRefreshTokenPost,
   useRegisterUsersRegisterPost,
   useUpdateCurrentUserInfoUsersMePut,
   // --- 管理员相关 ---
@@ -66,6 +67,9 @@ export const useAuth = () => {
       select: response => response.data ?? null,
     },
   })
+
+  // 关键状态：用户是否已认证
+  const isAuthenticated =  !!user
 
   // 3. 登录 Mutation
   const loginMutation = useLoginUsersLoginPost({
@@ -142,11 +146,45 @@ export const useAuth = () => {
     },
   })
 
+  // 8. 刷新 Token 的 Mutation
+  const refreshTokenMutation = useRefreshTokenUsersRefreshTokenPost({
+    mutation: {
+      onSuccess: (res) => {
+        const accessToken = res.data?.access_token
+        if (accessToken) {
+          setToken(accessToken)
+        }
+        else {
+          // Refresh succeeded but didn't return a token, treat as an error and logout.
+          logout()
+        }
+      },
+      onError: () => {
+        // If refresh fails, the session is likely invalid, so log out.
+        logout()
+      },
+      retry: 0,
+    },
+  })
+
+  // 9. 定期刷新 Token 的 Effect
+  useEffect(() => {
+    if (isAuthenticated) {
+      // 30分钟刷新一次token
+      const intervalId = setInterval(() => {
+        refreshTokenMutation.mutate()
+      }, 30 * 60 * 1000)
+
+      return () => clearInterval(intervalId)
+    }
+    return undefined
+  }, [isAuthenticated, refreshTokenMutation])
+
   return {
     // --- 状态 ---
     user,
     userQuery,
-    isAuthenticated: import.meta.env.DEV || !!user, // 开发模式下总是认为已认证
+    isAuthenticated, // 开发模式下总是认为已认证
     isLoading: userQuery.isLoading,
 
     // --- 方法 ---
