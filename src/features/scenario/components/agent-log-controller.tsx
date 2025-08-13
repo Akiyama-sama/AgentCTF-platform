@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/card'
 import { PillTabs } from '@/components/pill-tabs'
 import Loading from '@/components/Loading'
 import { AgentLog } from './agent-log'
+import { useProcess } from '../store/process-store'
+
 
 type Props = {
   modelId: string
@@ -18,7 +20,7 @@ export const AgentLogController = ({ modelId, className }: Props) => {
     startLogs: startAttackerLogs,
     isStreaming: isAttackerStreaming,
   } = useAttackerAgentLogs(modelId)
-
+  const {scenarioProcessState}=useProcess()
   const {
     logs: defenderLogs,
     startLogs: startDefenderLogs,
@@ -29,12 +31,12 @@ export const AgentLogController = ({ modelId, className }: Props) => {
     useAttackerAgentSession(modelId)
   const [activeTab, setActiveTab] = useState('attacker-agent-log')
   const [isSessionReady, setIsSessionReady] = useState(false)
-
+  
   useEffect(() => {
     const sessionReady =
       attackerAgentStatusQuery.isSuccess &&
       !attackerAgentStatusQuery.isError &&
-      attackerAgentStatus?.initialized
+      attackerAgentStatus?.initialized && !scenarioProcessState.isAttackFinished
     setIsSessionReady(sessionReady || false)
     if (sessionReady) {
       if (
@@ -63,8 +65,13 @@ export const AgentLogController = ({ modelId, className }: Props) => {
     attackerAgentStatusQuery.isSuccess,
     attackerAgentStatusQuery.isError,
     attackerAgentStatus?.initialized,
+    scenarioProcessState.isAttackFinished
   ])
-
+  if(scenarioProcessState.isAttackFinished){
+    return <div className='flex h-full w-full items-center justify-center'>
+      <p className='text-lg text-primary'>攻击已结束，指挥官可以与攻击Agent对话，或者直接开始生成报告</p>
+    </div>
+  }
   const activeLogs =
     activeTab === 'attacker-agent-log'
       ? attackerLogs.slice(-25)

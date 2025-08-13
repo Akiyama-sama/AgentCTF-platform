@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import {
   ApiResponseUserCleanupResponse,
@@ -33,7 +33,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { ScenarioProcessState, useProcess } from '../store/process-store'
 import {
   ApiResponseInstanceCleanupResponse,
@@ -57,8 +56,8 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     defenderContainerName,
     targetContainer,
     ipAddressMap,
-    isPending:isContainersPending,
-    isSuccess:isContainersSuccess,
+    isPending: isContainersPending,
+    isSuccess: isContainersSuccess,
   } = useScenarioContainers(scenarioId)
   const {
     messages,
@@ -69,7 +68,6 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     isLoading,
     sendMessage,
     setBoxType,
-    
   } = useAttackerAgentChat({ user_id: scenarioId })
   const {
     status,
@@ -82,19 +80,74 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     cleanupInstanceAsync: cleanupDefenderAgentAsync,
   } = useDefenderAgentSession(scenarioId)
   const { dindPackageInfo } = useDind(scenarioId)
-  const { setScenarioProcessState,scenarioProcessState} = useProcess()
+  const { setScenarioProcessState, scenarioProcessState } = useProcess()
   const { readmeContent } = useScenarioFile(scenarioId)
   const navigate = useNavigate()
-  const messagesEndRef = useRef<HTMLDivElement>(null)
   const [isOptionVisible, setIsOptionVisible] = useState(false)
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
 
-  
-  const defender_mcp_url = portMap.get(defenderContainerName!)?`http://localhost:${portMap.get(defenderContainerName!)?.mcpPort}/sse`:undefined
-  const attacker_mcp_url = portMap.get(attackerContainerName!)?`http://localhost:${portMap.get(attackerContainerName!)?.mcpPort}/sse`:undefined
-  const target_entrance_url = (portMap.get(targetContainerName!)&&ipAddressMap.get(targetContainerName!))?`http://${ipAddressMap.get(targetContainerName!)}:${portMap.get(targetContainerName!)?.targetEntrancePort}`:undefined
+  // --- 智能滚动逻辑 ---
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [autoScroll, setAutoScroll] = useState(true)
+  const idleTimerRef = useRef<number | null>(null)
+
+  const scrollToBottom = useCallback(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [])
+
+  useEffect(() => {
+    if (autoScroll) {
+      scrollToBottom()
+    }
+  }, [messages, autoScroll, scrollToBottom])
+
+  useEffect(() => {
+    const scrollElement = scrollRef.current
+    if (!scrollElement) return
+
+    const handleScroll = () => {
+      if (idleTimerRef.current) {
+        window.clearTimeout(idleTimerRef.current)
+      }
+
+      const isAtBottom =
+        scrollElement.scrollHeight -
+          scrollElement.scrollTop -
+          scrollElement.clientHeight <
+        10
+
+      if (isAtBottom) {
+        setAutoScroll(true)
+      } else {
+        setAutoScroll(false)
+        idleTimerRef.current = window.setTimeout(() => {
+          setAutoScroll(true)
+        }, 5000)
+      }
+    }
+
+    scrollElement.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      scrollElement.removeEventListener('scroll', handleScroll)
+      if (idleTimerRef.current) {
+        window.clearTimeout(idleTimerRef.current)
+      }
+    }
+  }, [scrollToBottom])
+  // --- 智能滚动逻辑结束 ---
+
+  const defender_mcp_url = portMap.get(defenderContainerName!)
+    ? `http://localhost:${portMap.get(defenderContainerName!)?.mcpPort}/sse`
+    : undefined
+  const attacker_mcp_url = portMap.get(attackerContainerName!)
+    ? `http://localhost:${portMap.get(attackerContainerName!)?.mcpPort}/sse`
+    : undefined
+  const target_entrance_url =
+    portMap.get(targetContainerName!) && ipAddressMap.get(targetContainerName!)
+      ? `http://${ipAddressMap.get(targetContainerName!)}:8080`
+      : undefined
 
   const blackBoxMessage =
     '当前靶机地址为:' + target_entrance_url + '请开始黑盒攻击'
@@ -107,8 +160,11 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     '\n' +
     '请开始白盒攻击'
 
-  const handleOptionClick = (message: string,whitebox_description?:string) => {
-    sendMessage(message,whitebox_description)
+  const handleOptionClick = (
+    message: string,
+    whitebox_description?: string,
+  ) => {
+    sendMessage(message, whitebox_description)
     setIsOptionVisible(false)
     setScenarioProcessState((state: ScenarioProcessState) => ({
       ...state,
@@ -118,7 +174,14 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
 
   // 1. 当状态加载完毕数据准备完毕时候，且攻击agent未初始化时，执行初始化
   useEffect(() => {
-    if (status && !status.initialized&&attacker_mcp_url&&target_entrance_url&&isContainersSuccess&&!scenarioProcessState.isAttackFinished) {
+    if (
+      status &&
+      !status.initialized &&
+      attacker_mcp_url &&
+      target_entrance_url &&
+      isContainersSuccess &&
+      !scenarioProcessState.isAttackFinished
+    ) {
       initeAttackerAgent({
         data: {
           api_key: api_key,
@@ -142,44 +205,65 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
         .catch((err: Error) => {
           showErrorMessage(err?.message || '攻击Agent初始化失败')
         })
-    }else if(status && status.initialized){
+    } else if (status && status.initialized) {
       setScenarioProcessState((state: ScenarioProcessState) => ({
         ...state,
         attackAgentInitialized: true,
       }))
     }
-  }, [status?.initialized, scenarioId,attacker_mcp_url,target_entrance_url,isContainersSuccess,scenarioProcessState.isAttackFinished])
+  }, [
+    status?.initialized,
+    scenarioId,
+    attacker_mcp_url,
+    target_entrance_url,
+    isContainersSuccess,
+    scenarioProcessState.isAttackFinished,
+  ])
 
   // 2. 当状态加载完毕且防御agent未初始化，且dind包信息存在时，执行初始化
   useEffect(() => {
-    if (defenseAgentStatus && !defenseAgentStatus.initialized&&dindPackageInfo&&defender_mcp_url&&isContainersSuccess&&!scenarioProcessState.isAttackFinished) {
+    if (
+      defenseAgentStatus &&
+      !defenseAgentStatus.initialized &&
+      dindPackageInfo &&
+      defender_mcp_url &&
+      isContainersSuccess &&
+      !scenarioProcessState.isAttackFinished
+    ) {
       initDefenderAgentAsync({
         model_id: scenarioId,
         container_pcap_mapping: dindPackageInfo,
         mcp_server_url: defender_mcp_url,
-      }).then((res:ApiResponseInstanceInitResponse)=>{
-        if(res.code==200){
+      }).then((res: ApiResponseInstanceInitResponse) => {
+        if (res.code == 200) {
           showSuccessMessage(res.message || '防御Agent初始化成功')
           setScenarioProcessState((state: ScenarioProcessState) => ({
             ...state,
             defenseAgentInitialized: true,
           }))
         }
-        if(res && res.code === 1001) {
+        if (res && res.code === 1001) {
           showErrorMessage(res.message || '防御Agent初始化失败')
         }
       })
-    }else if(defenseAgentStatus && defenseAgentStatus.initialized){
+    } else if (defenseAgentStatus && defenseAgentStatus.initialized) {
       setScenarioProcessState((state: ScenarioProcessState) => ({
         ...state,
         defenseAgentInitialized: true,
       }))
     }
-  }, [defenseAgentStatus?.initialized, scenarioId, dindPackageInfo, defender_mcp_url, isContainersSuccess, scenarioProcessState.isAttackFinished])
+  }, [
+    defenseAgentStatus?.initialized,
+    scenarioId,
+    dindPackageInfo,
+    defender_mcp_url,
+    isContainersSuccess,
+    scenarioProcessState.isAttackFinished,
+  ])
 
   // 3. 当用户初始化成功后，如果还没有消息，则渲染选项，让用户选择进行黑盒还是白盒攻击
   useEffect(() => {
-    if(messages.length>0){
+    if (messages.length > 0) {
       setScenarioProcessState((state: ScenarioProcessState) => ({
         ...state,
         isAttackStarted: true,
@@ -191,16 +275,12 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     }
   }, [status?.initialized, messages.length])
 
-  // 3. 消息列表更新时，自动滚动到底部
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
-
-  if(isContainersPending){
-    return <div className='flex h-full w-full items-center justify-center p-4 shadow-xs'>
-      <Loading />
-    </div>
+  if (isContainersPending) {
+    return (
+      <div className='flex h-full w-full items-center justify-center p-4 shadow-xs'>
+        <Loading />
+      </div>
+    )
   }
   return (
     <Card className={cn('flex flex-col', className)}>
@@ -236,23 +316,25 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
                   cleanupAttackerAgent({ params: { user_id: scenarioId } })
                     .then((res: ApiResponseUserCleanupResponse) => {
                       if (res.code == 200) {
-                        showSuccessMessage(res.message || 'Agent实例清除成功')
+                        showSuccessMessage('攻击Agent实例清除成功')
                       }
                       if (res && res.code === 1001) {
-                        showErrorMessage(res.message || 'Agent实例清除失败')
+                        showErrorMessage(res.message || '攻击Agent实例清除失败')
                       }
                     })
                     .catch((err: Error) => {
-                      showErrorMessage(err?.message || 'Agent实例清除失败')
+                      showErrorMessage(err?.message || '攻击Agent实例清除失败')
                     })
-                  cleanupDefenderAgentAsync().then((res:ApiResponseInstanceCleanupResponse)=>{
-                    if(res.code==200){
-                      showSuccessMessage(res.message || '防御Agent实例清除成功')
-                    }
-                    if(res && res.code === 1001) {
-                      showErrorMessage(res.message || '防御Agent实例清除失败')
-                    }
-                  })
+                  cleanupDefenderAgentAsync().then(
+                    (res: ApiResponseInstanceCleanupResponse) => {
+                      if (res.code == 200) {
+                        showSuccessMessage(res.message || '防御Agent实例清除成功')
+                      }
+                      if (res && res.code === 1001) {
+                        showErrorMessage(res.message || '防御Agent实例清除失败')
+                      }
+                    },
+                  )
                   localStorage.removeItem(`attacker-agent-${scenarioId}`)
                   setMessages([])
                   navigate({ to: '/scenarios' })
@@ -265,7 +347,7 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
         </DropdownMenu>
       </CardHeader>
       <CardContent className='flex min-h-0 flex-1 flex-col px-4'>
-        <ScrollArea className='h-full'>
+        <div ref={scrollRef} className='flex-1 overflow-y-auto min-h-0'>
           <div className='space-y-4'>
             {messages.length === 0 && (
               <div className='text-muted-foreground flex h-full items-center justify-center'>
@@ -277,7 +359,7 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
                 key={message.id}
                 className={cn(
                   'flex items-start gap-3',
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                  message.role === 'user' ? 'justify-end' : 'justify-start',
                 )}
               >
                 {message.role !== 'user' && (
@@ -290,7 +372,7 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
                     'max-w-[75%] rounded-lg px-3 py-2 text-sm',
                     message.role === 'user'
                       ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                      : 'bg-muted',
                   )}
                 >
                   <p className='break-words whitespace-pre-wrap'>
@@ -304,38 +386,40 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
                 )}
               </div>
             ))}
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
-        {isOptionVisible && (
-        <div className=' px-4 py-4'>
-          <p className='text-muted-foreground mb-2 text-center text-sm'>
-            选择一个模式开始：
-          </p>
-          <div className='flex justify-center gap-2'>
-            <Button
-              variant='outline'
-              onClick={() => {
-                setBoxType('black')
-                handleOptionClick(blackBoxMessage)
-              }}
-            >
-              进行黑盒攻击
-            </Button>
-            <Button
-              variant='outline'
-              onClick={() => {
-                setBoxType('white')
-                handleOptionClick(whiteBoxMessage,readmeContent??JSON.stringify(targetContainer))
-              }}
-            >
-              进行白盒攻击
-            </Button>
           </div>
         </div>
-      )}
+        {isOptionVisible && (
+          <div className=' px-4 py-4'>
+            <p className='text-muted-foreground mb-2 text-center text-sm'>
+              选择一个模式开始：
+            </p>
+            <div className='flex justify-center gap-2'>
+              <Button
+                variant='outline'
+                onClick={() => {
+                  setBoxType('black')
+                  handleOptionClick(blackBoxMessage)
+                }}
+              >
+                进行黑盒攻击
+              </Button>
+              <Button
+                variant='outline'
+                onClick={() => {
+                  setBoxType('white')
+                  handleOptionClick(
+                    whiteBoxMessage,
+                    readmeContent ?? JSON.stringify(targetContainer),
+                  )
+                }}
+              >
+                进行白盒攻击
+              </Button>
+            </div>
+          </div>
+        )}
       </CardContent>
-      
+
       <CardFooter className='border-t'>
         <form
           onSubmit={handleSubmit}

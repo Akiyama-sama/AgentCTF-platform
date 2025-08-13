@@ -47,26 +47,47 @@ function getLogLevelAppearance(level: SSELogLevel): {
  * 单条日志的渲染组件。
  * 设计原则：布局清晰，元素对齐，关键信息（级别、时间戳）一目了然。
  * 使用等宽字体展示日志内容，保证格式的准确性。
+ * 对过长的日志进行折叠处理，尊重用户的屏幕空间。
  */
 const LogItem: React.FC<{ item: LogDisplayItem }> = ({ item }) => {
   const { Icon, color, levelName } = getLogLevelAppearance(item.level)
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  // 定义长消息的阈值：超过7行或500个字符
+  const lineCount = (item.message.match(/\n/g) || []).length + 1
+  const isLongMessage = lineCount > 7 || item.message.length > 500
+
+  // 为预览截断长消息，显示前5行
+  const truncatedMessage =
+    item.message.split('\n').slice(0, 5).join('\n') + '\n...'
+  const displayMessage =
+    isLongMessage && !isExpanded ? truncatedMessage : item.message
 
   return (
     <div className={cn('p-3 rounded-lg border-l-4 bg-card shadow-sm', color)}>
-      <div className="flex items-center gap-3 mb-2">
-        <Icon className="h-5 w-5 flex-shrink-0" />
-        <span className="font-semibold text-sm">{levelName}</span>
+      <div className='flex items-center gap-3 mb-2'>
+        <Icon className='h-5 w-5 flex-shrink-0' />
+        <span className='font-semibold text-sm'>{levelName}</span>
         {item.type === 'history' && (
-          <Badge variant="outline" className="text-xs font-normal">
+          <Badge variant='outline' className='text-xs font-normal'>
             历史记录
           </Badge>
         )}
-        <span className="text-xs text-muted-foreground ml-auto">
+        <span className='text-xs text-muted-foreground ml-auto'>
           {new Date(item.timestamp).toLocaleTimeString()}
         </span>
       </div>
-      <div className="pl-8 text-sm break-words">
-        <p className="whitespace-pre-wrap font-mono text-xs">{item.message}</p>
+      <div className='pl-8 text-sm break-words'>
+        <p className='whitespace-pre-wrap  text-xs'>{displayMessage}</p>
+        {isLongMessage && (
+          <button
+            type='button'
+            onClick={() => setIsExpanded(e => !e)}
+            className='mt-2 text-sm font-semibold text-blue-500 hover:underline focus:outline-none'
+          >
+            {isExpanded ? '收起' : '展开'}
+          </button>
+        )}
       </div>
     </div>
   )

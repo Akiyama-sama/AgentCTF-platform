@@ -212,6 +212,14 @@ const closeContainerLogConnection = (
   // We no longer delete the state here, to preserve logs when switching tabs.
 }
 
+const closeAllContainerLogConnection = (modelId: string) => {
+  Object.keys(containerLogsState).forEach((containerId) => {
+    if (containerId.startsWith(modelId)) {
+      sseConnectionManager.closeConnection(containerId)
+    }
+  })
+}
+
 export const useContainerLogs = () => {
   const [, forceUpdate] = useState(0)
 
@@ -231,6 +239,7 @@ export const useContainerLogs = () => {
     containerLogs: containerLogsState,
     createContainerConnection: createContainerLogConnection,
     closeContainerConnection: closeContainerLogConnection,
+    closeAllContainerConnection: closeAllContainerLogConnection,
   }
 }
 
@@ -272,6 +281,11 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
         },
         onMessage: (data: unknown) => {
           const logData = data as SSELogEntry
+          const regex=/\[ATTACK_SUCCESS_MARKER\](True|False)\[\/ATTACK_SUCCESS_MARKER\]/
+          if(logData.message.match(regex)){
+            stopLogs() 
+            return
+          }
           const level =
             logData.message && typeof logData.message === 'string'
               ? getLevelFromData(logData.message) || SSELogLevel.INFO

@@ -23,6 +23,7 @@ import {
   useGetModelStateModelsModelIdStateGet,
 } from '@/types/docker-manager';
 import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
 /**
  * Hook 用于获取所有练习列表，并提供创建新练习的方法。
@@ -79,7 +80,7 @@ export const useExercises = () => {
  */
 export const useExercise = (exerciseId: string) => {
   const queryClient = useQueryClient();
-
+  const [isPollingEnabled, setIsPollingEnabled] = useState(true);
   const { data: exercise, ...exerciseQuery } =
   useGetModelModelsModelIdGet(exerciseId, {
       query: {
@@ -94,13 +95,18 @@ export const useExercise = (exerciseId: string) => {
   useGetModelStateModelsModelIdStateGet(exerciseId, {
       query: {
         enabled: !!exerciseId,
-        refetchInterval: 2000,
+        refetchInterval: isPollingEnabled ? 5000 : false,
         select: (response: ApiResponseModelStateResponse): ModelStateResponse | null => {
           return response.data ?? null;
         },
       },
     });
 
+    useEffect(() => {
+      if (status && status.state !== 'pending' && status.state !== 'building') {
+        setIsPollingEnabled(false); // Stop polling when the state is final
+      }
+    }, [status]);
 
   const invalidateExerciseQueries = () => {
     queryClient.invalidateQueries({

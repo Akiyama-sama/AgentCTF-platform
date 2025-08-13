@@ -4,7 +4,6 @@ import {
   IconPencil,
   IconSettings,
   IconShieldCode,
-  IconTool,
   IconUser,
   IconUserCog,
   IconBuildingFactory 
@@ -62,11 +61,6 @@ export const sidebarData: SidebarData = {
               title: '个人信息',
               url: '/settings',
               icon: IconUserCog,
-            },
-            {
-              title: 'Agent设置',
-              url: '/settings/agent',
-              icon: IconTool,
             },
             {
               title: '外观',

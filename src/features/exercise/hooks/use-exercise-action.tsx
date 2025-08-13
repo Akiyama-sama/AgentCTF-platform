@@ -19,7 +19,7 @@ export const useExerciseActions = (
   const { exercise, updateState,isUpdatingState  } = useExercise(exerciseId);
   const { setOpen, setCurrentRow } = useExercisesDialog();
   const navigate = useNavigate();
-
+  
   // 新增一个 state 来追踪正在进行中的 action
   const [pendingAction, setPendingAction] = useState<ActionType | null>(null);
 
@@ -36,6 +36,14 @@ export const useExerciseActions = (
       case 'submit_flag':
         setCurrentRow(exercise)
         setOpen('submit_flag');
+        break;
+      case 'check_report':
+        navigate({
+          to: '/exercises/$exerciseId/report',
+          params: {
+            exerciseId: exerciseId
+          }
+        })
         break;
       case 'build':
         setCurrentRow(exercise)

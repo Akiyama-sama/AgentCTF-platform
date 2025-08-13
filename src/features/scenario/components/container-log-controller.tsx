@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/tooltip'
 import { showSuccessMessage } from '@/utils/show-submitted-data'
 import { containerTabs, logLevelOptions, type ContainerType } from '../data/data'
+import { useProcess } from '../store/process-store'
 
 type Props = {
   modelId: string
@@ -44,7 +45,7 @@ export const LogController = ({ modelId }: Props) => {
   const [logLevel, setLogLevel] = useState<SSELogLevel | 'ALL'>('ALL')
   const [selectedContainer, setSelectedContainer] =
     useState<ContainerType>('attacker')
-
+  const {scenarioProcessState}=useProcess()
   useEffect(() => {
     const containerNameMap: Record<ContainerType, string | undefined> = {
       attacker: attackerContainerName,
@@ -53,7 +54,7 @@ export const LogController = ({ modelId }: Props) => {
     }
     const selectedName = containerNameMap[selectedContainer]
 
-    if (selectedName) {
+    if (!scenarioProcessState.isAttackFinished&&selectedName) {
       createContainerConnection(modelId, selectedName)
       return () => {
         closeContainerConnection(modelId, selectedName)
@@ -67,6 +68,7 @@ export const LogController = ({ modelId }: Props) => {
     targetContainerName,
     createContainerConnection,
     closeContainerConnection,
+    scenarioProcessState.isAttackFinished
   ])
 
   const containerNameMap: Record<ContainerType, string | undefined> = {
@@ -88,7 +90,7 @@ export const LogController = ({ modelId }: Props) => {
   const latestLogs = filteredLogs.slice(-25)
   const state =
     containerLogs[selectedContainerLogId]?.connectionState ?? 'Waiting...'
-
+  
   if (isPending) {
     return (
       <Card className='flex h-full w-full items-center justify-center p-4 shadow-xs'>
@@ -214,6 +216,9 @@ export const LogController = ({ modelId }: Props) => {
                     <Loading />
                   </div>
                 ) : (
+                  scenarioProcessState.isAttackFinished?<div className='flex h-full items-center justify-center'>
+                    <p className='text-lg text-primary'>攻击结束，各容器的日志流已关闭</p>
+                  </div>:
                   <Log
                     logs={latestLogs}
                     className='h-full p-2'

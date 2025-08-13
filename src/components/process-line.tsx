@@ -59,7 +59,7 @@ export default function ProcessLine({
             <div>{item.description}</div>
             {item.action && (
               <div
-                className='text-primary group-not-data-completed/timeline-item:pointer-events-none:cursor-not-allowed cursor-pointer underline group-not-data-completed/timeline-item:pointer-events-none group-not-data-completed/timeline-item:hidden'
+                className='text-primary hover:text-primary/80 group-not-data-completed/timeline-item:pointer-events-none:cursor-not-allowed cursor-pointer underline group-not-data-completed/timeline-item:pointer-events-none group-not-data-completed/timeline-item:hidden'
                 onClick={item.action?.onClick}
               >
                 {item.action?.label}

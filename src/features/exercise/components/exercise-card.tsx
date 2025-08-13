@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { exerciseStateConfig, type ActionType } from '../data/data'
 import { cn } from '@/lib/utils'
 import { BaseState } from '@/types/docker-manager'
+import { useExerciseReport } from '@/hooks/use-report'
 
 interface Props {
     name: string
@@ -28,9 +29,11 @@ interface ExerciseCardActionsProps {
     state: BaseState
     pendingAction: ActionType | null
     onAction: (action: ActionType) => void
+    exerciseId: string
 }
 
-function ExerciseCardActions({ state, onAction, pendingAction }: ExerciseCardActionsProps) {
+function ExerciseCardActions({ state, onAction, pendingAction,exerciseId }: ExerciseCardActionsProps) {
+    const {isSuccess:isReportSuccess}=useExerciseReport(exerciseId)
     const config = exerciseStateConfig[state]
 
     if (config.component) {
@@ -43,6 +46,9 @@ function ExerciseCardActions({ state, onAction, pendingAction }: ExerciseCardAct
             <div className='flex flex-wrap items-center gap-2'>
                 {config.actions.map((action) => {
                     const Icon = action.icon
+                    if(action.actionType==='check_report'&&!isReportSuccess){
+                        return null
+                    }
                     return (
                         <ButtonWithLoading 
                             key={action.label} 
@@ -77,7 +83,7 @@ export function ExerciseCard({ name, description, state, onAction, pendingAction
         <p className='text-sm text-muted-foreground line-clamp-3'>UUID:{uuid}</p>
       </CardContent>
       <CardFooter className='pt-2 mt-auto'>
-        <ExerciseCardActions state={state} onAction={onAction} pendingAction={pendingAction} />
+        <ExerciseCardActions state={state} onAction={onAction} pendingAction={pendingAction} exerciseId={uuid} />
       </CardFooter>
     </Card>
   )

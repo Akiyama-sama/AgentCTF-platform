@@ -21,6 +21,8 @@ export const exerciseReportSchema = z.object({
     mitre_score: z.number(),
     richness_score: z.number(),
     ai_score: z.number(),
+    total_score: z.number(),
+    max_possible_score: z.number(),
   }),
 })
 

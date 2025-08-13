@@ -14,10 +14,17 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { ScoreRadarChart } from './components/score-radar-chart'
-import { exerciseReport } from './data/data'
-import { Main } from '@/components/layout/main'
 
-function AiEvaluationCard() {
+import { Main } from '@/components/layout/main'
+import { useExerciseReport } from '@/hooks/use-report'
+import Loading from '@/components/Loading'
+import type { ExerciseReport } from './data/schema'
+
+type AiEvaluationCardProps={
+  exerciseReport:ExerciseReport
+}
+
+function AiEvaluationCard({exerciseReport}:AiEvaluationCardProps) {
   const { ai_evaluation } = exerciseReport
   return (
     <Card className='flex-1'>
@@ -70,7 +77,11 @@ function AiEvaluationCard() {
   )
 }
 
-function LearningPathCard() {
+type LearningPathCardProps={
+  exerciseReport:ExerciseReport
+}
+
+function LearningPathCard({exerciseReport}:LearningPathCardProps) {
   const { learning_path } = exerciseReport.ai_evaluation
   return (
     <Card>
@@ -126,7 +137,15 @@ function LearningPathCard() {
   )
 }
 
-export default function ExerciseReport() {
+export default function ExerciseReport({exerciseId}:{exerciseId:string}) {
+  
+  const {isPending,isError,report}=useExerciseReport(exerciseId)
+
+  const isLoading=isPending
+  if(isError||!report){
+    return <div className='flex h-full w-full items-center justify-center'>获取报告出现错误</div>
+  }
+  const exerciseReport=report as ExerciseReport
   return (
     <SearchProvider>
       <Header fixed>
@@ -144,7 +163,8 @@ export default function ExerciseReport() {
               本次网络安全攻防演练的综合评估结果
             </p>
           </header>
-
+          {isLoading?<Loading/>:
+          <div>
           <div className='mb-8 grid grid-cols-1 gap-8 lg:grid-cols-3'>
             <Card className='col-span-1 flex flex-col items-center justify-center text-center lg:col-span-1'>
               <CardHeader>
@@ -161,16 +181,18 @@ export default function ExerciseReport() {
             </Card>
 
             <div className='col-span-1 lg:col-span-2'>
-              <ScoreRadarChart data={exerciseReport.score_details} />
+                <ScoreRadarChart data={exerciseReport.score_details} />
             </div>
           </div>
 
           <div className='flex flex-col gap-8 lg:flex-row'>
-            <AiEvaluationCard />
+            <AiEvaluationCard exerciseReport={exerciseReport} />
             <div className='flex w-full flex-col gap-8 lg:w-2/5'>
-              <LearningPathCard />
+              <LearningPathCard exerciseReport={exerciseReport} />
             </div>
           </div>
+          </div>
+          }
         </div>
       </Main>
     </SearchProvider>

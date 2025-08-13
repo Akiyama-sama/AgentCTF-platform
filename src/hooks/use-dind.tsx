@@ -30,6 +30,7 @@ export const useDind = (modelId: string) => {
 
   const {
     data: dindPacketFilesData,
+    isSuccess,
     isLoading,
     isError,
     error,
@@ -63,6 +64,7 @@ export const useDind = (modelId: string) => {
     dindPackageInfo,
     dindPackageInfoList,
     isLoading,
+    isSuccess,
     isError,
     error,
   }

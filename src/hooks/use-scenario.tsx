@@ -70,6 +70,9 @@ type ContainerInspectDetail = {
       [key: string]: {
         IPAddress: string
       }
+    },
+    Ports?: {
+      '8080/tcp'?: { HostPort: string }[]
     }
   }
 }
@@ -300,7 +303,7 @@ export const useScenarioContainers = (scenarioId: string) => {
             const sshPortStr =
               container.HostConfig?.PortBindings?.['2222/tcp']?.[0]?.HostPort
             const targetEntrancePortStr =
-              container.HostConfig?.PortBindings?.['8080/tcp']?.[0]?.HostPort
+              container.NetworkSettings?.Ports?.['8080/tcp']?.[0]?.HostPort
             const mcpPort = mcpPortStr ? parseInt(mcpPortStr, 10) : undefined
             const sshPort = sshPortStr ? parseInt(sshPortStr, 10) : undefined
             const targetEntrancePort = targetEntrancePortStr

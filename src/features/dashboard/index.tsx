@@ -16,7 +16,10 @@ import { Search } from '@/components/search'
 import FlipLink from '@/components/text-effect-flipper'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Icons, teamMates } from './data/data'
-import ProjectDescription from './components/project-description'
+import EnhancedProjectDescription from './components/enhanced-project-description'
+import TutorialLine from './components/tutorial-line'
+import StatusOverview from './components/status-overview'
+import QuickActions from './components/quick-actions'
 
 export default function Dashboard() {
   return (
@@ -32,122 +35,124 @@ export default function Dashboard() {
       </Header>
 
       {/* ===== Main ===== */}
-      <Main className='h-screen p-6'>
-        {/* 顶部 */}
-        <div className='mb-8 flex items-center justify-between space-y-2'>
-          <div className='flex w-full flex-row'>
-            <div className='text-chart-1 dark:text-chart-3 flex w-1/2 flex-col tracking-tight'>
-              <p className='text-muted-foreground font-serif text-sm'>
-                Intelligent Platform Powered by AI Agent
-              </p>
-              <h1 className='w-full text-left font-serif text-6xl font-bold'>
-                你好，指挥官
-              </h1>
-            </div>
+      <Main className='min-h-screen p-6 bg-gradient-to-br from-background via-background to-muted/20'>
+        {/* 英雄区域 - 重新设计 */}
+        <div className='mb-12'>
+          <EnhancedProjectDescription />
+        </div>
 
-            <div className='flex w-1/2 flex-row gap-2 lg:gap-4'>
-              <Separator orientation='vertical' className='h-fit' />
-              <p className='text-muted-foreground mb-0 w-full text-start font-serif'>
-                欢迎来到 AI Agent 驱动的动态攻防推演靶场平台
-                <br />
-                在这里，我们将通过AI 技术重塑网络安全实训模式
-                <br />
-                构建安全可信的数字世界。
-              </p>
-            </div>
+        {/* 系统状态概览 - 新增 */}
+        <div className='mb-8'>
+          <div className='mb-6'>
+            <h2 className='text-2xl font-bold text-foreground mb-2'>系统状态</h2>
+            <p className='text-muted-foreground'>实时监控攻防场景和靶场演练的运行状态</p>
           </div>
+          <StatusOverview />
         </div>
 
-        <div className='mb-8 grid grid-cols-1 gap-6 lg:grid-cols-4'>
-          <Card
-            className='flex h-[150px] flex-row items-center justify-between space-y-0 pb-2 col-span-3'
-          >
-           
-          </Card>
-          <Card
-            className='flex flex-row items-center justify-between space-y-0 pb-2 col-span-1'
-          >
-           
-          </Card>
+        {/* 快速操作区域 - 新增 */}
+        <div className='mb-8'>
+          <QuickActions />
         </div>
 
-        <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
-          {/* wordcloud: as a picture frame */}
+        {/* 内容展示区域 - 重新布局 */}
+        <div className='grid grid-cols-1 gap-8 lg:grid-cols-2 mb-12'>
+          {/* 词云展示 */}
           <div className='flex items-center justify-center'>
             <HoverCard>
               <HoverCardTrigger asChild>
-                <img
-                  src='/images/wordcloud.svg'
-                  alt='wordcloud'
-                  width={500}
-                  height={500}
-                  className='bg-chart-2 hover:bg-chart-1 p-3 shadow-2xl transition-all duration-300'
-                />
+                <div className='group cursor-pointer'>
+                  <img
+                    src='/images/wordcloud.svg'
+                    alt='wordcloud'
+                    width={500}
+                    height={500}
+                    className='bg-gradient-to-br from-chart-2/20 to-chart-1/20 hover:from-chart-2/40 hover:to-chart-1/40 p-6 shadow-2xl transition-all duration-500 rounded-2xl border border-border/50 group-hover:scale-105 group-hover:shadow-3xl'
+                  />
+                  <div className='mt-4 text-center'>
+                    <p className='text-sm text-muted-foreground font-medium'>项目技术关键词云</p>
+                    <p className='text-xs text-muted-foreground'>点击查看详情</p>
+                  </div>
+                </div>
               </HoverCardTrigger>
               <HoverCardPortal>
-              <HoverCardContent className='w-fit'>
-                <div className='flex justify-between gap-4 text-muted-foreground font-serif'>
-                  <p>项目关键词画框</p>
-                </div>
-              </HoverCardContent>
-            </HoverCardPortal>
+                <HoverCardContent className='w-80 p-4'>
+                  <div className='space-y-3'>
+                    <h4 className='font-semibold text-foreground'>技术关键词分析</h4>
+                    <p className='text-sm text-muted-foreground'>
+                      基于AI驱动的网络安全技术栈，涵盖攻防推演、智能编排、动态防御等核心领域
+                    </p>
+                    <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+                      <div className='w-2 h-2 bg-primary rounded-full'></div>
+                      <span>实时更新</span>
+                    </div>
+                  </div>
+                </HoverCardContent>
+              </HoverCardPortal>
             </HoverCard>
-            
           </div>
         
-          <Card className='transition-shadow duration-300 hover:shadow-lg'>
+          {/* 教程引导 */}
+          <Card className='transition-all duration-300 hover:shadow-xl hover:scale-[1.01] border-0 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm'>
             <CardHeader>
-              <CardTitle></CardTitle>
+              <CardTitle className='flex items-center gap-2 text-xl'>
+                <Icons.github className='h-6 w-6 text-primary' />
+                快速上手指南
+              </CardTitle>
             </CardHeader>
-            <CardContent className='space-y-3 text-base'>
-            <ProjectDescription />
+            <CardContent className='space-y-4'>
+              <TutorialLine />
             </CardContent>
           </Card>
         </div>
 
-        <Separator className='my-10 border-1 shadow-sm' />
-      </Main>
+        <Separator className='my-12 border-1 shadow-sm' />
 
-      <div className='py-6 text-center'>
-        <div className='group flex items-center justify-center gap-2'>
-          <Icons.github />
-          <FlipLink href='https://github.com/FJNU-AI-Hacker'>
-            FJNU-AI-Hacker
-          </FlipLink>
-        </div>
-        <div className='mt-12'>
-          <h2 className='mb-6 text-center font-serif text-3xl font-bold'>
-            团队成员
-          </h2>
-          <div className='space-y-8'>
+        {/* 团队成员展示 - 重新设计 */}
+        <div className='py-8'>
+          <div className='text-center mb-12'>
+            <h2 className='text-3xl font-bold text-foreground mb-4'>
+              核心团队
+            </h2>
+            <p className='text-muted-foreground max-w-2xl mx-auto'>
+              一个专注于 AI 安全研究的精英团队，致力于探索前沿的攻防技术，构建安全可信的数字世界
+            </p>
+          </div>
+          
+          <div className='space-y-12'>
             {teamMates.map((role) => (
               <div key={role.responsibility}>
-                <h3 className='text-muted-foreground mb-4 text-center text-xl font-semibold'>
+                <h3 className='text-muted-foreground mb-6 text-center text-xl font-semibold flex items-center justify-center gap-2'>
+                  <div className='w-1 h-6 bg-primary rounded-full'></div>
                   {role.responsibility}
+                  <div className='w-1 h-6 bg-primary rounded-full'></div>
                 </h3>
                 <div className='flex flex-wrap justify-center gap-6'>
                   {role.members.map((mate) => (
                     <Card
                       key={mate.name}
-                      className='w-64 transform transition-all duration-300 hover:scale-105 hover:shadow-xl'
+                      className='w-64 transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-0 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm'
                     >
                       <CardContent className='flex flex-col items-center p-6 text-center'>
-                        <Avatar className='mb-4 h-24 w-24'>
+                        <Avatar className='mb-4 h-24 w-24 ring-4 ring-primary/20 transition-all duration-300 hover:ring-primary/40'>
                           <AvatarImage src={mate.avatar_url} alt={mate.name} />
-                          <AvatarFallback>{mate.name.charAt(0)}</AvatarFallback>
+                          <AvatarFallback className='text-2xl font-bold bg-primary/10 text-primary'>
+                            {mate.name.charAt(0)}
+                          </AvatarFallback>
                         </Avatar>
-                        <h4 className='text-lg font-bold'>{mate.name}</h4>
+                        <h4 className='text-lg font-bold text-foreground mb-2'>{mate.name}</h4>
                         <a
                           href={mate.github_url}
                           target='_blank'
                           rel='noopener noreferrer'
+                          className='group'
                         >
                           <Button
                             variant='ghost'
                             size='sm'
-                            className='text-muted-foreground mt-2'
+                            className='text-muted-foreground hover:text-primary transition-colors duration-300'
                           >
-                            <Icons.github className='mr-2 h-4 w-4' />
+                            <Icons.github className='mr-2 h-4 w-4 group-hover:scale-110 transition-transform duration-300' />
                             GitHub
                           </Button>
                         </a>
@@ -159,10 +164,20 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-        <p className='text-muted-foreground mt-2 text-sm'>
-          一个专注于 AI 安全研究的团队，致力于探索前沿的攻防技术。
-        </p>
-      </div>
+
+        {/* 页脚 */}
+        <div className='py-8 text-center border-t border-border/50'>
+          <div className='group flex items-center justify-center gap-2 mb-4'>
+            <Icons.github className='transition-transform duration-300 group-hover:scale-110' />
+            <FlipLink href='https://github.com/FJNU-AI-Hacker' >
+              FJNU-AI-Hacker
+            </FlipLink>
+          </div>
+          <p className='text-muted-foreground text-sm'>
+            点击进入项目地址
+          </p>
+        </div>
+      </Main>
     </>
   )
 }

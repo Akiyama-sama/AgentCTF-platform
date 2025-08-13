@@ -87,7 +87,7 @@ export const useExerciseReport = (
     })
 
   // Query for the assessment report
-  const { data: report, ...reportQuery } =
+  const { data: report,isPending,isSuccess,isError } =
     useGetAssessmentReportApiAssessmentReportModelIdGet(modelId!, {
       query: {
         // Only fetch the report if the modelId is valid and status is 'generated' (3)
@@ -143,7 +143,10 @@ export const useExerciseReport = (
     /** The assessment report data. */
     report,
     /** The react-query query object for the report. */
-    reportQuery,
+    
+    isPending,
+    isSuccess,
+    isError,
     /** Function to trigger the analysis. */
     analyze: (
       variables: Omit<BodyAnalyzeAndStoreApiAssessmentAnalyzePost, 'Model_id'>,
@@ -201,11 +204,11 @@ export const useScenarioReport = (
     enabled: isEnabled,
     // Refetch every 5 seconds if the report is still generating
     refetchInterval: query =>
-      refetchStatus && (query.state.data?.status === 'generating') ? 5000 : false,
+      refetchStatus && (query.state.data?.is_complete===false) ? 10000 : false,
   })
 
   // Query for the assessment report, enabled only when status is 'completed'
-  const { data: report,isPending } = useQuery({
+  const { data: report,isPending,isSuccess } = useQuery({
     queryKey: reportQueryKey,
     queryFn: async (): Promise<DefenseReportResponse | null> => {
       if (!modelId) return null
@@ -258,6 +261,7 @@ export const useScenarioReport = (
     status,
     report,
     isPending,
+    isSuccess,
     analyze: () => {
       analyzeMutation.mutate({ data: { model_id: modelId } })
     },

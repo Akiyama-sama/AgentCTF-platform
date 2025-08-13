@@ -12,7 +12,7 @@ import {
     Flag,
   } from 'lucide-react'
   import { BaseState, ModelAction } from '@/types/docker-manager'
-export type ActionType = ModelAction | 'delete' | 'view_details'|'submit_flag'
+export type ActionType = ModelAction | 'delete' | 'view_details'|'submit_flag'|'force_stop_build'|'check_report'
 
   export interface StateAction {
     label: string
@@ -37,6 +37,7 @@ export const exerciseStateConfig: Record<BaseState, StateConfig> = {
       actions: [
         { label: '提交flag', icon: Flag, variant: 'default', actionType: 'submit_flag' },
         { label: '停止', icon: StopCircle, variant: 'destructive', actionType: 'stop' },
+        { label: '查看报告', icon: Flag, variant: 'link', actionType: 'check_report' },
       ],
     },
     stopped: {

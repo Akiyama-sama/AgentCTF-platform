@@ -1,7 +1,6 @@
 import { Outlet } from '@tanstack/react-router'
 import {
   IconPalette,
-  IconTool,
   IconUser,
 } from '@tabler/icons-react'
 import { Separator } from '@/components/ui/separator'
@@ -30,7 +29,7 @@ export default function Settings() {
             设置
           </h1>
           <p className='text-muted-foreground'>
-            管理您的账户设置和Agent密钥信息。
+            管理您的账户信息和外观设置。
           </p>
         </div>
         <Separator className='my-4 lg:my-6' />
@@ -52,11 +51,6 @@ const sidebarNavItems = [
     title: '个人信息',
     icon: <IconUser size={18} />,
     href: '/settings',
-  },
-  {
-    title: 'Agent设置',
-    icon: <IconTool size={18} />,
-    href: '/settings/agent',
   },
   {
     title: '外观',
