@@ -278,71 +278,83 @@ export const useScenarioContainers = (scenarioId: string) => {
         (response.data?.containers as ContainersInspectMap) ?? {},
     },
   })
-  let attackerContainer: ContainerInspectDetail | undefined
-  let defenderContainer: ContainerInspectDetail | undefined
-  let targetContainer: ContainerInspectDetail | undefined
-  const portMap = new Map<string, Port>()
-  const ipAddressMap = new Map<string, string>()
-  const statusMap = new Map<string, Status>()
-  if (containers) {
-    // 遍历 containers 对象的所有键（即容器ID）
-    for (const containerId in containers) {
-      // 确保属性是对象自身的，而不是原型链上的
-      if (Object.prototype.hasOwnProperty.call(containers, containerId)) {
-        const container = containers[containerId]
-        if (container && container.Config && container.Config.Labels) {
-          const serviceName =
-            container.Config.Labels['com.docker.compose.service']
-          const mcpPortStr =
-            container.HostConfig?.PortBindings?.['8000/tcp']?.[0]?.HostPort
-          const sshPortStr =
-            container.HostConfig?.PortBindings?.['2222/tcp']?.[0]?.HostPort
-          const targetEntrancePortStr =
-            container.HostConfig?.PortBindings?.['8080/tcp']?.[0]?.HostPort
-          const mcpPort = mcpPortStr ? parseInt(mcpPortStr, 10) : undefined
-          const sshPort = sshPortStr ? parseInt(sshPortStr, 10) : undefined
-          const targetEntrancePort = targetEntrancePortStr ? parseInt(targetEntrancePortStr, 10) : undefined
-          const networkMode = container.HostConfig?.NetworkMode ?? 'bridge'
-          const ipAddress = container.NetworkSettings?.Networks?.[networkMode]?.IPAddress ?? ''
-          const status = container.State.Status
-          const runningTime = Math.floor((new Date().getTime() - new Date(container.State.CreatedAt).getTime()) / 60000)
 
-          if (serviceName === 'attacker') {
-            attackerContainer = container
-          } else if (serviceName === 'defender') {
-            defenderContainer = container
-          } else if (serviceName === 'target') {
-            targetContainer = container
+  return useMemo(() => {
+    let attackerContainer: ContainerInspectDetail | undefined
+    let defenderContainer: ContainerInspectDetail | undefined
+    let targetContainer: ContainerInspectDetail | undefined
+    const portMap = new Map<string, Port>()
+    const ipAddressMap = new Map<string, string>()
+    const statusMap = new Map<string, Status>()
+    if (containers) {
+      // 遍历 containers 对象的所有键（即容器ID）
+      for (const containerId in containers) {
+        // 确保属性是对象自身的，而不是原型链上的
+        if (Object.prototype.hasOwnProperty.call(containers, containerId)) {
+          const container = containers[containerId]
+          if (container && container.Config && container.Config.Labels) {
+            const serviceName =
+              container.Config.Labels['com.docker.compose.service']
+            const mcpPortStr =
+              container.HostConfig?.PortBindings?.['8000/tcp']?.[0]?.HostPort
+            const sshPortStr =
+              container.HostConfig?.PortBindings?.['2222/tcp']?.[0]?.HostPort
+            const targetEntrancePortStr =
+              container.HostConfig?.PortBindings?.['8080/tcp']?.[0]?.HostPort
+            const mcpPort = mcpPortStr ? parseInt(mcpPortStr, 10) : undefined
+            const sshPort = sshPortStr ? parseInt(sshPortStr, 10) : undefined
+            const targetEntrancePort = targetEntrancePortStr
+              ? parseInt(targetEntrancePortStr, 10)
+              : undefined
+            const networkMode = container.HostConfig?.NetworkMode ?? 'bridge'
+            const ipAddress =
+              container.NetworkSettings?.Networks?.[networkMode]?.IPAddress ?? ''
+            const status = container.State.Status
+            const runningTime = Math.floor(
+              (new Date().getTime() -
+                new Date(container.State.CreatedAt).getTime()) /
+                60000
+            )
+
+            if (serviceName === 'attacker') {
+              attackerContainer = container
+            } else if (serviceName === 'defender') {
+              defenderContainer = container
+            } else if (serviceName === 'target') {
+              targetContainer = container
+            }
+            portMap.set(containerId, {
+              mcpPort: mcpPort && !isNaN(mcpPort) ? mcpPort : undefined,
+              sshPort: sshPort && !isNaN(sshPort) ? sshPort : undefined,
+              targetEntrancePort:
+                targetEntrancePort && !isNaN(targetEntrancePort)
+                  ? targetEntrancePort
+                  : undefined,
+            })
+            ipAddressMap.set(containerId, ipAddress)
+            statusMap.set(containerId, {
+              status,
+              runningTime,
+            })
           }
-          portMap.set(containerId, {
-            mcpPort: mcpPort && !isNaN(mcpPort) ? mcpPort : undefined,
-            sshPort: sshPort && !isNaN(sshPort) ? sshPort : undefined,
-            targetEntrancePort: targetEntrancePort && !isNaN(targetEntrancePort) ? targetEntrancePort : undefined,
-          })
-          ipAddressMap.set(containerId, ipAddress)
-          statusMap.set(containerId, {
-            status,
-            runningTime,
-          })
         }
       }
     }
-  }
-
-  return {
-    portMap,
-    ipAddressMap,
-    statusMap,
-    attackerContainer,
-    attackerContainerName: attackerContainer?.Name?.slice(1),
-    defenderContainer,
-    defenderContainerName: defenderContainer?.Name?.slice(1),
-    targetContainer,
-    targetContainerName: targetContainer?.Name?.slice(1),
-    isPending,
-    isSuccess,
-    error,
-  }
+    return {
+      portMap,
+      ipAddressMap,
+      statusMap,
+      attackerContainer,
+      attackerContainerName: attackerContainer?.Name?.slice(1),
+      defenderContainer,
+      defenderContainerName: defenderContainer?.Name?.slice(1),
+      targetContainer,
+      targetContainerName: targetContainer?.Name?.slice(1),
+      isPending,
+      isSuccess,
+      error,
+    }
+  }, [containers, isPending, isSuccess, error])
 }
 
 /**

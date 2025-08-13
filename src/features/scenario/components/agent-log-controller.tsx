@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useAttackerAgentSession } from '@/hooks/use-ai'
-import {
-  useAttackerAgentLogs,
-  useDefenderAgentLogs,
-} from '@/hooks/use-log'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { useAttackerAgentLogs, useDefenderAgentLogs } from '@/hooks/use-log'
+import { Card } from '@/components/ui/card'
 import { PillTabs } from '@/components/pill-tabs'
 import Loading from '@/components/Loading'
 import { AgentLog } from './agent-log'
@@ -16,7 +13,6 @@ type Props = {
 }
 
 export const AgentLogController = ({ modelId, className }: Props) => {
-
   const {
     logs: attackerLogs,
     startLogs: startAttackerLogs,
@@ -29,14 +25,18 @@ export const AgentLogController = ({ modelId, className }: Props) => {
     isStreaming: isDefenderStreaming,
   } = useDefenderAgentLogs(modelId)
 
-  const { status: attackerAgentStatus ,statusQuery:attackerAgentStatusQuery} = useAttackerAgentSession(modelId)
+  const { status: attackerAgentStatus, statusQuery: attackerAgentStatusQuery } =
+    useAttackerAgentSession(modelId)
   const [activeTab, setActiveTab] = useState('attacker-agent-log')
   const [isSessionReady, setIsSessionReady] = useState(false)
+
   useEffect(() => {
-    // Determine if the agent session is ready.
-    const isSessionReady = (attackerAgentStatusQuery.isSuccess && ! attackerAgentStatusQuery.isError && attackerAgentStatus?.initialized) ?? false
-    setIsSessionReady(isSessionReady)
-    if (isSessionReady) {
+    const sessionReady =
+      attackerAgentStatusQuery.isSuccess &&
+      !attackerAgentStatusQuery.isError &&
+      attackerAgentStatus?.initialized
+    setIsSessionReady(sessionReady || false)
+    if (sessionReady) {
       if (
         activeTab === 'attacker-agent-log' &&
         !isAttackerStreaming &&
@@ -48,41 +48,63 @@ export const AgentLogController = ({ modelId, className }: Props) => {
         !isDefenderStreaming &&
         defenderLogs.length === 0
       ) {
-        // Placeholder for starting defender logs.
-        startDefenderLogs({ model_id: modelId });
+        startDefenderLogs({ model_id: modelId })
       }
     }
-  }, [activeTab, isAttackerStreaming, attackerLogs.length, startAttackerLogs, isDefenderStreaming, defenderLogs.length, startDefenderLogs, modelId, attackerAgentStatusQuery.isSuccess, attackerAgentStatusQuery.isError, attackerAgentStatus?.initialized])
+  }, [
+    activeTab,
+    isAttackerStreaming,
+    attackerLogs.length,
+    startAttackerLogs,
+    isDefenderStreaming,
+    defenderLogs.length,
+    startDefenderLogs,
+    modelId,
+    attackerAgentStatusQuery.isSuccess,
+    attackerAgentStatusQuery.isError,
+    attackerAgentStatus?.initialized,
+  ])
 
   const activeLogs =
-    activeTab === 'attacker-agent-log' ? attackerLogs : defenderLogs
+    activeTab === 'attacker-agent-log'
+      ? attackerLogs.slice(-25)
+      : defenderLogs.slice(-25)
 
   return (
-    <Card className={cn('flex flex-col h-full w-full', className)}>
-      <CardHeader className='flex h-10 flex-row items-center justify-between px-6 py-0 w-full'>
-        <div className='w-full flex justify-center items-center'>
-          <PillTabs
-            tabs={[
-              {
-                id: 'attacker-agent-log',
-                label: '攻击Agent日志',
-              },
-              {
-                id: 'defender-agent-log',
-                label: '防御Agent日志',
-              },
-            ]}
-            defaultActiveId={activeTab}
-            onTabChange={id => {
-              setActiveTab(id)
-            }}
-            className='rounded-md justify-center items-center'
-          />
-        </div>
-      </CardHeader>
-      <CardContent className='flex-1 min-h-0 overflow-x-auto'>
-        {isSessionReady? <AgentLog logs={activeLogs} />:<Loading/>}
-      </CardContent>
+    <Card
+      className={cn(
+        'flex h-full w-full flex-col shadow-lg rounded-xl',
+        className,
+      )}
+    >
+      <div className="flex items-center justify-between p-4 border-b">
+        <h2 className="text-lg font-semibold">Agent实时日志</h2>
+        <PillTabs
+          tabs={[
+            {
+              id: 'attacker-agent-log',
+              label: '攻击方',
+            },
+            {
+              id: 'defender-agent-log',
+              label: '防御方',
+            },
+          ]}
+          defaultActiveId={activeTab}
+          onTabChange={setActiveTab}
+          // 每个实例使用唯一的 layoutId
+          layoutId={`agent-log-controller-tabs`}
+        />
+      </div>
+      <div className="flex-1 min-h-0 p-2">
+        {isSessionReady ? (
+          <AgentLog logs={activeLogs} />
+        ) : (
+          <div className="h-full w-full flex items-center justify-center">
+            <Loading />
+          </div>
+        )}
+      </div>
     </Card>
   )
 }

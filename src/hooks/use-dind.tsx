@@ -1,6 +1,10 @@
 import { InstanceInitRequestContainerPcapMapping } from '@/types/defender-agent'
-import { getGetDindPacketFilesModelsModelIdDindPacketsGetQueryKey, useGetDindPacketFilesModelsModelIdDindPacketsGet } from '@/types/docker-manager'
+import {
+  getGetDindPacketFilesModelsModelIdDindPacketsGetQueryKey,
+  useGetDindPacketFilesModelsModelIdDindPacketsGet,
+} from '@/types/docker-manager'
 import { useQueryClient } from '@tanstack/react-query'
+import { useMemo } from 'react'
 // Based on the sample response from Postman
 export interface DindPacketFile {
   file_path: string
@@ -31,18 +35,30 @@ export const useDind = (modelId: string) => {
     error,
   } = useGetDindPacketFilesModelsModelIdDindPacketsGet(modelId, {
     query: {
-      enabled: !!(modelId) && (!cachedStatus),
+      enabled: !!modelId && !cachedStatus,
       select: (data) => data.data as unknown as DindPacketFilesData,
-      retry:3
+      retry: 3,
     },
   })
-  const packetFiles=dindPacketFilesData?.packet_files || {}
-  const containers=Object.keys(packetFiles)
-  const dindPackageInfo:InstanceInitRequestContainerPcapMapping={}
-  for(const container of containers){
-    dindPackageInfo[container]=packetFiles[container].absolute_path
-  }
-  const dindPackageInfoList=containers.map((container)=>(packetFiles[container].absolute_path))
+
+  const dindPackageInfo = useMemo(() => {
+    const info: InstanceInitRequestContainerPcapMapping = {}
+    const packetFiles = dindPacketFilesData?.packet_files || {}
+    const containers = Object.keys(packetFiles)
+    for (const container of containers) {
+      info[container] = packetFiles[container].absolute_path
+    }
+    return info
+  }, [dindPacketFilesData])
+
+  const dindPackageInfoList = useMemo(() => {
+    const packetFiles = dindPacketFilesData?.packet_files || {}
+    const containers = Object.keys(packetFiles)
+    return containers.map(
+      (container) => packetFiles[container].absolute_path
+    )
+  }, [dindPacketFilesData])
+
   return {
     dindPackageInfo,
     dindPackageInfoList,

@@ -82,7 +82,7 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
     cleanupInstanceAsync: cleanupDefenderAgentAsync,
   } = useDefenderAgentSession(scenarioId)
   const { dindPackageInfo } = useDind(scenarioId)
-  const { setScenarioProcessState } = useProcess()
+  const { setScenarioProcessState,scenarioProcessState} = useProcess()
   const { readmeContent } = useScenarioFile(scenarioId)
   const navigate = useNavigate()
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -118,7 +118,7 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
 
   // 1. 当状态加载完毕数据准备完毕时候，且攻击agent未初始化时，执行初始化
   useEffect(() => {
-    if (status && !status.initialized&&attacker_mcp_url&&target_entrance_url&&isContainersSuccess) {
+    if (status && !status.initialized&&attacker_mcp_url&&target_entrance_url&&isContainersSuccess&&!scenarioProcessState.isAttackFinished) {
       initeAttackerAgent({
         data: {
           api_key: api_key,
@@ -148,11 +148,11 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
         attackAgentInitialized: true,
       }))
     }
-  }, [status?.initialized, scenarioId,attacker_mcp_url,target_entrance_url,isContainersSuccess])
+  }, [status?.initialized, scenarioId,attacker_mcp_url,target_entrance_url,isContainersSuccess,scenarioProcessState.isAttackFinished])
 
   // 2. 当状态加载完毕且防御agent未初始化，且dind包信息存在时，执行初始化
   useEffect(() => {
-    if (defenseAgentStatus && !defenseAgentStatus.initialized&&dindPackageInfo&&defender_mcp_url&&isContainersSuccess) {
+    if (defenseAgentStatus && !defenseAgentStatus.initialized&&dindPackageInfo&&defender_mcp_url&&isContainersSuccess&&!scenarioProcessState.isAttackFinished) {
       initDefenderAgentAsync({
         model_id: scenarioId,
         container_pcap_mapping: dindPackageInfo,
@@ -175,7 +175,7 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
         defenseAgentInitialized: true,
       }))
     }
-  }, [defenseAgentStatus?.initialized, scenarioId,dindPackageInfo,defender_mcp_url,isContainersSuccess])
+  }, [defenseAgentStatus?.initialized, scenarioId, dindPackageInfo, defender_mcp_url, isContainersSuccess, scenarioProcessState.isAttackFinished])
 
   // 3. 当用户初始化成功后，如果还没有消息，则渲染选项，让用户选择进行黑盒还是白盒攻击
   useEffect(() => {
@@ -307,9 +307,8 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
-      </CardContent>
-      {isOptionVisible && (
-        <div className='border-t px-4 py-4'>
+        {isOptionVisible && (
+        <div className=' px-4 py-4'>
           <p className='text-muted-foreground mb-2 text-center text-sm'>
             选择一个模式开始：
           </p>
@@ -335,7 +334,9 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
           </div>
         </div>
       )}
-      <CardFooter className=''>
+      </CardContent>
+      
+      <CardFooter className='border-t'>
         <form
           onSubmit={handleSubmit}
           className='flex w-full items-center gap-2'

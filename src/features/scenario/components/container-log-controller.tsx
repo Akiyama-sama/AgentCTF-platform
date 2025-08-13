@@ -85,6 +85,7 @@ export const LogController = ({ modelId }: Props) => {
     if (logLevel === 'ALL') return true
     return log.level === logLevel
   })
+  const latestLogs = filteredLogs.slice(-25)
   const state =
     containerLogs[selectedContainerLogId]?.connectionState ?? 'Waiting...'
 
@@ -201,7 +202,7 @@ export const LogController = ({ modelId }: Props) => {
               </Tooltip>
             </div>
           </div>
-          <div className='flex-1 overflow-y-auto'>
+          <div className='flex-1 min-h-0'>
             {containerTabs.map((tab) => (
               <TabsContent
                 key={tab.id}
@@ -213,7 +214,10 @@ export const LogController = ({ modelId }: Props) => {
                     <Loading />
                   </div>
                 ) : (
-                  <Log logs={filteredLogs} className='h-full p-2' />
+                  <Log
+                    logs={latestLogs}
+                    className='h-full p-2'
+                  />
                 )}
               </TabsContent>
             ))}

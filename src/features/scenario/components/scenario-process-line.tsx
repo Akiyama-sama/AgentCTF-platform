@@ -4,6 +4,8 @@ import { useScenarioReport } from "@/hooks/use-report";
 import { useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { useAttackerAgentLogs, useDefenderAgentLogs } from "@/hooks/use-log";
+import { useDefenderAgentSession } from "@/hooks/use-ai";
 
 type ScenarioProcessLineProps = {
   scenarioId: string
@@ -14,6 +16,9 @@ export default function ScenarioProcessLine({scenarioId,className}:ScenarioProce
   const navigate = useNavigate()
   const { step ,setScenarioProcessState,scenarioProcessState} = useProcess()
   const {analyzeAsync,status:reportStatus}=useScenarioReport(scenarioId,{refetchStatus:scenarioProcessState.isAttackFinished})
+  const {stopLogs:stopAttackerLogs}=useAttackerAgentLogs(scenarioId)
+  const {stopLogs:stopDefenderLogs}=useDefenderAgentLogs(scenarioId)
+  const {cleanupInstanceAsync:clearDefenderAgent}=useDefenderAgentSession(scenarioId)
   useEffect(()=>{
     if(scenarioProcessState.isAttackFinished&&reportStatus?.status==='completed'){
       setScenarioProcessState((state) => ({
@@ -37,6 +42,12 @@ export default function ScenarioProcessLine({scenarioId,className}:ScenarioProce
       action:{
         label:'停止攻击',
         onClick:()=>{
+          clearDefenderAgent().then(()=>{
+            stopAttackerLogs()
+            stopDefenderLogs()
+          })
+          
+          
           setScenarioProcessState((state) => ({
             ...state,
             isAttackFinished: true,

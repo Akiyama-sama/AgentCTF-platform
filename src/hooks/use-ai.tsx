@@ -16,7 +16,7 @@ import {
     ChatRequestBoxType,
     // type SSEChatResponse,
 } from "@/types/attacker-agent";
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import {
     type Message,
 } from 'ai';
@@ -313,7 +313,7 @@ export const useAttackerAgentChat = ({
 
       streamControllerRef.current = agentSSEManager.createChatStream(user_id, request, callbacks);
 
-    }, [user_id]);
+    }, [user_id, box_type, scenarioProcessState.isAttackFinished]);
 
   
 
@@ -348,7 +348,7 @@ export const useAttackerAgentChat = ({
 
     }, [sendMessage, input]);
   
-    return {
+    return useMemo(() =>({
       messages,
       setMessages,
       input,
@@ -363,7 +363,7 @@ export const useAttackerAgentChat = ({
       error,
 
 
-    };
+    }),[messages, setMessages, input, handleInputChange, handleSubmit, sendMessage, setBoxType, box_type, clearMessages, isLoading, status, error]);
   };
 
 

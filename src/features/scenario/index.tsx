@@ -4,7 +4,6 @@ import { useScenario } from '@/hooks/use-scenario'
 import { Card } from '@/components/ui/card'
 import { useSidebar } from '@/components/ui/sidebar'
 import { TextScroll } from '@/components/ui/text-scroll'
-import { Main } from '@/components/layout/main'
 import { ScenarioFileDialogs } from '../scenarios/components/scenario-file-dialogs'
 import { ScenariosDialogs } from '../scenarios/components/scenarios-dialogs'
 import ScenariosDialogProvider from '../scenarios/context/scenarios-context'
@@ -12,7 +11,7 @@ import { AgentLogController } from './components/agent-log-controller'
 import { ChatBot } from './components/chat-bot'
 import { LogController } from './components/container-log-controller'
 import ScenarioProcessLine from './components/scenario-process-line'
-
+import { useProcess } from './store/process-store'
 
 interface ScenarioDetailProps {
   scenarioId: string
@@ -20,6 +19,8 @@ interface ScenarioDetailProps {
 
 const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
   const { status, scenario } = useScenario(scenarioId)
+  const { scenarioProcessState } = useProcess()
+  const isAttackStarted = scenarioProcessState.isAttackStarted
 
   if (!scenario) {
     return (
@@ -30,28 +31,35 @@ const ScenarioView = ({ scenarioId }: { scenarioId: string }) => {
   if (status) scenario.state = status.state as BaseState
 
   return (
-    <div className='flex h-screen flex-col overflow-y-auto'>
+    <div
+      className={`flex ${isAttackStarted ? 'h-[175vh]' : 'h-screen'} flex-col transition-all duration-700 ease-in-out`}
+    >
       {/* ===== Content ===== */}
-      <Main className='h-screen'>
+      <div className='h-screen flex-shrink-0'>
         <div className='flex h-full w-full gap-2'>
           <div className='w-1/3'>
-            <ChatBot scenarioId={scenarioId} className='h-3/5 w-full pt-0' />
-            <AgentLogController
-              modelId={scenarioId}
-              className='flex h-2/5 w-full flex-col'
-            />
+            <ChatBot scenarioId={scenarioId} className='h-full w-full' />
           </div>
-          <Card className='h-full flex w-2/3 flex-col py-0 '>
-            <div className='h-2/3 w-full p-10 flex flex-col gap-2'>
-             <ScenarioProcessLine scenarioId={scenarioId} className='h-1/2 mt-0'/>
-             <TextScroll text='TARGET SAFE' className='text-2xl text-green-600'/>
+          <Card className='flex h-full w-2/3 flex-col py-0'>
+            <div className='flex h-2/3 w-full flex-col gap-2 p-10'>
+              <ScenarioProcessLine
+                scenarioId={scenarioId}
+                className='mt-0 h-1/2'
+              />
+              <TextScroll
+                text='TARGET SAFE'
+                className='text-2xl text-green-600'
+              />
             </div>
             <div className='flex h-2/5 w-full flex-col gap-2 rounded-b-lg'>
               <LogController modelId={scenarioId} />
             </div>
           </Card>
         </div>
-      </Main>
+      </div>
+      {isAttackStarted && (
+        <AgentLogController modelId={scenarioId} className='h-[75vh] flex-col' />
+      )}
     </div>
   )
 }
@@ -79,9 +87,9 @@ const ScenarioDetail = ({ scenarioId }: ScenarioDetailProps) => {
 
   return (
     <ScenariosDialogProvider>
-        <ScenarioView scenarioId={scenarioId} />
-        <ScenariosDialogs />
-        <ScenarioFileDialogs />
+      <ScenarioView scenarioId={scenarioId} />
+      <ScenariosDialogs />
+      <ScenarioFileDialogs />
     </ScenariosDialogProvider>
   )
 }

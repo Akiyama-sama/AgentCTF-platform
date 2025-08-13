@@ -14,8 +14,8 @@ type PillTabsProps = {
   defaultActiveId?: string;
   onTabChange?: (id: string) => void;
   className?: string;
+  layoutId?: string; // 新增 layoutId prop
 };
-
 
 export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(
   (props, ref) => {
@@ -24,6 +24,7 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(
       defaultActiveId = tabs[0]?.id,
       onTabChange,
       className,
+      layoutId = "pill-tabs-active-pill", // 提供默认值
     } = props;
 
     const [activeTab, setActiveTab] = React.useState(defaultActiveId);
@@ -36,11 +37,17 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(
       [onTabChange]
     );
 
+    React.useEffect(() => {
+      if (defaultActiveId) {
+        setActiveTab(defaultActiveId);
+      }
+    }, [defaultActiveId]);
+
     return (
       <div
         ref={ref}
         className={cn(
-          "flex items-center gap-1 rounded-md p-1 bg-background  border",
+          "flex items-center gap-1 rounded-md p-1 bg-background border",
           className
         )}
       >
@@ -50,8 +57,8 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(
             type="button"
             onClick={() => handleClick(tab.id)}
             className={cn(
-              "relative px-4 py-2 rounded-md transition touch-none",
-              "text-xs font-medium",
+              "relative px-3 py-1.5 rounded-md transition touch-none", // 调整 padding
+              "text-2xs font-medium", // 调整字体大小
               activeTab === tab.id
                 ? "text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -59,7 +66,7 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(
           >
             {activeTab === tab.id && (
               <motion.div
-                layoutId="pill-tabs-active-pill"
+                layoutId={layoutId} // 使用传入的 layoutId
                 className="absolute inset-0 bg-primary rounded-md"
                 transition={{ type: "spring", duration: 0.5 }}
               />
