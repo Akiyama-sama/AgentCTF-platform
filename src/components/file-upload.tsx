@@ -66,7 +66,7 @@ export default function FileUpload({
   placeholder = '拖拽或点击上传',
   className,
   accept,
-  maxSize = 100 * 1024 * 1024 // 100MB
+  maxSize = 10 * 1024 * 1024 // 10MB
 }: FileUploadProps) {
   const [
     { isDragging, errors },

@@ -27,7 +27,7 @@ import { Route as AuthenticatedReportIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedExercisesIndexRouteImport } from './routes/_authenticated/exercises/index'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
-import { Route as AuthenticatedScenariosScenarioIdRouteImport } from './routes/_authenticated/scenarios/$scenarioId'
+import { Route as AuthenticatedScenariosScenarioIdIndexRouteImport } from './routes/_authenticated/scenarios/$scenarioId/index'
 import { Route as AuthenticatedScenariosScenarioIdReportRouteImport } from './routes/_authenticated/scenarios/$scenarioId/report'
 import { Route as AuthenticatedExercisesExerciseIdReportRouteImport } from './routes/_authenticated/exercises/$exerciseId/report'
 
@@ -128,17 +128,17 @@ const AuthenticatedSettingsAccountRoute =
     path: '/account',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
-const AuthenticatedScenariosScenarioIdRoute =
-  AuthenticatedScenariosScenarioIdRouteImport.update({
-    id: '/scenarios/$scenarioId',
-    path: '/scenarios/$scenarioId',
+const AuthenticatedScenariosScenarioIdIndexRoute =
+  AuthenticatedScenariosScenarioIdIndexRouteImport.update({
+    id: '/scenarios/$scenarioId/',
+    path: '/scenarios/$scenarioId/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedScenariosScenarioIdReportRoute =
   AuthenticatedScenariosScenarioIdReportRouteImport.update({
-    id: '/report',
-    path: '/report',
-    getParentRoute: () => AuthenticatedScenariosScenarioIdRoute,
+    id: '/scenarios/$scenarioId/report',
+    path: '/scenarios/$scenarioId/report',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedExercisesExerciseIdReportRoute =
   AuthenticatedExercisesExerciseIdReportRouteImport.update({
@@ -157,7 +157,6 @@ export interface FileRoutesByFullPath {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
-  '/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRouteWithChildren
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/exercises': typeof AuthenticatedExercisesIndexRoute
@@ -168,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/users': typeof AuthenticatedUsersIndexRoute
   '/exercises/$exerciseId/report': typeof AuthenticatedExercisesExerciseIdReportRoute
   '/scenarios/$scenarioId/report': typeof AuthenticatedScenariosScenarioIdReportRoute
+  '/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/sign-in-2': typeof authSignIn2Route
@@ -178,7 +178,6 @@ export interface FileRoutesByTo {
   '/500': typeof errors500Route
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
-  '/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRouteWithChildren
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/exercises': typeof AuthenticatedExercisesIndexRoute
@@ -189,6 +188,7 @@ export interface FileRoutesByTo {
   '/users': typeof AuthenticatedUsersIndexRoute
   '/exercises/$exerciseId/report': typeof AuthenticatedExercisesExerciseIdReportRoute
   '/scenarios/$scenarioId/report': typeof AuthenticatedScenariosScenarioIdReportRoute
+  '/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -202,7 +202,6 @@ export interface FileRoutesById {
   '/(errors)/500': typeof errors500Route
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/scenarios/$scenarioId': typeof AuthenticatedScenariosScenarioIdRouteWithChildren
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/exercises/': typeof AuthenticatedExercisesIndexRoute
@@ -213,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
   '/_authenticated/exercises/$exerciseId/report': typeof AuthenticatedExercisesExerciseIdReportRoute
   '/_authenticated/scenarios/$scenarioId/report': typeof AuthenticatedScenariosScenarioIdReportRoute
+  '/_authenticated/scenarios/$scenarioId/': typeof AuthenticatedScenariosScenarioIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -226,7 +226,6 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
-    | '/scenarios/$scenarioId'
     | '/settings/account'
     | '/settings/appearance'
     | '/exercises'
@@ -237,6 +236,7 @@ export interface FileRouteTypes {
     | '/users'
     | '/exercises/$exerciseId/report'
     | '/scenarios/$scenarioId/report'
+    | '/scenarios/$scenarioId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/sign-in-2'
@@ -247,7 +247,6 @@ export interface FileRouteTypes {
     | '/500'
     | '/503'
     | '/'
-    | '/scenarios/$scenarioId'
     | '/settings/account'
     | '/settings/appearance'
     | '/exercises'
@@ -258,6 +257,7 @@ export interface FileRouteTypes {
     | '/users'
     | '/exercises/$exerciseId/report'
     | '/scenarios/$scenarioId/report'
+    | '/scenarios/$scenarioId'
   id:
     | '__root__'
     | '/_authenticated'
@@ -270,7 +270,6 @@ export interface FileRouteTypes {
     | '/(errors)/500'
     | '/(errors)/503'
     | '/_authenticated/'
-    | '/_authenticated/scenarios/$scenarioId'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/exercises/'
@@ -281,6 +280,7 @@ export interface FileRouteTypes {
     | '/_authenticated/users/'
     | '/_authenticated/exercises/$exerciseId/report'
     | '/_authenticated/scenarios/$scenarioId/report'
+    | '/_authenticated/scenarios/$scenarioId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -422,19 +422,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsAccountRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
-    '/_authenticated/scenarios/$scenarioId': {
-      id: '/_authenticated/scenarios/$scenarioId'
+    '/_authenticated/scenarios/$scenarioId/': {
+      id: '/_authenticated/scenarios/$scenarioId/'
       path: '/scenarios/$scenarioId'
       fullPath: '/scenarios/$scenarioId'
-      preLoaderRoute: typeof AuthenticatedScenariosScenarioIdRouteImport
+      preLoaderRoute: typeof AuthenticatedScenariosScenarioIdIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/scenarios/$scenarioId/report': {
       id: '/_authenticated/scenarios/$scenarioId/report'
-      path: '/report'
+      path: '/scenarios/$scenarioId/report'
       fullPath: '/scenarios/$scenarioId/report'
       preLoaderRoute: typeof AuthenticatedScenariosScenarioIdReportRouteImport
-      parentRoute: typeof AuthenticatedScenariosScenarioIdRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/exercises/$exerciseId/report': {
       id: '/_authenticated/exercises/$exerciseId/report'
@@ -464,38 +464,22 @@ const AuthenticatedSettingsRouteRouteWithChildren =
     AuthenticatedSettingsRouteRouteChildren,
   )
 
-interface AuthenticatedScenariosScenarioIdRouteChildren {
-  AuthenticatedScenariosScenarioIdReportRoute: typeof AuthenticatedScenariosScenarioIdReportRoute
-}
-
-const AuthenticatedScenariosScenarioIdRouteChildren: AuthenticatedScenariosScenarioIdRouteChildren =
-  {
-    AuthenticatedScenariosScenarioIdReportRoute:
-      AuthenticatedScenariosScenarioIdReportRoute,
-  }
-
-const AuthenticatedScenariosScenarioIdRouteWithChildren =
-  AuthenticatedScenariosScenarioIdRoute._addFileChildren(
-    AuthenticatedScenariosScenarioIdRouteChildren,
-  )
-
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedScenariosScenarioIdRoute: typeof AuthenticatedScenariosScenarioIdRouteWithChildren
   AuthenticatedExercisesIndexRoute: typeof AuthenticatedExercisesIndexRoute
   AuthenticatedReportIndexRoute: typeof AuthenticatedReportIndexRoute
   AuthenticatedScenariosIndexRoute: typeof AuthenticatedScenariosIndexRoute
   AuthenticatedTargetFactoryIndexRoute: typeof AuthenticatedTargetFactoryIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
   AuthenticatedExercisesExerciseIdReportRoute: typeof AuthenticatedExercisesExerciseIdReportRoute
+  AuthenticatedScenariosScenarioIdReportRoute: typeof AuthenticatedScenariosScenarioIdReportRoute
+  AuthenticatedScenariosScenarioIdIndexRoute: typeof AuthenticatedScenariosScenarioIdIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedScenariosScenarioIdRoute:
-    AuthenticatedScenariosScenarioIdRouteWithChildren,
   AuthenticatedExercisesIndexRoute: AuthenticatedExercisesIndexRoute,
   AuthenticatedReportIndexRoute: AuthenticatedReportIndexRoute,
   AuthenticatedScenariosIndexRoute: AuthenticatedScenariosIndexRoute,
@@ -503,6 +487,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
   AuthenticatedExercisesExerciseIdReportRoute:
     AuthenticatedExercisesExerciseIdReportRoute,
+  AuthenticatedScenariosScenarioIdReportRoute:
+    AuthenticatedScenariosScenarioIdReportRoute,
+  AuthenticatedScenariosScenarioIdIndexRoute:
+    AuthenticatedScenariosScenarioIdIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

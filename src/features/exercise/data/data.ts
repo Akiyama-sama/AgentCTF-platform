@@ -35,7 +35,7 @@ export const exerciseStateConfig: Record<BaseState, StateConfig> = {
       icon: CircleDot,
       iconClassName: 'text-green-500',
       actions: [
-        { label: '提交flag', icon: Flag, variant: 'default', actionType: 'submit_flag' },
+        { label: '进入靶机', icon: Flag, variant: 'default', actionType: 'submit_flag' },
         { label: '停止', icon: StopCircle, variant: 'destructive', actionType: 'stop' },
         { label: '查看报告', icon: Flag, variant: 'link', actionType: 'check_report' },
       ],

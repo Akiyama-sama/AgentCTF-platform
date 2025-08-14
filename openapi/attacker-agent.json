@@ -403,7 +403,8 @@
               "white"
             ],
             "title": "Box Type",
-            "description": "黑白盒判断，black为黑盒，white为白盒"
+            "description": "黑白盒判断，black为黑盒，white为白盒",
+            "default": "black"
           },
           "is_attacke": {
             "type": "boolean",
@@ -421,13 +422,25 @@
             ],
             "title": "Whitebox Description",
             "description": "白盒描述信息，仅在白盒模式下使用"
+          },
+          "flag_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flag Total",
+            "description": "flag总数",
+            "default": 1
           }
         },
         "type": "object",
         "required": [
           "user_id",
           "message",
-          "box_type",
           "is_attacke"
         ],
         "title": "ChatRequest"
@@ -495,25 +508,39 @@
           "api_key": {
             "type": "string",
             "title": "Api Key",
-            "description": "API密钥"
+            "description": "DeepSeek API密钥"
           },
           "attacker_server_url": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Attacker Server Url",
-            "description": "攻击者服务器URL"
+            "description": "攻击者MCP服务器URL",
+            "default": "http://localhost:3000"
           },
           "target_entrance_url": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Target Entrance Url",
-            "description": "目标入口URL"
+            "description": "目标入口URL",
+            "default": "http://host.docker.internal:8001"
           }
         },
         "type": "object",
         "required": [
           "user_id",
-          "api_key",
-          "attacker_server_url",
-          "target_entrance_url"
+          "api_key"
         ],
         "title": "UserInitRequest"
       },

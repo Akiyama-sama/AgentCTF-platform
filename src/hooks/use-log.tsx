@@ -281,11 +281,14 @@ export const useAttackerAgentLogs = (modelId: string | null) => {
         },
         onMessage: (data: unknown) => {
           const logData = data as SSELogEntry
-          const regex=/\[ATTACK_SUCCESS_MARKER\](True|False)\[\/ATTACK_SUCCESS_MARKER\]/
-          if(logData.message.match(regex)){
-            stopLogs() 
-            return
-          }
+          const match = logData.message.match(/\[ATTACK_SUCCESS_MARKER\](True|False)\[\/ATTACK_SUCCESS_MARKER\]/)
+            if (match) {
+              const isSuccess = match[1] === 'True'
+              // eslint-disable-next-line no-console
+              console.log(`攻击完成，结果: ${isSuccess ? '成功' : '失败'}`)
+              stopLogs()
+              return
+            }
           const level =
             logData.message && typeof logData.message === 'string'
               ? getLevelFromData(logData.message) || SSELogLevel.INFO

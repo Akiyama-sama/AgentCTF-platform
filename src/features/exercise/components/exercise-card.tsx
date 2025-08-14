@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { exerciseStateConfig, type ActionType } from '../data/data'
 import { cn } from '@/lib/utils'
 import { BaseState } from '@/types/docker-manager'
-import { useExerciseReport } from '@/hooks/use-report'
+import { useExerciseReportStore } from '@/stores/exerciseReportStore'
 
 interface Props {
     name: string
@@ -32,8 +32,8 @@ interface ExerciseCardActionsProps {
     exerciseId: string
 }
 
-function ExerciseCardActions({ state, onAction, pendingAction,exerciseId }: ExerciseCardActionsProps) {
-    const {isSuccess:isReportSuccess}=useExerciseReport(exerciseId)
+function ExerciseCardActions({ state, onAction, pendingAction, exerciseId: _exerciseId }: ExerciseCardActionsProps) {
+    const { isClickGenerateReport } = useExerciseReportStore()
     const config = exerciseStateConfig[state]
 
     if (config.component) {
@@ -46,7 +46,7 @@ function ExerciseCardActions({ state, onAction, pendingAction,exerciseId }: Exer
             <div className='flex flex-wrap items-center gap-2'>
                 {config.actions.map((action) => {
                     const Icon = action.icon
-                    if(action.actionType==='check_report'&&!isReportSuccess){
+                    if(action.actionType==='check_report'&& !isClickGenerateReport){
                         return null
                     }
                     return (

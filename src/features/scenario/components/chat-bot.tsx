@@ -4,7 +4,7 @@ import {
   ApiResponseUserCleanupResponse,
   ApiResponseUserInitResponse,
 } from '@/types/attacker-agent'
-import { ChevronDown, SendHorizonal } from 'lucide-react'
+import { ChevronDown, SendHorizonal, Bot, Shield, CheckCircle, XCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   showErrorMessage,
@@ -33,13 +33,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { ScenarioProcessState, useProcess } from '../store/process-store'
 import {
   ApiResponseInstanceCleanupResponse,
   ApiResponseInstanceInitResponse,
 } from '@/types/defender-agent'
 import Loading from '@/components/Loading'
-
 
 const api_key = import.meta.env.VITE_DEEPSEEK_API_KEY
 
@@ -282,70 +282,128 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
       </div>
     )
   }
+
   return (
-    <Card className={cn('flex flex-col', className)}>
-      <CardHeader className='flex flex-row items-center justify-center pt-2'>
-        <CardTitle>
-          Attacker Agent 初始化状态：
-          {status?.initialized ? '已初始化' : '未初始化'}
-          Defense Agent 初始化状态：
-          {defenseAgentStatus?.initialized ? '已初始化' : '未初始化'}
-        </CardTitle>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='outline'>
-              <ChevronDown className='h-4 w-4' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Button
-                variant='outline'
-                onClick={() => {
-                  localStorage.removeItem(`attacker-agent-${scenarioId}`)
-                  setMessages([])
-                }}
-              >
-                清除本地消息
+    <Card className={cn('flex flex-col pt-2', className)}>
+      <CardHeader className='flex flex-col gap-3 pt-3 pb-2'>
+        <div className='flex items-center justify-between gap-3'>
+          <CardTitle className='text-base font-semibold text-foreground'>
+            Agent 状态监控
+          </CardTitle>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant='outline' size='sm' className='h-7 w-7 p-0'>
+                <ChevronDown className='h-3 w-3' />
               </Button>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Button
-                variant='outline'
-                onClick={() => {
-                  cleanupAttackerAgent({ params: { user_id: scenarioId } })
-                    .then((res: ApiResponseUserCleanupResponse) => {
-                      if (res.code == 200) {
-                        showSuccessMessage('攻击Agent实例清除成功')
-                      }
-                      if (res && res.code === 1001) {
-                        showErrorMessage(res.message || '攻击Agent实例清除失败')
-                      }
-                    })
-                    .catch((err: Error) => {
-                      showErrorMessage(err?.message || '攻击Agent实例清除失败')
-                    })
-                  cleanupDefenderAgentAsync().then(
-                    (res: ApiResponseInstanceCleanupResponse) => {
-                      if (res.code == 200) {
-                        showSuccessMessage(res.message || '防御Agent实例清除成功')
-                      }
-                      if (res && res.code === 1001) {
-                        showErrorMessage(res.message || '防御Agent实例清除失败')
-                      }
-                    },
-                  )
-                  localStorage.removeItem(`attacker-agent-${scenarioId}`)
-                  setMessages([])
-                  navigate({ to: '/scenarios' })
-                }}
-              >
-                清除Agent实例
-              </Button>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end' className='w-48'>
+              <DropdownMenuItem asChild>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='w-full justify-start'
+                  onClick={() => {
+                    localStorage.removeItem(`attacker-agent-${scenarioId}`)
+                    setMessages([])
+                  }}
+                >
+                  清除本地消息
+                </Button>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='w-full justify-start'
+                  onClick={() => {
+                    cleanupAttackerAgent({ params: { user_id: scenarioId } })
+                      .then((res: ApiResponseUserCleanupResponse) => {
+                        if (res.code == 200) {
+                          showSuccessMessage(res.message || '攻击Agent实例清除成功')
+                        }
+                        if (res && res.code === 1001) {
+                          showErrorMessage(res.message || '攻击Agent实例清除失败')
+                        }
+                      })
+                      .catch((err: Error) => {
+                        showErrorMessage(err?.message || '攻击Agent初始化失败')
+                      })
+                    cleanupDefenderAgentAsync().then(
+                      (res: ApiResponseInstanceCleanupResponse) => {
+                        if (res.code == 200) {
+                          showSuccessMessage(res.message || '防御Agent实例清除成功')
+                        }
+                        if (res && res.code === 1001) {
+                          showErrorMessage(res.message || '防御Agent实例清除失败')
+                        }
+                      },
+                    )
+                    localStorage.removeItem(`attacker-agent-${scenarioId}`)
+                    setMessages([])
+                    navigate({ to: '/scenarios' })
+                  }}
+                >
+                  清除Agent实例
+                </Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        
+        {/* Agent 状态指示器 - 水平排列，占满宽度 */}
+        <div className='flex items-center justify-between w-full'>
+          <div className='flex items-center gap-2'>
+            <Bot className='h-4 w-4 text-primary' />
+            <Badge 
+              variant={status?.initialized ? 'default' : 'secondary'}
+              className={cn(
+                'flex items-center gap-1 px-2 py-1 text-xs',
+                status?.initialized 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-muted text-muted-foreground'
+              )}
+            >
+              {status?.initialized ? (
+                <>
+                  <CheckCircle className='h-3 w-3' />
+                  已初始化
+                </>
+              ) : (
+                <>
+                  <XCircle className='h-3 w-3' />
+                  未初始化
+                </>
+              )}
+            </Badge>
+          </div>
+          
+          <div className='flex items-center gap-2'>
+            <Shield className='h-4 w-4 text-secondary' />
+            <Badge 
+              variant={defenseAgentStatus?.initialized ? 'default' : 'secondary'}
+              className={cn(
+                'flex items-center gap-1 px-2 py-1 text-xs',
+                defenseAgentStatus?.initialized 
+                  ? 'bg-secondary text-secondary-foreground' 
+                  : 'bg-muted text-muted-foreground'
+              )}
+            >
+              {defenseAgentStatus?.initialized ? (
+                <>
+                  <CheckCircle className='h-3 w-3' />
+                  已初始化
+                </>
+              ) : (
+                <>
+                  <XCircle className='h-3 w-3' />
+                  未初始化
+                </>
+              )}
+            </Badge>
+          </div>
+        </div>
       </CardHeader>
+
       <CardContent className='flex min-h-0 flex-1 flex-col px-4'>
         <div ref={scrollRef} className='flex-1 overflow-y-auto min-h-0'>
           <div className='space-y-4'>
@@ -363,16 +421,16 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
                 )}
               >
                 {message.role !== 'user' && (
-                  <Avatar className='h-8 w-8'>
-                    <AvatarFallback>AI</AvatarFallback>
+                  <Avatar className='h-8 w-8 bg-primary/10 border border-primary/20'>
+                    <AvatarFallback className='text-primary text-sm font-medium'>AI</AvatarFallback>
                   </Avatar>
                 )}
                 <div
                   className={cn(
-                    'max-w-[75%] rounded-lg px-3 py-2 text-sm',
+                    'max-w-[75%] rounded-lg px-3 py-2 text-sm shadow-sm',
                     message.role === 'user'
                       ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted',
+                      : 'bg-muted text-foreground border border-border',
                   )}
                 >
                   <p className='break-words whitespace-pre-wrap'>
@@ -380,31 +438,36 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
                   </p>
                 </div>
                 {message.role === 'user' && (
-                  <Avatar className='h-8 w-8'>
-                    <AvatarFallback>我</AvatarFallback>
+                  <Avatar className='h-8 w-8 bg-accent/10 border border-accent/20'>
+                    <AvatarFallback className='text-accent text-sm font-medium'>我</AvatarFallback>
                   </Avatar>
                 )}
               </div>
             ))}
           </div>
         </div>
+        
         {isOptionVisible && (
-          <div className=' px-4 py-4'>
-            <p className='text-muted-foreground mb-2 text-center text-sm'>
+          <div className='mt-4 p-4 bg-muted/30 rounded-lg border border-border'>
+            <p className='text-foreground mb-3 text-center text-sm font-medium'>
               选择一个模式开始：
             </p>
-            <div className='flex justify-center gap-2'>
+            <div className='flex justify-center gap-3'>
               <Button
                 variant='outline'
+                size='sm'
+                className='flex-1 max-w-32'
                 onClick={() => {
                   setBoxType('black')
                   handleOptionClick(blackBoxMessage)
                 }}
               >
-                进行黑盒攻击
+                黑盒攻击
               </Button>
               <Button
                 variant='outline'
+                size='sm'
+                className='flex-1 max-w-32'
                 onClick={() => {
                   setBoxType('white')
                   handleOptionClick(
@@ -413,14 +476,14 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
                   )
                 }}
               >
-                进行白盒攻击
+                白盒攻击
               </Button>
             </div>
           </div>
         )}
       </CardContent>
 
-      <CardFooter className='border-t'>
+      <CardFooter className='border-t bg-muted/20'>
         <form
           onSubmit={handleSubmit}
           className='flex w-full items-center gap-2'
@@ -431,8 +494,14 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
             placeholder='与智能体对话...'
             disabled={isLoading}
             autoFocus
+            className='flex-1'
           />
-          <Button type='submit' disabled={isLoading || !input.trim()}>
+          <Button 
+            type='submit' 
+            disabled={isLoading || !input.trim()}
+            size='sm'
+            className='px-3'
+          >
             <SendHorizonal className='h-4 w-4' />
             <span className='sr-only'>发送</span>
           </Button>

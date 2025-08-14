@@ -32,15 +32,22 @@ import {
     {
       id: 4,
       date: "Apr 19, 2024",
-      title: "自己来通过靶机试炼",
+      title: "通过靶机来进行试炼",
       description:
-        "自己来通过靶机试炼",
+        "通过靶机来进行试炼",
     },
+    {
+        id: 5,
+        date: "Apr 19, 2024",
+        title: "查看评估报告弥补不足",
+        description:
+          "查看评估报告弥补不足",
+      },
   ]
   
   export default function TutorialLine() {
     return (
-      <Timeline defaultValue={4}>
+      <Timeline defaultValue={5}>
         {items.map((item) => (
           <TimelineItem key={item.id} step={item.id}>
             <TimelineHeader>

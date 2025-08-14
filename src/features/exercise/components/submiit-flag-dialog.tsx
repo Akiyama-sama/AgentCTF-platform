@@ -12,8 +12,8 @@ import {
 import Loading from '@/components/Loading'
 import { showSuccessMessage } from '@/utils/show-submitted-data'
 import { useEffect, useState } from 'react'
-import { useExerciseReport } from '@/hooks/use-report'
 import { useDind } from '@/hooks/use-dind'
+import { useExerciseReportStore } from '@/stores/exerciseReportStore'
 
 type Props = {
   open: boolean
@@ -24,9 +24,8 @@ type Props = {
 export function SubmitFlagDialog({ open, onOpenChange, currentRow }: Props) {
   const modelId=currentRow.uuid
   const [isDataReady, setIsDataReady] = useState(false)
-  const {dindPackageInfoList}=useDind(modelId)
-  const [isClickGenerateReport,setIsClickGenerateReport]=useState(false)
-  const {analyzeAsync}=useExerciseReport(modelId,{refetchStatus:isClickGenerateReport})
+  const {dindPackageInfoList: _dindPackageInfoList}=useDind(modelId)
+  const { triggerReportGeneration } = useExerciseReportStore()
   
   const { targetContainerName, portMap } = useScenarioContainers(
     modelId
@@ -42,12 +41,14 @@ export function SubmitFlagDialog({ open, onOpenChange, currentRow }: Props) {
   }, [target_entrance_url])
 
   const handleSubmit=()=>{
-    setIsClickGenerateReport(true)
-    analyzeAsync({
+    /* analyzeAsync({
       pcap_paths:dindPackageInfoList
     }).then(()=>{
       showSuccessMessage('正在生成报告，请稍后')
-    })
+    }) */
+   showSuccessMessage('正在生成报告，请稍后')
+   onOpenChange(false)
+   triggerReportGeneration()
   }
 
 

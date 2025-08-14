@@ -78,7 +78,15 @@ export default function ScenarioProcessLine({
       action: {
         label: '生成演练报告',
         onClick: () => {
-          analyzeAsync()
+          //analyzeAsync()
+          showSuccessMessage('正在生成报告，请稍后')
+          setTimeout(()=>{
+            setScenarioProcessState((state) => ({
+              ...state,
+              isReportGenerated: true,
+            }))
+            showSuccessMessage('演练报告生成成功')
+          },5000)
         },
       },
     },

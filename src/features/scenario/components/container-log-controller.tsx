@@ -112,10 +112,6 @@ export const LogController = ({ modelId }: Props) => {
           <span className='font-semibold'>状态:</span> {status?.status ?? 'N/A'}
         </p>
         <p>
-          <span className='font-semibold'>运行时间:</span>{' '}
-          {status?.runningTime ?? 'N/A'} 分钟
-        </p>
-        <p>
           <span className='font-semibold'>IP:</span> {ipAddress ?? 'N/A'}
         </p>
         <p>

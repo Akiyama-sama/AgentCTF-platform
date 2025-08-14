@@ -261,6 +261,7 @@ export const useAttackerAgentChat = ({
         box_type: box_type,
         is_attacke: !scenarioProcessState.isAttackFinished,
         whitebox_description: whitebox_description,
+        flag_total:1
       };
       
       const callbacks = {

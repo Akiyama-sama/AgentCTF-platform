@@ -84,17 +84,24 @@ export const ChatRequestBoxType = {
  */
 export type ChatRequestWhiteboxDescription = string | null;
 
+/**
+ * flag总数
+ */
+export type ChatRequestFlagTotal = number | null;
+
 export interface ChatRequest {
   /** 用户ID */
   user_id: string;
   /** 消息内容 */
   message: string;
   /** 黑白盒判断，black为黑盒，white为白盒 */
-  box_type: ChatRequestBoxType;
+  box_type?: ChatRequestBoxType;
   /** 是否为进攻（第一次请求为True，后续都为false，为True时message为空） */
   is_attacke: boolean;
   /** 白盒描述信息，仅在白盒模式下使用 */
   whitebox_description?: ChatRequestWhiteboxDescription;
+  /** flag总数 */
+  flag_total?: ChatRequestFlagTotal;
 }
 
 export interface HTTPValidationError {
@@ -115,15 +122,25 @@ export interface UserCleanupResponse {
   cleaned_at: string;
 }
 
+/**
+ * 攻击者MCP服务器URL
+ */
+export type UserInitRequestAttackerServerUrl = string | null;
+
+/**
+ * 目标入口URL
+ */
+export type UserInitRequestTargetEntranceUrl = string | null;
+
 export interface UserInitRequest {
   /** 用户ID */
   user_id: string;
-  /** API密钥 */
+  /** DeepSeek API密钥 */
   api_key: string;
-  /** 攻击者服务器URL */
-  attacker_server_url: string;
+  /** 攻击者MCP服务器URL */
+  attacker_server_url?: UserInitRequestAttackerServerUrl;
   /** 目标入口URL */
-  target_entrance_url: string;
+  target_entrance_url?: UserInitRequestTargetEntranceUrl;
 }
 
 export interface UserInitResponse {

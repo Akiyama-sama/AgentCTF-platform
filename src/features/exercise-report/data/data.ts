@@ -1,46 +1,48 @@
 export const exerciseReport = {
-    "ai_evaluation": {
-      "richness": "攻击手段较为单一，主要集中在服务探测和SQL注入攻击，缺乏多样化的TTP（战术、技术和程序）。",
-      "depth": "攻击链深度不足，仅涉及初始访问和持久化两个阶段，缺乏横向移动、权限提升等更深层次的攻击行为。",
-      "breadth": "攻击链广度有限，主要针对网络服务和Web应用，未涉及社会工程、恶意软件等其他攻击领域。",
-      "weaknesses": [
-        "攻击手段单一，缺乏多样化TTP",
-        "攻击链深度不足，未覆盖完整攻击生命周期",
-        "MITRE ATT&CK覆盖分析中大部分TTP为Unknown，缺乏明确的技术和战术"
+  "ai_evaluation": {
+    "richness": "攻击手段较为丰富。演练者不仅成功利用了Web应用的SQL注入漏洞（T1190），还利用了数据库服务的弱口令漏洞（T1078.001）。在SQL注入的利用过程中，组合使用了联合查询、元数据查询、文件读取和文件写入等多种技术，展现了对该漏洞利用的深度理解。",
+    "depth": "攻击链具备了相当的深度，成功覆盖了从“初始访问”到“执行”和“持久化”的关键阶段。演练者通过SQL注入获取了初步立足点，随即通过写入WebShell（T1505.003）的方式建立了持久化后门，并最终获得了服务器的命令与控制能力（T1059.004），攻击逻辑清晰，层次递进。",
+    "breadth": "攻击广度集中在Web服务和数据库服务两个核心目标上。演练者成功地从Web应用层（端口8080）穿透到了数据层和系统层，并利用数据库服务（端口3306）作为另一个独立的攻击入口，形成了有效的攻击面覆盖。",
+    "weaknesses": [
+      "攻击手法偏向传统和已知模式，例如基础的联合查询注入，在有Web应用防火墙（WAF）的真实环境中容易被拦截。",
+      "后渗透阶段探索不足。在获得WebShell之后，未进行如内网扫描、权限提升、横向移动等更深入的探索性攻击。",
+      "缺乏侦察阶段的体现。报告未体现演练者如何发现目标开放的端口（8080, 3306）和服务，假设了这些信息为已知。"
+    ],
+    "recommendations": [
+      "在后续演练中，可以尝试更高级、更隐蔽的注入技术，如时间盲注、报错注入，并尝试绕过常见的安全防护策略。",
+      "在成功获取WebShell或数据库权限后，应将此作为起点，尝试进行内网信息收集、寻找其他可利用的本地漏洞以提升权限，或向网络中其他目标进行横向移动。",
+      "完善攻击生命周期，增加明确的“侦察”阶段，使用Nmap等工具进行端口扫描和指纹识别，使攻击过程更加完整和贴近实战。"
+    ],
+    "learning_path": {
+      "related_technologies": [
+        "高级SQL注入技术（盲注、堆叠注入、UDF提权）",
+        "WebShell免杀与权限维持技术",
+        "数据库安全配置与加固",
+        "容器安全与逃逸技术（鉴于靶场为Docker环境）",
+        "渗透测试框架（如Metasploit, SQLMap）"
       ],
-      "recommendations": [
-        "增加攻击手段的多样性，如社会工程、恶意软件、横向移动等技术",
-        "深入攻击链的各个阶段，包括侦察、武器化、交付、利用、安装、命令与控制、目标达成等",
-        "明确攻击步骤中的TTP，参考MITRE ATT&CK框架进行更详细的规划和实施"
+      "practice_and_skills": [
+        "在靶场中练习使用SQLMap自动化注入工具，并分析其流量特征。",
+        "学习编写和混淆不同类型的WebShell，尝试绕过简单的文件上传检测。",
+        "在获得服务器访问权限后，练习使用该服务器作为跳板，对（假想的）内网进行探测。"
       ],
-      "learning_path": {
-        "related_technologies": [
-          "网络协议分析（如NTP、DHCP、LLMNR、SSDP等）",
-          "Web安全（如SQL注入、WebShell等）",
-          "MITRE ATT&CK框架",
-          "渗透测试工具（如Metasploit、Burp Suite等）"
-        ],
-        "practice_and_skills": [
-          "模拟完整攻击链的演练，包括侦察、初始访问、持久化、横向移动等",
-          "学习使用渗透测试工具进行漏洞利用和攻击模拟",
-          "分析真实攻击案例，理解攻击者的TTP"
-        ],
-        "learning_resources": [
-          "《Metasploit渗透测试指南》",
-          "MITRE ATT&CK官方网站（https://attack.mitre.org/）",
-          "Offensive Security的Penetration Testing with Kali Linux（PWK）课程"
-        ]
-      },
-      "conclusion": "当前攻击链的丰富性、深度和广度有待提升，建议学生深入学习MITRE ATT&CK框架，掌握多样化的攻击技术和工具，并通过实践模拟完整攻击链。鼓励学生继续学习和实践，逐步提升网络安全攻防能力。"
+      "learning_resources": [
+        "PortSwigger Web Security Academy (在线学习平台)",
+        "《黑客攻防技术宝典：Web实战篇》",
+        "OWASP Top 10 项目文档",
+        "Hack The Box / VulnHub (在线靶场平台)"
+      ]
     },
-    "final_score": 77.0,
-    "score_details": {
-      "depth_score": 30.0,
-      "breadth_score": 20.0,
-      "mitre_score": 6.0,
-      "richness_score": 6.0,
-      "ai_score": 15.0,
-      "total_score": 77.0,
-      "max_possible_score": 100
-    }
+    "conclusion": "本次演练非常成功，完整地复现了两种核心的攻击路径，并成功获取了服务器的控制权限。演练者对SQL注入和弱口令利用有扎实的理解。建议在当前基础上，进一步拓展攻击的广度和深度，学习高级规避技术和后渗透测试技巧，向着更全面的渗透测试专家方向努力。"
+  },
+  "final_score": 88.0,
+  "score_details": {
+    "depth_score": 45.0,
+    "breadth_score": 25.0,
+    "mitre_score": 8.0,
+    "richness_score": 8.0,
+    "ai_score": 2.0,
+    "total_score": 88.0,
+    "max_possible_score": 100
   }
+}

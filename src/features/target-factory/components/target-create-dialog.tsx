@@ -47,7 +47,7 @@ export function TargetCreateDialog({ open, onOpenChange }: Props) {
   const form = useForm<CreateForm>({
     resolver: zodResolver(createSchema),
     defaultValues: {
-      model: 'deepseek-reasoner',
+      model: '',
       max_steps: 40,
       description: '',
     },
@@ -82,9 +82,9 @@ export function TargetCreateDialog({ open, onOpenChange }: Props) {
                 <FormItem className='space-y-1'>
                   <FormLabel>模型选择</FormLabel>
                   <FormControl>
-                    <Select {...field}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <SelectTrigger>
-                        <SelectValue placeholder='请选择模型类别' />
+                        <SelectValue placeholder='请选择模型类别'/>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value='deepseek-reasoner'>
@@ -114,9 +114,10 @@ export function TargetCreateDialog({ open, onOpenChange }: Props) {
                   <FormLabel>最大步数</FormLabel>
                   <FormControl>
                     <Input
-                      {...field}
                       placeholder='请输入最大步数'
                       type='number'
+                      value={field.value}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />

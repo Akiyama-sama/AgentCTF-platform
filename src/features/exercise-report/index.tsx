@@ -16,9 +16,10 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { ScoreRadarChart } from './components/score-radar-chart'
 
 import { Main } from '@/components/layout/main'
-import { useExerciseReport } from '@/hooks/use-report'
+/* import { useExerciseReport } from '@/hooks/use-report' */
 import Loading from '@/components/Loading'
 import type { ExerciseReport } from './data/schema'
+import { exerciseReport } from './data/data'
 
 type AiEvaluationCardProps={
   exerciseReport:ExerciseReport
@@ -139,13 +140,15 @@ function LearningPathCard({exerciseReport}:LearningPathCardProps) {
 
 export default function ExerciseReport({exerciseId}:{exerciseId:string}) {
   
-  const {isPending,isError,report}=useExerciseReport(exerciseId)
+  /* const {isPending,isError,report}=useExerciseReport(exerciseId)
 
   const isLoading=isPending
   if(isError||!report){
     return <div className='flex h-full w-full items-center justify-center'>获取报告出现错误</div>
   }
-  const exerciseReport=report as ExerciseReport
+  const exerciseReport=report as ExerciseReport */
+
+  const isLoading=false
   return (
     <SearchProvider>
       <Header fixed>

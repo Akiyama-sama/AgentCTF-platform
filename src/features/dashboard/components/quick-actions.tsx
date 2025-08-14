@@ -10,7 +10,7 @@ import {
   ArrowRight,
   TrendingUp
 } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouteContext } from '@tanstack/react-router'
 
 interface QuickAction {
   title: string
@@ -60,6 +60,9 @@ const quickActions: QuickAction[] = [
 ]
 
 export default function QuickActions() {
+  const { user } = useRouteContext({
+    from: '/_authenticated'
+  })
   return (
     <Card className="border-0 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm shadow-xl">
       <CardHeader className="pb-4">
@@ -75,11 +78,20 @@ export default function QuickActions() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {quickActions.map((action, index) => (
-            <Link key={index} to={action.href} className="group">
-              <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-muted/30 to-muted/10 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group-hover:from-muted/50 group-hover:to-muted/20">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
+          {quickActions
+            .filter((action) => {
+              // 仅当用户为 admin 时显示“用户管理”
+              if (action.href === '/users') {
+                // user.roles 可能为 undefined，需安全判断
+                return Array.isArray(user.roles) && user.roles[0].name === 'admin';
+              }
+              return true;
+            })
+            .map((action, index) => (
+              <Link key={index} to={action.href} className="group">
+                <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-muted/30 to-muted/10 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group-hover:from-muted/50 group-hover:to-muted/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
                     <div className="flex-1 space-y-2">
                       <div className="flex items-center gap-2">
                         <div className={`rounded-lg bg-gradient-to-r ${action.color} p-2 text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}>
