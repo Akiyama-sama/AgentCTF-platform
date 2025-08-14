@@ -138,7 +138,7 @@ function LearningPathCard({exerciseReport}:LearningPathCardProps) {
   )
 }
 
-export default function ExerciseReport({exerciseId}:{exerciseId:string}) {
+export default function ExerciseReport() {
   
   /* const {isPending,isError,report}=useExerciseReport(exerciseId)
 

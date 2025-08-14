@@ -22,7 +22,7 @@ export default function ScenarioProcessLine({
 }: ScenarioProcessLineProps) {
   const navigate = useNavigate()
   const { step, setScenarioProcessState, scenarioProcessState } = useProcess()
-  const { analyzeAsync, status: reportStatus } = useScenarioReport(scenarioId, {
+  const { status: reportStatus } = useScenarioReport(scenarioId, {
     refetchStatus: scenarioProcessState.isAttackFinished,
   })
   const { stopLogs: stopAttackerLogs } = useAttackerAgentLogs(scenarioId)

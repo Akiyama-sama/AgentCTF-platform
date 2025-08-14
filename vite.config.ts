@@ -33,17 +33,17 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/defender/, ''),
       },
       '/backend': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:16666',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/backend/, ''),
       },
       '/assessment': {
-        target: 'http://localhost:8002',
+        target: 'http://localhost:15555',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/assessment/, ''),
       },
       '/compose': {
-        target: 'http://localhost:8003',
+        target: 'http://localhost:14444',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/compose/, ''),
       },

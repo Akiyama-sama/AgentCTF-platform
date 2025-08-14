@@ -15,9 +15,7 @@ import RiskAssessment from './components/risk-assessment'
 import ThreatAnalysis from './components/threat-analysis'
 import ThreatStatistics from './components/threat-statistics'
 
-import { useParams } from '@tanstack/react-router'
-import { useScenarioReport } from '@/hooks/use-report'
-import { useProcess } from '../scenario/store/process-store'
+
 import { mockDefenseReport1 } from './data/data'
 
 export default function ScenarioReport() {

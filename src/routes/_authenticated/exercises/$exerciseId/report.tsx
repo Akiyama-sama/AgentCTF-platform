@@ -9,6 +9,6 @@ export const Route = createFileRoute(
 
 
 function RouteComponent() {
-  const {exerciseId}=Route.useParams()
-  return <ExerciseReport exerciseId={exerciseId} />
+  /* const {exerciseId}=Route.useParams() */
+  return <ExerciseReport />
 }

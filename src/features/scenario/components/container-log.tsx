@@ -26,6 +26,6 @@ export const ContainerLog = ({ modelId, containerName, className }: ContainerLog
   }, [modelId, containerName, createContainerConnection, closeContainerConnection])
 
   return (
-    <Log logs={logs} className={className} behavior='instant'/>
+    <Log logs={logs} className={className} />
   )
 }
