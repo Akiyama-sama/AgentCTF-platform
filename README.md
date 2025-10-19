@@ -1,19 +1,19 @@
 # 项目演示
 
+<img width="1688" height="1038" alt="屏幕截图 2025-10-19 131649" src="https://github.com/user-attachments/assets/5154b6ba-cb90-40dd-aeda-2cb79a507a5e" />
+<img width="1692" height="1059" alt="屏幕截图 2025-10-19 130602" src="https://github.com/user-attachments/assets/541e40c7-4563-4414-b6cc-4ac4e0794999" />
+<img width="1681" height="1035" alt="屏幕截图 2025-10-19 131117" src="https://github.com/user-attachments/assets/0f35e43c-7b9d-46bc-b525-6dfa6ee1869d" />
+<img width="1689" height="1047" alt="屏幕截图 2025-10-19 124110" src="https://github.com/user-attachments/assets/2eb2baac-5ebf-41d3-8617-523e03803427" />
+<img width="1682" height="1033" alt="屏幕截图 2025-10-19 123829" src="https://github.com/user-attachments/assets/ad97954d-13e6-4fc3-a7f8-16590f85e17c" />
+<img width="1689" height="1057" alt="屏幕截图 2025-10-19 124410" src="https://github.com/user-attachments/assets/aa6ecd2d-278d-4cb5-b000-66cb2c8ac74c" />
+<img width="1683" height="1044" alt="屏幕截图 2025-10-19 124952" src="https://github.com/user-attachments/assets/8c2f387c-8e8c-4ae2-9274-347d9d9ac201" />
+<img width="1700" height="1056" alt="屏幕截图 2025-10-19 125009" src="https://github.com/user-attachments/assets/5e09f6c8-c40d-41de-b5b3-e2b0a6cae3bf" />
+<img width="1689" height="1042" alt="屏幕截图 2025-10-19 131312" src="https://github.com/user-attachments/assets/1d62e231-5a23-478d-914d-8959c6f5970a" />
 
-![image](./assets/屏幕截图 2025-10-19 131649.png)
-![image](./assets/屏幕截图 2025-10-19 130602.png)
+我自己博客中也记录了这个项目所遇到的困难挑战与反思：
+https://akiyama-sama.github.io/Akiyama-blog/Project/%E6%8F%AD%E6%A6%9C%E6%8C%82%E5%B8%85%E6%AF%94%E8%B5%9B%E9%A1%B9%E7%9B%AE%E5%89%8D%E7%AB%AF
 
-![image](./assets/屏幕截图 2025-10-19 131117.png)
 
-![image](./assets/屏幕截图 2025-10-19 130602.png)
-
-![image](./assets/屏幕截图 2025-10-19 1124110.png)
-![image](./assets/屏幕截图 2025-10-19 123829.png)
-![image](./assets/屏幕截图 2025-10-19 124410.png)
-![image](./assets/屏幕截图 2025-10-19 124592.png)
-![image](./assets/屏幕截图 2025-10-19 125009.png)
-![image](./assets/屏幕截图 2025-10-19 131312.png)
 # 部署项目
 ```bash
 #clone项目或者解压项目文件夹
