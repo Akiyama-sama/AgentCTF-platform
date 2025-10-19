@@ -1,4 +1,20 @@
-## 部署项目
+# 项目演示
+
+
+![image](./assets/屏幕截图 2025-10-19 131649.png)
+![image](./assets/屏幕截图 2025-10-19 130602.png)
+
+![image](./assets/屏幕截图 2025-10-19 131117.png)
+
+![image](./assets/屏幕截图 2025-10-19 130602.png)
+
+![image](./assets/屏幕截图 2025-10-19 1124110.png)
+![image](./assets/屏幕截图 2025-10-19 123829.png)
+![image](./assets/屏幕截图 2025-10-19 124410.png)
+![image](./assets/屏幕截图 2025-10-19 124592.png)
+![image](./assets/屏幕截图 2025-10-19 125009.png)
+![image](./assets/屏幕截图 2025-10-19 131312.png)
+# 部署项目
 ```bash
 #clone项目或者解压项目文件夹
 git clone https://github.com/Akiyama-sama/AgentCTF-platform.git
@@ -23,7 +39,7 @@ pnpm run dev
 浏览器访问地址localhost:5137
 
 
-## 注意事项
+# 注意事项
 后端服务一共有六个，每个后端服务都设置了默认端口号，每个服务对应着一个路由
 docker-manager:8888         --'/api'
 agent_attacker:18888        --'/attacker'

@@ -38,7 +38,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/backend/, ''),
       },
       '/assessment': {
-        target: 'http://localhost:15555',
+        target: 'http://localhost:8002',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/assessment/, ''),
       },

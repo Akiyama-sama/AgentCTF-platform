@@ -192,7 +192,7 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
       })
         .then((res: ApiResponseUserInitResponse) => {
           if (res.code == 200) {
-            showSuccessMessage(res.message || '攻击Agent初始化成功')
+            showSuccessMessage('攻击Agent初始化成功')
             setScenarioProcessState((state: ScenarioProcessState) => ({
               ...state,
               attackAgentInitialized: true,
@@ -349,17 +349,17 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        
+
         {/* Agent 状态指示器 - 水平排列，占满宽度 */}
         <div className='flex items-center justify-between w-full'>
           <div className='flex items-center gap-2'>
             <Bot className='h-4 w-4 text-primary' />
-            <Badge 
+            <Badge
               variant={status?.initialized ? 'default' : 'secondary'}
               className={cn(
                 'flex items-center gap-1 px-2 py-1 text-xs',
-                status?.initialized 
-                  ? 'bg-primary text-primary-foreground' 
+                status?.initialized
+                  ? 'bg-primary text-primary-foreground'
                   : 'bg-muted text-muted-foreground'
               )}
             >
@@ -376,15 +376,15 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
               )}
             </Badge>
           </div>
-          
+
           <div className='flex items-center gap-2'>
             <Shield className='h-4 w-4 text-secondary' />
-            <Badge 
+            <Badge
               variant={defenseAgentStatus?.initialized ? 'default' : 'secondary'}
               className={cn(
                 'flex items-center gap-1 px-2 py-1 text-xs',
-                defenseAgentStatus?.initialized 
-                  ? 'bg-secondary text-secondary-foreground' 
+                defenseAgentStatus?.initialized
+                  ? 'bg-secondary text-secondary-foreground'
                   : 'bg-muted text-muted-foreground'
               )}
             >
@@ -446,7 +446,7 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
             ))}
           </div>
         </div>
-        
+
         {isOptionVisible && (
           <div className='mt-4 p-4 bg-muted/30 rounded-lg border border-border'>
             <p className='text-foreground mb-3 text-center text-sm font-medium'>
@@ -496,8 +496,8 @@ export function ChatBot({ className, scenarioId }: ChatBotProps) {
             autoFocus
             className='flex-1'
           />
-          <Button 
-            type='submit' 
+          <Button
+            type='submit'
             disabled={isLoading || !input.trim()}
             size='sm'
             className='px-3'
