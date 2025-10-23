@@ -1,4 +1,3 @@
-
 import { ChevronsUpDown, Command } from 'lucide-react'
 import {
   DropdownMenu,
@@ -29,9 +28,7 @@ export function SidebarHeaderLogo() {
                 <Command className='size-4' />
               </div>
               <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-semibold'>
-                  Agent智能攻防平台
-                </span>
+                <span className='truncate font-semibold'>AgentWar攻防平台</span>
                 <span className='truncate text-xs'>V1.0.0</span>
               </div>
               <ChevronsUpDown className='ml-auto' />
