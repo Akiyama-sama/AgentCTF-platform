@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -14,25 +15,19 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
-import { useAuth } from '@/hooks/use-auth'
 
 type SignUpFormProps = HTMLAttributes<HTMLFormElement>
 
-
-
-
 const formSchema = z
   .object({
-    username: z
-      .string()
-      .min(1, { message: '请输入您的用户名' }),
+    username: z.string().min(1, { message: '请输入您的用户名' }),
     password: z
       .string()
       .min(1, {
         message: '请输入您的密码',
       })
-      .min(7, {
-        message: '密码长度至少为7位',
+      .max(7, {
+        message: '密码长度最大为7位',
       }),
     confirmPassword: z.string(),
   })
@@ -59,13 +54,12 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     // eslint-disable-next-line no-console
     console.log(data)
 
-    register({data:{
-      username: data.username,
-      password: data.password,
-    }}
-    )
-
-    
+    register({
+      data: {
+        username: data.username,
+        password: data.password,
+      },
+    })
   }
 
   return (
@@ -117,8 +111,6 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         <Button className='mt-2' disabled={isLoading}>
           注册
         </Button>
-
-
       </form>
     </Form>
   )

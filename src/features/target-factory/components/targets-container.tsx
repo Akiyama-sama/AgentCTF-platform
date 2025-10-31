@@ -1,9 +1,13 @@
 import { Download, PlusCircle, Server, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useAgentStream, useDownloadWorkspace, useWorkspaces } from '@/hooks/use-compose-agent'
+import { showSuccessMessage } from '@/utils/show-submitted-data.tsx'
+import {
+  useAgentStream,
+  useDownloadWorkspace,
+  useWorkspaces,
+} from '@/hooks/use-compose-agent'
 import { Button } from '@/components/ui/button'
 import { useTargetDialog } from '../context/target-context'
-import { showSuccessMessage } from '@/utils/show-submitted-data.tsx'
 
 interface TargetsContainerProps {
   className?: string
@@ -17,7 +21,7 @@ export function TargetsContainer({
   selectedTarget,
 }: TargetsContainerProps) {
   const { workspaces, isLoading } = useWorkspaces()
-  const {isConnected} = useAgentStream()
+  const { isConnected } = useAgentStream()
   const { setOpen } = useTargetDialog()
 
   return (
@@ -29,20 +33,24 @@ export function TargetsContainer({
     >
       <div className='mb-4 flex flex-col items-start justify-between'>
         <div className='flex w-full justify-between'>
-        <h3 className='text-lg font-semibold'>靶机仓库</h3>
-        <Button size='sm' onClick={() => setOpen('create')} disabled={isConnected}>
-          创建靶机
-          <PlusCircle size={16} className='mr-2' />
-        </Button>
+          <h3 className='text-lg font-semibold'>靶机仓库</h3>
+          <Button
+            size='sm'
+            onClick={() => setOpen('create')}
+            disabled={isConnected}
+          >
+            创建靶机
+            <PlusCircle size={16} className='mr-2' />
+          </Button>
         </div>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-sm'>
           当前SSE连接状态: {isConnected ? '已连接' : '未连接'}
         </p>
-        <p className='text-xs text-muted-foreground'> 
-          处于性能考虑，日志将不会被持久化存储
+        <p className='text-muted-foreground text-xs'>
+          当日志流完毕时，刷新页面以获取最新靶机
         </p>
       </div>
-      <div className='no-scrollbar h-[calc(100%-52px)] overflow-auto mb-4 flex flex-col justify-between'>
+      <div className='no-scrollbar mb-4 flex h-[calc(100%-52px)] flex-col justify-between overflow-auto'>
         {isLoading ? (
           <p className='text-muted-foreground'>加载中...</p>
         ) : workspaces && workspaces.length > 0 ? (
@@ -64,7 +72,7 @@ export function TargetsContainer({
             </p>
           </div>
         )}
-       {/* {isConnected && <Button
+        {/* {isConnected && <Button
           variant='destructive'
           size='sm'
           onClick={() => stopStream()}
@@ -76,7 +84,6 @@ export function TargetsContainer({
         </Button>
         } */}
       </div>
-      
     </div>
   )
 }

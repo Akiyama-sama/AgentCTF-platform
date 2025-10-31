@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # 1. 前端平台 (端口 5173 - 无变化)
+  frontend:
+    build: ./AgentCTF-platform
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_DEEPSEEK_API_KEY=${DEEPSEEK_API_TOKEN}
+    command: pnpm run dev -- --host 0.0.0.0
+
+  # 2. Docker 管理器 (改为 8888)
+  docker-manager:
+    build: ./docker-manager
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8888:8888" # 映射到主机的 8888
+    command: uv run start_api.py
+
+  # 3. 攻击者 Agent (改为 18888)
+  agent-attacker:
+    build: ./agent_attacker
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_TOKEN}
+    ports:
+      - "18888:18888" # 映射到主机的 18888
+    command: uv run start_api.py
+
+  # 4. 防御者 Agent (改为 17777)
+  agent-defender:
+    build: ./agent_defender
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_TOKEN}
+    ports:
+      - "17777:17777" # 映射到主机的 17777
+    command: uv run start_api.py
+
+  # 5. Compose Agent (改为 14444)
+  compose-agent:
+    build: ./compose-agent
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_TOKEN}
+    ports:
+      - "14444:14444" # 映射到主机的 14444
+    command: uv run server.py
+
+  # 6. 自动评估 (改为 8002)
+  automated-assessment:
+    build: ./Automated-assessment
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_TOKEN}
+    ports:
+      - "8002:8002" # 映射到主机的 8002
+    command: uv run run.py
+
+  # 7. 后端 (端口 16666 - 无变化)
+  backend:
+    build: ./Backend
+    ports:
+      - "16666:16666"
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 16666
+
+networks:
+  default:
+    driver: bridge
